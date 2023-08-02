@@ -1,0 +1,81 @@
+{
+  "project_info": {
+    "project_number": "303153206780",
+    "project_id": "authenticate-nestjs",
+    "storage_bucket": "authenticate-nestjs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303153206780:android:e6d52f828b831b42f34e79",
+        "android_client_info": {
+          "package_name": "com.example.ditour_clean"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "303153206780-kmaev4qadgkvfoks07in7sfu539lkcrs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ditour_clean",
+            "certificate_hash": "547c1c5b5519b95620e35c9a21b4b92cb1244735"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHdCsc7usn3Exse4bVIKGAQWzFd15H6js"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "303153206780-3mau3hhhn4qfl8dk2a2jk1vclnhrkk5v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "303153206780-e3h3rqqm69nrgf75qebcs93eho46lm6l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ditourClean"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303153206780:android:888bf671e81718d6f34e79",
+        "android_client_info": {
+          "package_name": "com.example.zest_trip"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHdCsc7usn3Exse4bVIKGAQWzFd15H6js"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "303153206780-3mau3hhhn4qfl8dk2a2jk1vclnhrkk5v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "303153206780-e3h3rqqm69nrgf75qebcs93eho46lm6l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ditourClean"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
