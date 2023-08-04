@@ -15,9 +15,13 @@ abstract class AuthRepository {
       String email, String password);
 
   Future<DataState<AuthUser>> registerWithEmailAndPassword(String email,
-      String password, String fullName, String dob, String gender);
+      String password, String fullName, String phone, String gender);
 
   Future<DataState<AuthUser>> signInWithGoogle();
+
+  Future<DataState<void>> logout();
+
+  Future<DataState<AuthUser>> signInWithPhoneNumber(String phoneNumber);
   // Các phương thức khác liên quan đến xác thực, ví dụ: loginWithGmail, loginWithPhone, ...
 }
 

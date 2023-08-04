@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:zest_trip/config/theme/text_theme.dart';
 
-ThemeData theme() {
-  return ThemeData(
-    scaffoldBackgroundColor: Colors.white,
-    fontFamily: 'Muli',
-    appBarTheme: appBarTheme(),
-  );
-}
+class ZAppTheme {
+  ZAppTheme._();
 
-AppBarTheme appBarTheme() {
-  return const AppBarTheme(
-    color: Colors.white,
-    elevation: 0,
-    centerTitle: true,
-    iconTheme: IconThemeData(color: Color(0XFF8B8B8B)),
-    titleTextStyle: TextStyle(color: Color(0XFF8B8B8B), fontSize: 18),
-  );
+  static ThemeData lightTheme = ThemeData(
+      brightness: Brightness.light,
+      textTheme: ZTextTheme.lightTextTheme,
+      appBarTheme: const AppBarTheme(),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(),
+      elevatedButtonTheme:
+          ElevatedButtonThemeData(style: ElevatedButton.styleFrom()));
+
+  static ThemeData darkTheme = ThemeData(
+      brightness: Brightness.dark,
+      textTheme: ZTextTheme.darkTextTheme,
+      appBarTheme: const AppBarTheme(),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(),
+      elevatedButtonTheme:
+          ElevatedButtonThemeData(style: ElevatedButton.styleFrom()));
 }

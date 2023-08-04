@@ -21,6 +21,11 @@ class DioHelper {
     return _dio;
   }
 
+  // Add a method to set the accessToken to the Dio instance
+  static void setAccessToken(String accessToken) {
+    _dio.options.headers['Authorization'] = 'Bearer $accessToken';
+  }
+
   static Future<Response> get(
     String path, {
     Map<String, dynamic>? queryParameters,

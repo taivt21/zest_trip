@@ -1,4 +1,12 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.zest_trip">
+
+
+<uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Thêm quyền truy cập tài khoản Google -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <application
         android:label="zest_trip"
         android:name="${applicationName}"

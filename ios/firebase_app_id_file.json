@@ -1,7 +1,7 @@
 {
   "file_generated_by": "FlutterFire CLI",
   "purpose": "FirebaseAppID & ProjectID for this Firebase app in this directory",
-  "GOOGLE_APP_ID": "1:303153206780:ios:cb8e177436570545f34e79",
-  "FIREBASE_PROJECT_ID": "authenticate-nestjs",
-  "GCM_SENDER_ID": "303153206780"
+  "GOOGLE_APP_ID": "1:1076582207288:ios:cd979aa5ee4dad9a0abbcd",
+  "FIREBASE_PROJECT_ID": "zest-trip-a4510",
+  "GCM_SENDER_ID": "1076582207288"
 }

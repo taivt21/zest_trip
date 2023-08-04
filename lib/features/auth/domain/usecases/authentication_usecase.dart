@@ -27,10 +27,10 @@ class RegisterWithEmailAndPasswordUseCase {
   }
 }
 
-class GoogleSignInUseCase {
+class SignInWithGoogleUseCase {
   final AuthRepository _authRepository;
 
-  GoogleSignInUseCase(this._authRepository);
+  SignInWithGoogleUseCase(this._authRepository);
 
   Future<DataState<AuthUser>> call() async {
     try {
@@ -40,5 +40,32 @@ class GoogleSignInUseCase {
     } on DioException catch (e) {
       return DataFailed(e);
     }
+  }
+}
+
+class LogoutUseCase {
+  final AuthRepository _authRepository;
+
+  LogoutUseCase(this._authRepository);
+
+  Future<DataState<void>> call() async {
+    try {
+      // Gọi phương thức logout từ repository
+      await _authRepository.logout();
+      return DataSuccess<void>(null);
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+  
+}
+class SignInWithPhoneNumberUseCase {
+  final AuthRepository _authRepository;
+
+  SignInWithPhoneNumberUseCase(this._authRepository);
+
+  Future<DataState<AuthUser>> call(String phoneNumber) {
+    // Call the phone number login method from the repository
+    return _authRepository.signInWithPhoneNumber(phoneNumber);
   }
 }

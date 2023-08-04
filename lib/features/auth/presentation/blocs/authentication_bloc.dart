@@ -8,9 +8,13 @@ import 'package:zest_trip/features/auth/presentation/blocs/authentication_state.
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginWithEmailAndPasswordUseCase loginWithEmailAndPasswordUseCase;
   final RegisterWithEmailAndPasswordUseCase registerWithEmailAndPasswordUseCase;
-  final GoogleSignInUseCase signInWithGoogleUseCase;
+  final SignInWithGoogleUseCase signInWithGoogleUseCase;
+  final LogoutUseCase logoutUseCase;
+  final SignInWithPhoneNumberUseCase signInWithPhoneNumberUseCase;
 
-  AuthBloc({
+  AuthBloc(
+    this.logoutUseCase,
+    this.signInWithPhoneNumberUseCase, {
     required this.loginWithEmailAndPasswordUseCase,
     required this.registerWithEmailAndPasswordUseCase,
     required this.signInWithGoogleUseCase,
@@ -35,9 +39,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await registerWithEmailAndPasswordUseCase.call(
         event.email,
         event.password,
-        event.fullName,
-        event.dob,
-        event.gender,
+        event.fullName ?? "",
+        event.phone ?? "",
+        event.gender ?? "",
       );
       if (result is DataSuccess<AuthUser>) {
         emit(AuthSuccess(result.data!));
@@ -50,6 +54,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       // Xử lý đăng nhập bằng tài khoản Google
       emit(AuthLoading());
       final result = await signInWithGoogleUseCase.call();
+      if (result is DataSuccess<AuthUser>) {
+        emit(AuthSuccess(result.data!));
+      } else if (result is DataFailed) {
+        emit(AuthFailure(result.error!.message!));
+      }
+    });
+
+    // Xử lý sự kiện logout
+    on<LogoutEvent>((event, emit) async {
+      emit(AuthLoading());
+      final result = await logoutUseCase.call();
+      if (result is DataSuccess) {
+        emit(AuthLoggedOut());
+      } else if (result is DataFailed) {
+        emit(AuthFailure(result.error!.message!));
+      }
+    });
+
+    on<LoginWithPhoneNumberEvent>((event, emit) async {
+      emit(AuthLoading());
+
+      final result = await signInWithPhoneNumberUseCase.call(event.phoneNumber);
+
       if (result is DataSuccess<AuthUser>) {
         emit(AuthSuccess(result.data!));
       } else if (result is DataFailed) {

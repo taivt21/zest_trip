@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,7 +28,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,43 +49,21 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAIY7kzhPQXxzH5uu3qyMHQFXBRao25jvY',
-    appId: '1:303153206780:web:1ca670239c0e1b2cf34e79',
-    messagingSenderId: '303153206780',
-    projectId: 'authenticate-nestjs',
-    authDomain: 'authenticate-nestjs.firebaseapp.com',
-    storageBucket: 'authenticate-nestjs.appspot.com',
-    measurementId: 'G-VFZ3EYZF5W',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDHdCsc7usn3Exse4bVIKGAQWzFd15H6js',
-    appId: '1:303153206780:android:888bf671e81718d6f34e79',
-    messagingSenderId: '303153206780',
-    projectId: 'authenticate-nestjs',
-    storageBucket: 'authenticate-nestjs.appspot.com',
+    apiKey: 'AIzaSyABJCpbwIRgHAJK9hvx_L6yHs6CgfCcHbs',
+    appId: '1:1076582207288:android:81825cfef5ff22d10abbcd',
+    messagingSenderId: '1076582207288',
+    projectId: 'zest-trip-a4510',
+    storageBucket: 'zest-trip-a4510.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA7cl3DwYfgtvneQ4HloBA4eUJ8_Z5zsDI',
-    appId: '1:303153206780:ios:cb8e177436570545f34e79',
-    messagingSenderId: '303153206780',
-    projectId: 'authenticate-nestjs',
-    storageBucket: 'authenticate-nestjs.appspot.com',
-    androidClientId: '303153206780-bfa36jk90ti6u4ddrf9sah2jveh25o45.apps.googleusercontent.com',
-    iosClientId: '303153206780-ppdv3snjsgghdpaa4vung3s5c88hjaqu.apps.googleusercontent.com',
+    apiKey: 'AIzaSyD37JZB2MluQONDljMQok_phmelLYiMons',
+    appId: '1:1076582207288:ios:cd979aa5ee4dad9a0abbcd',
+    messagingSenderId: '1076582207288',
+    projectId: 'zest-trip-a4510',
+    storageBucket: 'zest-trip-a4510.appspot.com',
+    iosClientId: '1076582207288-kv4b894uddi42hpa0les27trkab2numd.apps.googleusercontent.com',
     iosBundleId: 'com.example.zestTrip',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyA7cl3DwYfgtvneQ4HloBA4eUJ8_Z5zsDI',
-    appId: '1:303153206780:ios:9da2953f56e0b928f34e79',
-    messagingSenderId: '303153206780',
-    projectId: 'authenticate-nestjs',
-    storageBucket: 'authenticate-nestjs.appspot.com',
-    androidClientId: '303153206780-bfa36jk90ti6u4ddrf9sah2jveh25o45.apps.googleusercontent.com',
-    iosClientId: '303153206780-72mfiaglavu2ic110r83shcmddqrvenb.apps.googleusercontent.com',
-    iosBundleId: 'com.example.zestTrip.RunnerTests',
   );
 }
