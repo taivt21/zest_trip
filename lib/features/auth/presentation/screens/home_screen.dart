@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:zest_trip/features/auth/domain/entities/auth_user.dart';
 
 class HomeScreen extends StatelessWidget {
-  final AuthUser user;
-
-  const HomeScreen({super.key, required this.user});
+  const HomeScreen({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Chào mừng ${user.fullName}'),
-            Text('Email: ${user.email}'),
+            Text('Chào mừng'),
             // ElevatedButton(
             //   onPressed: () {
             //     // Đăng xuất
