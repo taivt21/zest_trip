@@ -59,8 +59,13 @@ dependencies:
   shared_preferences: ^2.2.0
   google_fonts: ^4.0.4
   flutter_native_splash: ^2.2.19
+<<<<<<< Updated upstream
   jwt_decode: ^0.3.1
   flutter_secure_storage: ^8.0.0
+=======
+  flutter_secure_storage: ^8.0.0
+  jwt_decode: ^0.3.1
+>>>>>>> Stashed changes
 
 dev_dependencies:
   flutter_test:

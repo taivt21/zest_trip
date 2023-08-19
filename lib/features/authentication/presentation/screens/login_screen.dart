@@ -16,7 +16,7 @@ class LoginScreen extends StatelessWidget {
     return BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            Navigator.of(context).pushNamed(AppRoutes.home);
+            Navigator.of(context).pushNamed(AppRoutes.login);
           }
         },
         child: Scaffold(

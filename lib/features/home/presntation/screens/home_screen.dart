@@ -1,48 +1,72 @@
-// import 'package:ditour_clean/core/constants/textstyle_constant.dart';
-// import 'package:ditour_clean/features/home/presntation/bloc/tour/remote/remote_tour_bloc.dart';
-// import 'package:ditour_clean/features/home/presntation/bloc/tour/remote/remote_tour_state.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
+import 'package:zest_trip/features/home/presntation/widgets/search_filed.dart';
 
-// class HomePageScreen extends StatelessWidget {
-//   const HomePageScreen({super.key});
+List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
+  BottomNavigationBarItem(
+    icon: Icon(Icons.home_outlined),
+    label: 'Home',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.favorite_outline),
+    label: 'Wishlist',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.grid_3x3),
+    label: 'Category',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.search_outlined),
+    label: 'Search',
+  ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.shopping_bag_outlined),
+    label: 'Cart',
+  ),
+];
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: _buildAppBar(),
-//       body: _buildBody(),
-//     );
-//   }
+const List<Widget> bottomNavScreen = <Widget>[
+  HomeScreen(),
+  Text('Index 1: Wishlist'),
+  Text('Index 2: Order'),
+  Text('Index 3: Chat'),
+  Text('Index 4: Profile'),
+];
 
-//   _buildAppBar() {
-//     return AppBar(
-//       title: Text('Home Page', style: TextStyles.defaultStyle.bold),
-//     );
-//   }
-// }
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
-// _buildBody() {
-//   return BlocBuilder<RemoteTourBloc, RemoteTourState>(
-//       builder: (_, state) {
-//     if (state is RemoteTourLoading) {
-//       return const Center(
-//         child: CircularProgressIndicator(),
-//       );
-//     }
-//     if (state is RemoteTourError) {
-//       return const Center(
-//         child: Icon(Icons.refresh),
-//       );
-//     }
-//     if (state is RemoteTourDone) {
-//       return ListView.builder(
-//           itemBuilder: (context, index) {
-//             return ListTile(
-//               title: Text('$index'),
-//             );
-//           },
-//           itemCount: state.tours!.length);
-//     }
-//   });
-// }
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthSuccess) {
+              // Hiển thị thông tin từ state trên giao diện
+              return Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SearchfField(),
+
+                    Text(
+                        'Welcome, ${state.user.email}'), // Sử dụng thông tin user từ state
+                  ],
+                ),
+              );
+            } else {
+              // Trạng thái không xác định hoặc AuthFailure
+              return const Center(
+                child: Text('Error loading user data.'),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+}

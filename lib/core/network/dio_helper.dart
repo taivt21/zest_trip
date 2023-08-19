@@ -10,9 +10,13 @@ class DioHelper {
       BaseOptions(
         baseUrl: Constants.baseUrl,
         receiveDataWhenStatusError: true,
+        // receiveTimeout: const Duration(seconds: 10),
+        // connectTimeout: const Duration(seconds: 10),
+        // sendTimeout: const Duration(seconds: 10),
         headers: {
           'Content-Type': 'application/json',
         },
+        responseType: ResponseType.json,
       ),
     );
     // Add your custom interceptors here

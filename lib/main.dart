@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zest_trip/bloc_observer.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/theme/app_themes.dart';
-import 'package:zest_trip/features/auth/data/data_sources/authentication_api_service.dart';
-import 'package:zest_trip/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:zest_trip/features/auth/domain/usecases/authentication_usecase.dart';
-import 'package:zest_trip/features/auth/presentation/blocs/authentication_bloc.dart';
-import 'package:zest_trip/features/auth/presentation/screens/signup_screen.dart';
+import 'package:zest_trip/features/authentication/data/data_sources/authentication_api_service.dart';
+import 'package:zest_trip/features/authentication/data/repositories/auth_repository_impl.dart';
+import 'package:zest_trip/features/authentication/domain/usecases/authentication_usecase.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
 import 'package:zest_trip/firebase_options.dart';
 
 void main() async {
@@ -16,7 +16,27 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   print('Firebase is connected: ${Firebase.apps.isNotEmpty}');
-  runApp(const MyApp());
+  // log BlocObserver
+  Bloc.observer = MyBlocObserver();
+
+  final authRepository = AuthRepositoryImpl(AuthApiServiceImpl());
+
+  final authBloc = AuthBloc(
+    LogoutUseCase(authRepository),
+    SignInWithPhoneNumberUseCase(authRepository),
+    LoginWithEmailAndPasswordUseCase(
+      authRepository,
+    ),
+    RegisterWithEmailAndPasswordUseCase(authRepository),
+    SignInWithGoogleUseCase(authRepository),
+  );
+
+  runApp(
+    BlocProvider<AuthBloc>.value(
+      value: authBloc,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,30 +44,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthBloc>(
-      create: (context) => AuthBloc(
-        LogoutUseCase(AuthRepositoryImpl(AuthApiServiceImpl())),
-        SignInWithPhoneNumberUseCase(AuthRepositoryImpl(AuthApiServiceImpl())),
-        loginWithEmailAndPasswordUseCase: LoginWithEmailAndPasswordUseCase(
-          AuthRepositoryImpl(AuthApiServiceImpl()),
-        ),
-        registerWithEmailAndPasswordUseCase:
-            RegisterWithEmailAndPasswordUseCase(
-          AuthRepositoryImpl(AuthApiServiceImpl()),
-        ),
-        signInWithGoogleUseCase: SignInWithGoogleUseCase(
-          AuthRepositoryImpl(AuthApiServiceImpl()),
-        ),
-      ),
-      child: MaterialApp(
-        initialRoute: AppRoutes.login, // Set the initial route
-        onGenerateRoute: AppRoutes.generateRoute,
-        theme: ZAppTheme.lightTheme,
-        darkTheme: ZAppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        title: 'ZestTrip',
-        home: const SignUpScreen(),
-      ),
+    return MaterialApp(
+      initialRoute: AppRoutes.login, // Set the initial route
+      onGenerateRoute: AppRoutes.generateRoute,
+      theme: ZAppTheme.lightTheme,
+      darkTheme: ZAppTheme.darkTheme,
+      themeMode: ThemeMode.system,
+      title: 'ZestTrip',
     );
   }
 }
