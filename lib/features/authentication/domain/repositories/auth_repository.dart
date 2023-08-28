@@ -17,7 +17,7 @@ abstract class AuthRepository {
   Future<DataState<bool>> registerWithEmailAndPassword(
       String email, String password);
 
-  Future<DataState<AuthUser>> signInWithGoogle();
+  Future<DataState<AuthUser>> signInWithGoogle(String accessToken);
 
   Future<DataState<void>> logout();
 

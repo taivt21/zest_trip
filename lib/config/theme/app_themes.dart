@@ -5,6 +5,7 @@ class ZAppTheme {
   ZAppTheme._();
 
   static ThemeData lightTheme = ThemeData(
+      useMaterial3: true,
       brightness: Brightness.light,
       textTheme: ZTextTheme.lightTextTheme,
       appBarTheme: const AppBarTheme(),
@@ -13,6 +14,7 @@ class ZAppTheme {
           ElevatedButtonThemeData(style: ElevatedButton.styleFrom()));
 
   static ThemeData darkTheme = ThemeData(
+      useMaterial3: true,
       brightness: Brightness.dark,
       textTheme: ZTextTheme.darkTextTheme,
       appBarTheme: const AppBarTheme(),

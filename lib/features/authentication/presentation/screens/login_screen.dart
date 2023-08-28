@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/core/constants/size_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
@@ -13,57 +14,61 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
+    var logger = Logger();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Center(
+            child: Text(
+          'Login',
+          style: TextStyle(color: Colors.black),
+        )),
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+      ),
+      body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            Navigator.of(context).pushNamed(AppRoutes.login);
+            Navigator.of(context).pushNamed(AppRoutes.home);
+          }
+          if (state is AuthFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Login fail! Try again')));
           }
         },
-        child: Scaffold(
-            appBar: AppBar(
-              title: const Center(
-                  child: Text(
-                'Login',
-                style: TextStyle(color: Colors.black),
-              )),
-              backgroundColor: Colors.white,
-              automaticallyImplyLeading: false,
-            ),
-            body: BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) {
-                if (state is AuthLoading) {
-                  // Xử lý hiển thị khi đang xử lý đăng nhập
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state is AuthFailure) {
-                  // Xử lý hiển thị khi đăng nhập thất bại
-                  return Center(
-                    child: Text('Đăng nhập thất bại: ${state.errorMessage}'),
-                  );
-                } else {
-                  // Trạng thái AuthInitial hoặc trạng thái không xác định
-                  // Hiển thị giao diện đăng nhập và nút đăng nhập Google
-
-                  return SafeArea(
-                    child: Scaffold(
-                      body: SingleChildScrollView(
-                        child: Container(
-                          padding: const EdgeInsets.all(tDefaultSize),
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              FormHeaderWidget(),
-                              LoginFormWidget(),
-                              LoginFooterWidget(),
-                            ],
-                          ),
-                        ),
-                      ),
+        builder: (context, state) {
+          if (state is AuthLoading) {
+            // Xử lý hiển thị khi đang xử lý đăng nhập
+            logger.i('loading auth');
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is AuthFailure || state is AuthInitial) {
+            // Xử lý hiển thị khi đăng nhập thất bại
+            return SafeArea(
+              child: Scaffold(
+                body: SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(tDefaultSize),
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FormHeaderWidget(),
+                        LoginFormWidget(),
+                        LoginFooterWidget(),
+                      ],
                     ),
-                  );
-                }
-              },
-            )));
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return const Center(
+              child: Text('Some thing went wrong! '),
+            );
+          }
+        },
+      ),
+    );
   }
 }

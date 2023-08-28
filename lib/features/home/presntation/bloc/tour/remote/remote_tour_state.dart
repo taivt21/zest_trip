@@ -9,7 +9,7 @@ abstract class RemoteTourState extends Equatable {
   const RemoteTourState({this.tours, this.error});
 
   @override
-  List<Object> get props => [tours!, error!];
+  List<Object> get props => [tours ?? [], error ?? "Error"];
 }
 
 class RemoteTourLoading extends RemoteTourState {

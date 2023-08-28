@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:zest_trip/core/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';
 import 'package:zest_trip/features/authentication/domain/usecases/authentication_usecase.dart';
@@ -52,11 +54,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignInWithGoogleEvent>((event, emit) async {
       // Xử lý đăng nhập bằng tài khoản Google
       emit(AuthLoading());
-      final result = await _signInWithGoogleUseCase.call();
-      if (result is DataSuccess<AuthUser>) {
-        emit(AuthSuccess(result.data!));
-      } else if (result is DataFailed) {
-        emit(AuthFailure(result.error!.message!));
+      final GoogleSignInAccount? googleSignInAccount =
+          await GoogleSignIn().signIn();
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+        final AuthCredential authCredential = GoogleAuthProvider.credential(
+            accessToken: googleSignInAuthentication.accessToken,
+            idToken: googleSignInAuthentication.idToken);
+        await FirebaseAuth.instance.signInWithCredential(authCredential);
+        FirebaseAuth fAuth = FirebaseAuth.instance;
+        final User? firebaseUser =
+            (await fAuth.signInWithCredential(authCredential).catchError((msg) {
+          throw msg;
+        }))
+                .user;
+        if (firebaseUser != null) {
+          String? accessToken = await firebaseUser.getIdToken();
+          final result = await _signInWithGoogleUseCase.call(accessToken ?? "");
+          if (result is DataSuccess<AuthUser>) {
+            emit(AuthSuccess(result.data!));
+          } else if (result is DataFailed) {
+            emit(AuthFailure(result.error!.message!));
+          }
+        }
       }
     });
 

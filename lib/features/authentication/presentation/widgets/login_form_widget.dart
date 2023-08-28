@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 import 'package:zest_trip/core/constants/size_constant.dart';
 import 'package:zest_trip/core/constants/text_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
@@ -27,6 +28,9 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var logger = Logger();
+    logger.i('render form login');
+
     return Form(
         key: _formKey, // Assign the GlobalKey to the Form
         child: Container(

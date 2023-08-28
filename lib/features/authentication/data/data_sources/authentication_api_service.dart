@@ -29,14 +29,11 @@ class AuthApiServiceImpl implements AuthApiService {
       final response = await DioHelper.post('/auth/signin', data: data);
       final accessToken = response.data['data']['access_token'];
       final refreshToken = response.data['data']['refresh_token'];
-      // print(response);
 
-      await secureStorage.write(key: 'access_token', value: accessToken);
-      await secureStorage.write(key: 'refresh_token', value: refreshToken);
+      // await secureStorage.write(key: 'access_token', value: accessToken);
+      // await secureStorage.write(key: 'refresh_token', value: refreshToken);
       Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
-      // print(payload);
       final user = AuthUserModel.fromJson(payload);
-      // print(user);
       return DataSuccess(user);
     } on DioException catch (e) {
       return DataFailed(e);
@@ -53,7 +50,6 @@ class AuthApiServiceImpl implements AuthApiService {
       };
 
       final response = await DioHelper.post('/auth/signup', data: data);
-      print(response);
       if (response.statusCode == 201) {
         return DataSuccess(true);
       } else {
@@ -61,7 +57,7 @@ class AuthApiServiceImpl implements AuthApiService {
           type: DioExceptionType.badResponse,
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
-          requestOptions: RequestOptions(),
+          requestOptions: response.requestOptions,
           response: response,
         ));
       }
@@ -78,7 +74,13 @@ class AuthApiServiceImpl implements AuthApiService {
 
     try {
       final response = await DioHelper.post('/auth/google-login', data: data);
-      final user = AuthUserModel.fromJson(response.data);
+      final accessToken = response.data['data']['access_token'];
+      final refreshToken = response.data['data']['refresh_token'];
+
+      // await secureStorage.write(key: 'access_token', value: accessToken);
+      // await secureStorage.write(key: 'refresh_token', value: refreshToken);
+      Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
+      final user = AuthUserModel.fromJson(payload);
       return DataSuccess(user);
     } on DioException catch (e) {
       return DataFailed(e);

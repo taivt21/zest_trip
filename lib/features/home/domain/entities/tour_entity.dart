@@ -1,49 +1,62 @@
 import 'package:equatable/equatable.dart';
+import 'package:zest_trip/features/home/data/models/tour_tag.dart';
+import 'package:zest_trip/features/home/data/models/tour_vehicle.dart';
+import 'package:zest_trip/features/home/domain/entities/tour_component_entity.dart';
 
 class TourEntity extends Equatable {
   final String? id;
-  final String? userIdProvider;
-  final String? tourDescription;
-  final String? tourHighlights;
-  final String? tourFootnote;
-  final String? tourComponents;
-  final String? duration;
+  final String? providerUserId;
+  final String? name;
+  final String? description;
+  final String? footnote;
+  final List<String>? tourImages;
+  final double? price;
+  final int? durationDay;
+  final int? durationNight;
   final String? location;
-  final String? tags;
+  final String? status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-  final String? status;
+  final List<TourComponentEntity>? tourComponents;
+  final List<TourTag>? tags;
+  final List<TourVehicle>? vehicle;
 
   const TourEntity({
     this.id,
-    this.userIdProvider,
-    this.tourDescription,
-    this.tourHighlights,
-    this.tourFootnote,
-    this.tourComponents,
-    this.duration,
+    this.providerUserId,
+    this.name,
+    this.description,
+    this.footnote,
+    this.tourImages,
+    this.price,
+    this.durationDay,
+    this.durationNight,
     this.location,
-    this.tags,
+    this.status,
     this.createdAt,
     this.updatedAt,
-    this.status,
+    this.tourComponents,
+    this.tags,
+    this.vehicle,
   });
 
   @override
-  List<Object?> get props {
-    return [
-      id,
-      userIdProvider,
-      tourDescription,
-      tourHighlights,
-      tourFootnote,
-      tourComponents,
-      duration,
-      location,
-      tags,
-      createdAt,
-      updatedAt,
-      status,
-    ];
-  }
+  List<Object?> get props => [
+        id,
+        providerUserId,
+        name,
+        description,
+        footnote,
+        tourImages,
+        price,
+        durationDay,
+        durationNight,
+        location,
+        status,
+        createdAt,
+        updatedAt,
+        tourComponents,
+        tags,
+        vehicle
+      ];
 }

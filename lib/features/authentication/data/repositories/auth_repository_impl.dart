@@ -25,31 +25,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<DataState<AuthUserModel>> signInWithGoogle() async {
+  Future<DataState<AuthUserModel>> signInWithGoogle(String accessToken) async {
     try {
       // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      // Obtain the auth details from the request
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
-      // Create a new credential
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken ?? "",
-        idToken: googleAuth?.idToken ?? "",
-      );
+      
 
-      // Once signed in, return the UserCredential
-      final userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      final String email = userCredential.user?.email ?? '';
-      final String displayName = userCredential.user?.displayName ?? '';
-      final String photoUrl = userCredential.user?.photoURL ?? '';
-
-      // Now you can send this information to your backend using the AuthApiService
-      // final String accessToken = userCredential.user!.getIdToken() as String;
-
-      // final response =
-      //     await _authApiService.signInWithGoogle(accessToken ?? '');
+      return await _authApiService.signInWithGoogle(accessToken);
 
       // Map the response to your domain entity AuthUser if needed
       // final authUser = AuthUser(
@@ -57,15 +38,15 @@ class AuthRepositoryImpl implements AuthRepository {
       //   email: response.data?.email ?? '',
       //   // Map other properties...
       // );
-      final authUser = AuthUserModel(
-        // id: id ?? '',
-        email: email,
-        fullName: displayName,
-        avatarImageUrl: photoUrl,
-        // Map other properties...
-      );
+      // final authUser = AuthUserModel(
+      //   // id: id ?? '',
+      //   email: email,
+      //   fullName: displayName,
+      //   avatarImageUrl: photoUrl,
+      // Map other properties...
+      // );
       // Return DataSuccess with the AuthUser
-      return DataSuccess(authUser);
+      // return DataSuccess(authUser);
     } on DioException catch (e) {
       return DataFailed(e);
     }

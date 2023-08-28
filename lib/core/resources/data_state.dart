@@ -14,16 +14,3 @@ class DataSuccess<T> extends DataState<T> {
 class DataFailed<T> extends DataState<T> {
   DataFailed(DioException error) : super(error: error);
 }
-// sealed class DataState<S, E extends Exception> {
-//   const DataState();
-// }
-
-// final class DataSuccess<S, E extends Exception> extends DataState<S, E> {
-//   const DataSuccess(this.value);
-//   final S value;
-// }
-
-// final class DataFailed<S, E extends Exception> extends DataState<S, E> {
-//   const DataFailed(this.exception);
-//   final E exception;
-// }

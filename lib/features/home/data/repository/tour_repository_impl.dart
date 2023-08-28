@@ -1,19 +1,35 @@
 import 'package:zest_trip/core/resources/data_state.dart';
 import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service.dart';
-import 'package:zest_trip/features/home/data/models/tour_model.dart';
+import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/home/domain/repository/tour_repository.dart';
 
 class TourRepositoryImpl implements TourRepository {
-  final TourApiService _tourApiDataSource;
-  TourRepositoryImpl(this._tourApiDataSource);
+  final TourRemoteDataSource _remoteDataSource;
+
+  TourRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<DataState<List<TourModel>>> getAllTours() async {
-    return await _tourApiDataSource.getAllTours();
+  Future<DataState<void>> addToCart(String tourId) {
+    throw UnimplementedError();
   }
 
   @override
-  Future<DataState<TourModel>> getTours(String id) async {
-    return await _tourApiDataSource.getTours(id);
+  Future<DataState<void>> addToWishlist(String tourId) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<DataState<List<TourEntity>>> getAllTours() {
+    return _remoteDataSource.fetchTours();
+  }
+
+  @override
+  Future<DataState<void>> removeFromCart(String tourId) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<DataState<void>> removeFromWishlist(String tourId) {
+    throw UnimplementedError();
   }
 }

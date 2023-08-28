@@ -1,71 +1,75 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
-import 'package:zest_trip/features/home/presntation/widgets/search_filed.dart';
+import 'package:zest_trip/features/home/presntation/screens/chat_screen.dart';
+import 'package:zest_trip/features/home/presntation/screens/main_screen.dart';
+import 'package:zest_trip/features/home/presntation/screens/order_screen.dart';
+import 'package:zest_trip/features/home/presntation/screens/profile_screen.dart';
+import 'package:zest_trip/features/home/presntation/screens/wishlist_screen.dart';
 
-List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
-  BottomNavigationBarItem(
-    icon: Icon(Icons.home_outlined),
-    label: 'Home',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.favorite_outline),
-    label: 'Wishlist',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.grid_3x3),
-    label: 'Category',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.search_outlined),
-    label: 'Search',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.shopping_bag_outlined),
-    label: 'Cart',
-  ),
-];
+List<BottomNavigationBarItem> bottomNavItems =
+    const <BottomNavigationBarItem>[];
 
 const List<Widget> bottomNavScreen = <Widget>[
-  HomeScreen(),
-  Text('Index 1: Wishlist'),
-  Text('Index 2: Order'),
-  Text('Index 3: Chat'),
-  Text('Index 4: Profile'),
+  OnboardScreen(),
+  WishlistScreen(),
+  OrderScreen(),
+  ChatScreen(),
+  ProfileScreen(),
 ];
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreen();
+}
+
+class _HomeScreen extends State<HomeScreen> {
+  int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is AuthSuccess) {
-              // Hiển thị thông tin từ state trên giao diện
-              return Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SearchfField(),
-
-                    Text(
-                        'Welcome, ${state.user.email}'), // Sử dụng thông tin user từ state
-                  ],
-                ),
-              );
-            } else {
-              // Trạng thái không xác định hoặc AuthFailure
-              return const Center(
-                child: Text('Error loading user data.'),
-              );
-            }
+        bottomNavigationBar: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
           },
+          indicatorColor: Colors.blue[100],
+          selectedIndex: currentPageIndex,
+          animationDuration: const Duration(microseconds: 1000),
+          destinations: const <Widget>[
+            NavigationDestination(
+              selectedIcon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.favorite_outline),
+              label: 'Wishlist',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.shopping_bag_outlined),
+              label: 'Order',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.chat_outlined),
+              label: 'Chat',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person_outline),
+              label: 'Profile',
+            ),
+          ],
         ),
+        body: <Widget>[
+          const OnboardScreen(),
+          const WishlistScreen(),
+          const OrderScreen(),
+          const ChatScreen(),
+          const ProfileScreen(),
+        ][currentPageIndex],
       ),
     );
   }

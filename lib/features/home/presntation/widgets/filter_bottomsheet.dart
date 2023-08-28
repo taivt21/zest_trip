@@ -1,0 +1,170 @@
+import 'package:flutter/material.dart';
+
+class FilterBottomSheet extends StatefulWidget {
+  const FilterBottomSheet({super.key});
+
+  @override
+  _FilterBottomSheetState createState() => _FilterBottomSheetState();
+}
+
+class _FilterBottomSheetState extends State<FilterBottomSheet> {
+  RangeValues _priceRange = const RangeValues(0, 1000);
+  final List<String> _selectedCategories = [];
+  final List<String> _selectedLocations = [];
+  RangeValues _durationRange = const RangeValues(1, 30);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Filter',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Category Filter
+        const Text(
+          'Category',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Wrap(
+          spacing: 8,
+          children: [
+            FilterChip(
+              label: const Text('Beach'),
+              onSelected: (selected) {
+                setState(() {
+                  if (selected) {
+                    _selectedCategories.add('Beach');
+                  } else {
+                    _selectedCategories.remove('Beach');
+                  }
+                });
+              },
+              selected: _selectedCategories.contains('Beach'),
+            ),
+            FilterChip(
+              label: const Text('Forest'),
+              onSelected: (selected) {
+                setState(() {
+                  if (selected) {
+                    _selectedCategories.add('Forest');
+                  } else {
+                    _selectedCategories.remove('Forest');
+                  }
+                });
+              },
+              selected: _selectedCategories.contains('Forest'),
+            ),
+            // Add more FilterChip widgets for other categories
+          ],
+        ),
+        const SizedBox(height: 16),
+
+        // Price Range Filter
+        const Text(
+          'Price Range',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        RangeSlider(
+          values: _priceRange,
+          min: 0,
+          max: 2000,
+          onChanged: (values) {
+            setState(() {
+              _priceRange = values;
+            });
+          },
+        ),
+        Text(
+            'Min: ${_priceRange.start.toStringAsFixed(2)}, Max: ${_priceRange.end.toStringAsFixed(2)}'),
+        const SizedBox(height: 16),
+
+        // Location Filter
+        const Text(
+          'Location',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Wrap(
+          spacing: 8,
+          children: [
+            FilterChip(
+              label: const Text('City A'),
+              onSelected: (selected) {
+                setState(() {
+                  if (selected) {
+                    _selectedLocations.add('City A');
+                  } else {
+                    _selectedLocations.remove('City A');
+                  }
+                });
+              },
+              selected: _selectedLocations.contains('City A'),
+            ),
+            FilterChip(
+              label: const Text('City B'),
+              onSelected: (selected) {
+                setState(() {
+                  if (selected) {
+                    _selectedLocations.add('City B');
+                  } else {
+                    _selectedLocations.remove('City B');
+                  }
+                });
+              },
+              selected: _selectedLocations.contains('City B'),
+            ),
+            // Add more FilterChip widgets for other locations
+          ],
+        ),
+        const SizedBox(height: 16),
+
+        // Duration Filter
+        const Text(
+          'Duration Range (days)',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        RangeSlider(
+          values: _durationRange,
+          min: 1,
+          max: 30,
+          onChanged: (values) {
+            setState(() {
+              _durationRange = values;
+            });
+          },
+        ),
+        Text(
+            'Min: ${_durationRange.start.toStringAsFixed(0)}, Max: ${_durationRange.end.toStringAsFixed(0)}'),
+
+        const SizedBox(height: 16),
+
+        ElevatedButton(
+          onPressed: () {
+            // Apply filter logic and close the bottom sheet
+            Navigator.pop(context);
+          },
+          child: const Text('Apply Filter'),
+        ),
+      ],
+    );
+  }
+}
