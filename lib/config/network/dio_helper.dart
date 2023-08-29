@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:zest_trip/core/constants/url_constant.dart';
-import 'package:zest_trip/core/network/auth_interceptor.dart';
+import 'package:zest_trip/config/utils/constants/url_constant.dart';
+import 'package:zest_trip/config/network/auth_interceptor.dart';
 
 class DioHelper {
   static late Dio _dio;

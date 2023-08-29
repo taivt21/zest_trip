@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/text_constant.dart';
+import '../../../../config/utils/constants/text_constant.dart';
 
 class FormHeaderWidget extends StatelessWidget {
   const FormHeaderWidget({super.key});

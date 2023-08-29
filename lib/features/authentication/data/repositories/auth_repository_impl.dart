@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:zest_trip/core/resources/data_state.dart';
+import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/data/data_sources/authentication_api_service.dart';
 import 'package:zest_trip/features/authentication/data/models/auth_user_model.dart';
 import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:zest_trip/core/resources/data_state.dart';
+import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';
 import 'package:zest_trip/features/authentication/domain/repositories/auth_repository.dart';
 

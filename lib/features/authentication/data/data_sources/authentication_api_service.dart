@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:zest_trip/core/network/dio_helper.dart';
-import 'package:zest_trip/core/resources/data_state.dart';
+import 'package:zest_trip/config/network/dio_helper.dart';
+import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/data/models/auth_user_model.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decode/jwt_decode.dart';

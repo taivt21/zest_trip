@@ -16,9 +16,9 @@ class TourTag extends Equatable {
 
   factory TourTag.fromJson(Map<String, dynamic> json) {
     return TourTag(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
+      id: json['id'] ?? 0,
+      name: json['name'] ?? "",
+      type: json['type'] ?? 0,
     );
   }
 

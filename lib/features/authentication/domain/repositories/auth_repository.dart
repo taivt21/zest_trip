@@ -1,4 +1,4 @@
-import 'package:zest_trip/core/resources/data_state.dart';
+import 'package:zest_trip/config/utils/resources/data_state.dart';
 
 import '../entities/auth_user.dart';
 

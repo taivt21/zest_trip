@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/routes/routes.dart';
-import 'package:zest_trip/core/constants/size_constant.dart';
+import 'package:zest_trip/config/utils/constants/size_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
 import 'package:zest_trip/features/authentication/presentation/widgets/form_header.dart';

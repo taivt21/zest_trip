@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:zest_trip/features/home/presntation/screens/chat_screen.dart';
-import 'package:zest_trip/features/home/presntation/screens/main_screen.dart';
-import 'package:zest_trip/features/home/presntation/screens/order_screen.dart';
-import 'package:zest_trip/features/home/presntation/screens/profile_screen.dart';
-import 'package:zest_trip/features/home/presntation/screens/wishlist_screen.dart';
+import './chat_screen.dart';
+import './main_screen.dart';
+import './order_screen.dart';
+import './profile_screen.dart';
+import './wishlist_screen.dart';
 
 List<BottomNavigationBarItem> bottomNavItems =
     const <BottomNavigationBarItem>[];
 
 const List<Widget> bottomNavScreen = <Widget>[
-  OnboardScreen(),
+  MainScreen(),
   WishlistScreen(),
   OrderScreen(),
   ChatScreen(),
@@ -64,7 +64,7 @@ class _HomeScreen extends State<HomeScreen> {
           ],
         ),
         body: <Widget>[
-          const OnboardScreen(),
+          const MainScreen(),
           const WishlistScreen(),
           const OrderScreen(),
           const ChatScreen(),

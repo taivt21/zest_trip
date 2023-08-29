@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:zest_trip/config/theme/text_theme.dart';
 
 class FilterBottomSheet extends StatefulWidget {
   const FilterBottomSheet({super.key});
 
   @override
-  _FilterBottomSheetState createState() => _FilterBottomSheetState();
+  FilterBottomSheetState createState() => FilterBottomSheetState();
 }
 
-class _FilterBottomSheetState extends State<FilterBottomSheet> {
+class FilterBottomSheetState extends State<FilterBottomSheet> {
   RangeValues _priceRange = const RangeValues(0, 1000);
   final List<String> _selectedCategories = [];
   final List<String> _selectedLocations = [];
@@ -21,26 +22,20 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       children: [
         const Text(
           'Filter',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.title,
         ),
         const SizedBox(height: 16),
 
         // Category Filter
         const Text(
           'Category',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.headline,
         ),
         Wrap(
           spacing: 8,
           children: [
             FilterChip(
-              label: const Text('Beach'),
+              label: const Text('Beach', style: AppTextStyles.body),
               onSelected: (selected) {
                 setState(() {
                   if (selected) {
@@ -53,7 +48,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               selected: _selectedCategories.contains('Beach'),
             ),
             FilterChip(
-              label: const Text('Forest'),
+              label: const Text('Forest', style: AppTextStyles.body),
               onSelected: (selected) {
                 setState(() {
                   if (selected) {
@@ -73,10 +68,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         // Price Range Filter
         const Text(
           'Price Range',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.headline,
         ),
         RangeSlider(
           values: _priceRange,
@@ -89,22 +81,20 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           },
         ),
         Text(
-            'Min: ${_priceRange.start.toStringAsFixed(2)}, Max: ${_priceRange.end.toStringAsFixed(2)}'),
+            'Min: ${_priceRange.start.toStringAsFixed(2)}, Max: ${_priceRange.end.toStringAsFixed(2)}',
+            style: AppTextStyles.body),
         const SizedBox(height: 16),
 
         // Location Filter
         const Text(
           'Location',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.headline,
         ),
         Wrap(
           spacing: 8,
           children: [
             FilterChip(
-              label: const Text('City A'),
+              label: const Text('City A', style: AppTextStyles.body),
               onSelected: (selected) {
                 setState(() {
                   if (selected) {
@@ -117,7 +107,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               selected: _selectedLocations.contains('City A'),
             ),
             FilterChip(
-              label: const Text('City B'),
+              label: const Text('City B', style: AppTextStyles.body),
               onSelected: (selected) {
                 setState(() {
                   if (selected) {
@@ -137,10 +127,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         // Duration Filter
         const Text(
           'Duration Range (days)',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.headline,
         ),
         RangeSlider(
           values: _durationRange,
@@ -153,7 +140,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           },
         ),
         Text(
-            'Min: ${_durationRange.start.toStringAsFixed(0)}, Max: ${_durationRange.end.toStringAsFixed(0)}'),
+            'Min: ${_durationRange.start.toStringAsFixed(0)}, Max: ${_durationRange.end.toStringAsFixed(0)}',
+            style: AppTextStyles.body),
 
         const SizedBox(height: 16),
 
@@ -162,7 +150,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             // Apply filter logic and close the bottom sheet
             Navigator.pop(context);
           },
-          child: const Text('Apply Filter'),
+          child: const Text('Apply Filter', style: AppTextStyles.body),
         ),
       ],
     );

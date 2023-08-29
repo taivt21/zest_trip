@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zest_trip/features/home/presntation/widgets/tour_shimmer.dart';
+import 'package:zest_trip/features/home/data/models/tour_tag.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_tags.dart';
+import 'package:zest_trip/features/home/presntation/bloc/tour_resource/remote/tags/tour_tag_bloc.dart';
+import '/config/theme/text_theme.dart';
+import '../../presntation/widgets/tour_shimmer.dart';
 import '../../../authentication/presentation/blocs/auth_bloc_ex.dart';
-import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service.dart';
-import 'package:zest_trip/features/home/data/repository/tour_repository_impl.dart';
-import 'package:zest_trip/features/home/domain/usecases/get_tours.dart';
+import '../../data/datasources/remote/tour_api_service.dart';
+import '../../data/repository/tour_repository_impl.dart';
+import '../../domain/usecases/get_tours.dart';
 import '../bloc/tour/remote/tour_bloc_ex.dart';
 
-import 'package:zest_trip/features/home/presntation/widgets/custom_scroll_bar.dart';
-import 'package:zest_trip/features/home/presntation/widgets/filter_bottomsheet.dart';
-import 'package:zest_trip/features/home/presntation/widgets/tour_item.dart'; // Import the widget to display each tour item
+import '../widgets/custom_scroll_bar.dart';
+import '../widgets/filter_bottomsheet.dart';
+import '../widgets/tour_item.dart'; // Import the widget to display each tour item
 import 'package:logger/logger.dart';
 
-class OnboardScreen extends StatelessWidget {
-  const OnboardScreen({super.key});
+class MainScreen extends StatelessWidget {
+  final TourTag? tag;
+  const MainScreen({super.key, this.tag});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,7 @@ class OnboardScreen extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
+        BlocProvider<RemoteTourBloc>(
           create: (BuildContext context) => RemoteTourBloc(
             GetTourUseCase(
               TourRepositoryImpl(TourRemoteDataSourceIml()),
@@ -30,6 +35,13 @@ class OnboardScreen extends StatelessWidget {
               const GetTours(),
             ),
         ),
+        BlocProvider<TourTagBloc>(
+            create: (BuildContext context) => TourTagBloc(
+                  GetTourTagsUseCase(
+                    TourRepositoryImpl(TourRemoteDataSourceIml()),
+                  ),
+                )..add(const GetTourTags()))
+
         // BlocProvider(create: (BuildContext context) => authBloc),
       ],
       child: Column(
@@ -45,7 +57,7 @@ class OnboardScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Material(
                           elevation: 3.0,
                           shadowColor: Colors.grey.withOpacity(0.5),
@@ -55,11 +67,11 @@ class OnboardScreen extends StatelessWidget {
                               Expanded(
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(40),
+                                    borderRadius: BorderRadius.circular(32),
                                     color: Colors.white,
                                   ),
                                   child: const TextField(
-                                    maxLines: 2,
+                                    maxLines: 1,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 10),
@@ -108,21 +120,26 @@ class OnboardScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 8,
                       ),
-                      CustomScrollTabBar(
-                        categories: const [
-                          'Beach',
-                          'Forest',
-                          'Mountain',
-                          'City',
-                          'Rock',
-                        ], // Danh sách loại tour
-                        onTabChanged: (index) {
-                          // Do something when tab is changed
+                      BlocBuilder<TourTagBloc, TourTagState>(
+                        builder: (context, tagState) {
+                          if (tagState is RemoteTourTagDone) {
+                            return SizedBox(
+                              height: 58,
+                              child: CustomScrollTabBar(
+                                categories: tagState.tourTags ?? [],
+                                onTabChanged: (index) {
+                                  // Do something when tab is changed
+                                },
+                              ),
+                            );
+                          }
+                          // Handle other states if needed
+                          return const CircularProgressIndicator(); // Placeholder loading indicator
                         },
                       ),
-                      Text('Welcome, ${authState.user.email}'),
+                      Text('Welcome, ${authState.user.fullName}'),
                     ],
                   ),
                 );
@@ -143,26 +160,30 @@ class OnboardScreen extends StatelessWidget {
                 logger.i('render tour item');
 
                 return Expanded(
-                    child: RefreshIndicator(
-                  onRefresh: () async {
-                    // Gọi hàm để fetch lại danh sách tours ở đây
-                    context.read<RemoteTourBloc>().add(const GetTours());
-                  },
-                  child: ListView.builder(
-                    itemCount: tourState.tours?.length ?? 0,
-                    itemExtent:
-                        null, // Set itemExtent to null to remove spacing
-                    itemBuilder: (context, index) {
-                      final tour = tourState.tours![index];
-                      return TourItemWidget(
-                          tour:
-                              tour); // Create a widget to display each tour item
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      // fetch lại danh sách tours
+                      context.read<RemoteTourBloc>().add(const GetTours());
                     },
+                    child: ListView.builder(
+                      itemCount: tourState.tours?.length ?? 0,
+                      itemExtent:
+                          null, // Set itemExtent to null to remove spacing
+                      itemBuilder: (context, index) {
+                        final tour = tourState.tours![index];
+                        return TourItemWidget(
+                            tour:
+                                tour); // Create a  widgetto display each tour item
+                      },
+                    ),
                   ),
-                ));
+                );
               } else if (tourState is RemoteTourError) {
                 return const Center(
-                  child: Text('Error loading tours.'),
+                  child: Text(
+                    'Error loading tours.',
+                    style: AppTextStyles.title,
+                  ),
                 );
               } else {
                 return const Center(

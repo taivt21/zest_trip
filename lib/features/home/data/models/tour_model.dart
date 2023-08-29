@@ -18,9 +18,14 @@ class TourModel extends TourEntity {
     String? status,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? addressName,
+    String? addressCity,
+    String? addressProvince,
+    String? addressCountry,
+    String? tourLocationType,
     List<TourComponentModel>? tourComponents,
     List<TourTag>? tags,
-    List<TourVehicle>? vehicle,
+    List<TourVehicle>? vehicles,
   }) : super(
           id: id,
           providerUserId: providerUserId,
@@ -31,13 +36,17 @@ class TourModel extends TourEntity {
           price: price,
           durationDay: durationDay,
           durationNight: durationNight,
-          location: location,
           status: status,
           createdAt: createdAt,
           updatedAt: updatedAt,
+          addressName: addressName,
+          addressCity: addressCity,
+          addressProvince: addressProvince,
+          addressCountry: addressCountry,
+          tourLocationType: tourLocationType,
           tourComponents: tourComponents,
           tags: tags,
-          vehicle: vehicle,
+          vehicles: vehicles,
         );
 
   factory TourModel.fromJson(Map<String, dynamic> json) {
@@ -55,22 +64,26 @@ class TourModel extends TourEntity {
       price: parsedPrice,
       durationDay: json['duration_day'] ?? 0,
       durationNight: json['duration_night'] ?? 0,
-      location: json['location'] ?? "",
       status: json['status'] ?? "",
       createdAt: DateTime.tryParse(json['created_at']) ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updated_at']),
+      addressName: json['address_name'] ?? "",
+      addressCity: json['address_city'] ?? "",
+      addressProvince: json['address_province'] ?? "",
+      addressCountry: json['address_country'] ?? "",
+      tourLocationType: json['tour_location_type'] ?? "",
       tourComponents: json['TourComponent'] != null
           ? List<TourComponentModel>.from(json['TourComponent']
               .map((component) => TourComponentModel.fromJson(component)))
           : [],
-      // tags: json['tag_id'] != null
-      //     ? List<TourTag>.from(
-      //         json['tag_id'].map((component) => TourTag.fromJson(component)))
-      //     : [],
-      // vehicle: json['vehicle_id'] != null
-      //     ? List<TourVehicle>.from(json['vehicle_id']
-      //         .map((component) => TourVehicle.fromJson(component)))
-      //     : [],
+      tags: json['tag_id'] != null
+          ? List<TourTag>.from(
+              json['tag_id'].map((component) => TourTag.fromJson(component)))
+          : [],
+      vehicles: json['vehicle_id'] != null
+          ? List<TourVehicle>.from(json['vehicle_id']
+              .map((component) => TourVehicle.fromJson(component)))
+          : [],
     );
   }
 
@@ -85,14 +98,17 @@ class TourModel extends TourEntity {
       'price': price,
       'duration_day': durationDay,
       'duration_night': durationNight,
-      'location': location,
       'status': status,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
+      'address_name': addressName,
+      'address_city': addressCity,
+      'address_province': addressProvince,
+      'address_country': addressCountry,
       'TourComponent':
           tourComponents?.map((component) => component.toJson()).toList(),
       'tag_id': tags?.map((component) => component.toJson()).toList(),
-      'vehicle_id': vehicle?.map((component) => component.toJson()).toList(),
+      'vehicle_id': vehicles?.map((component) => component.toJson()).toList(),
     };
   }
 }

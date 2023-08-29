@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zest_trip/core/network/dio_helper.dart';
+import 'package:zest_trip/config/network/dio_helper.dart';
 
 class AuthInterceptor extends Interceptor {
   @override

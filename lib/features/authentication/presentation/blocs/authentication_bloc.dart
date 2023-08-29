@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:zest_trip/core/resources/data_state.dart';
+import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';
 import 'package:zest_trip/features/authentication/domain/usecases/authentication_usecase.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_event.dart';

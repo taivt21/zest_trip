@@ -8,7 +8,7 @@ import 'package:zest_trip/features/home/presntation/screens/wishlist_screen.dart
 class AppRoutes {
   static const String login = '/login';
   static const String signup = '/signup';
-  static const String onboard = '/';
+  static const String main = '/';
   static const String home = '/home';
 
   static const String logout = '/logout';
@@ -23,8 +23,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (context) => const LoginScreen());
       case signup:
         return MaterialPageRoute(builder: (context) => const SignUpScreen());
-      case onboard:
-        return MaterialPageRoute(builder: (context) => const OnboardScreen());
+      case main:
+        return MaterialPageRoute(builder: (context) => const MainScreen());
       case home:
         return MaterialPageRoute(
           builder: (context) => const HomeScreen(),

@@ -4,6 +4,7 @@ class TourComponentEntity extends Equatable {
   final int? id;
   final String? title;
   final String? description;
+  final String? tourId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -11,17 +12,20 @@ class TourComponentEntity extends Equatable {
     this.id,
     this.title,
     this.description,
+    this.tourId,
     this.createdAt,
     this.updatedAt,
   });
 
   @override
-  List<Object?> get props => [id, title, description, createdAt, updatedAt];
+  List<Object?> get props =>
+      [id, title, description, tourId, createdAt, updatedAt];
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'title': title,
       'description': description,
+      'tour_id': tourId,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };

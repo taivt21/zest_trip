@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zest_trip/config/theme/text_theme.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
@@ -56,20 +57,20 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 300,
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-                itemCount: widget.tour.tourImages!.length,
-                itemBuilder: (context, index) {
-                  return Stack(
-                    children: [
-                      CachedNetworkImage(
+            Stack(
+              children: [
+                SizedBox(
+                  height: 300,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentPage = index;
+                      });
+                    },
+                    itemCount: widget.tour.tourImages!.length,
+                    itemBuilder: (context, index) {
+                      return CachedNetworkImage(
                         imageUrl: widget.tour.tourImages![index],
                         progressIndicatorBuilder:
                             (context, url, downloadProgress) => Center(
@@ -79,33 +80,32 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                         errorWidget: (context, url, error) =>
                             const Icon(Icons.error),
                         fit: BoxFit.cover,
+                      );
+                    },
+                  ),
+                ),
+                Positioned(
+                  top: 10,
+                  right: 16,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 51, 51, 51),
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Text(
+                      '${_currentPage + 1}/${widget.tour.tourImages!.length}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      Positioned(
-                        top: 10,
-                        right: 16,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                              color: Color.fromARGB(255, 51, 51, 51),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8))),
-                          child: Text(
-                            '${_currentPage + 1}/${widget.tour.tourImages!.length}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -114,10 +114,7 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                     children: [
                       Text(
                         widget.tour.name!,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: AppTextStyles.title,
                       ),
                       const Row(
                         children: [
@@ -125,13 +122,13 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                           SizedBox(width: 4),
                           Text(
                             '4.5', // Replace with actual rating
-                            style: TextStyle(fontSize: 18),
+                            style: AppTextStyles.headline,
                           ),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     '\$${widget.tour.price}',
                     style: const TextStyle(
@@ -139,30 +136,20 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    '${widget.tour.durationDay} days',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 8),
+                  Text('${widget.tour.durationDay} days',
+                      style: AppTextStyles.body),
+                  const SizedBox(height: 8),
                   const Text(
                     'Description:',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppTextStyles.headline,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     widget.tour.description!,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
+                    style: AppTextStyles.body,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -172,34 +159,54 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                           Icons.directions_bus, 'Transportation'),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // const Text(
+                      //   'Tags:',
+                      //   style: AppTextStyles.headline,
+                      // ),
+                      // const SizedBox(height: 8),
+                      const Divider(),
+                      Wrap(
+                        spacing: 8,
+                        children: widget.tour.tags!.map((tag) {
+                          return Chip(
+                            avatar: const Icon(Icons.location_city_outlined),
+                            label: Text(tag.name.toString()),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Vehicles:',
+                        style: AppTextStyles.headline,
+                      ),
+                      const SizedBox(height: 8),
+                      // Chip(
+                      //   label: Text(widget.tour.vehicles.map((e) => {})),
+                      // ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 8),
                   const Text(
                     'Schedule:',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppTextStyles.headline,
                   ),
                   Column(
                     children: widget.tour.tourComponents!.map((component) {
                       return ListTile(
-                        title: Text(
-                          component.title!,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        title: Text(component.title!,
+                            style: AppTextStyles.headline),
                         subtitle: Text(
                           component.description!,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
+                          style: AppTextStyles.body,
                         ),
                       );
                     }).toList(),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
 
                   // Display host information
                   Padding(
@@ -207,7 +214,7 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                     child: Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
@@ -252,26 +259,15 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                                     children: [
                                       Icon(Icons.star, size: 18),
                                       SizedBox(width: 4),
-                                      Text('4.5',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          )),
+                                      Text('4.5', style: AppTextStyles.body),
                                     ],
                                   ),
                                   SizedBox(height: 4),
                                   Text('123 Reviews',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      )),
+                                      style: AppTextStyles.body),
                                   SizedBox(height: 4),
                                   Text('Joined 2 years ago',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      )),
+                                      style: AppTextStyles.body),
                                 ],
                               ),
                             ),
@@ -284,20 +280,29 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                   const ListTile(
                     title: Text(
                       'User Reviews',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppTextStyles.headline,
                     ),
                     subtitle: Column(
                       children: [
                         ListTile(
-                          title: Text('Great Experience'),
-                          subtitle: Text('Rating: 4.5'),
+                          title: Text(
+                            'Great Experience',
+                            style: AppTextStyles.body,
+                          ),
+                          subtitle: Text(
+                            'Rating: 4.5',
+                            style: AppTextStyles.body,
+                          ),
                         ),
                         ListTile(
-                          title: Text('Highly Recommend'),
-                          subtitle: Text('Rating: 5.0'),
+                          title: Text(
+                            'Highly Recommend',
+                            style: AppTextStyles.body,
+                          ),
+                          subtitle: Text(
+                            'Rating: 5.0',
+                            style: AppTextStyles.body,
+                          ),
                         ),
                       ],
                     ),
@@ -321,26 +326,24 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                     children: [
                       const Icon(Icons.attach_money, color: Colors.black),
                       const SizedBox(width: 4),
-                      Text('\$${widget.tour.price}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          )),
-                      const SizedBox(width: 20),
+                      Text(
+                        '\$${widget.tour.price}',
+                        style: AppTextStyles.body,
+                      ),
+                      const SizedBox(width: 16),
                       const Icon(Icons.calendar_today, color: Colors.black),
                       const SizedBox(width: 4),
-                      Text('${widget.tour.durationDay} days',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          )),
+                      Text(
+                        '${widget.tour.durationDay} days',
+                        style: AppTextStyles.body,
+                      ),
                     ],
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[100]),
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue[100],
+                    ),
                     onPressed: () {
                       // Handle booking
                     },
@@ -365,10 +368,10 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
           backgroundColor: Colors.black,
           child: Icon(icon, color: Colors.white),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 8),
         Text(
           label,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: AppTextStyles.body,
         ),
       ],
     );

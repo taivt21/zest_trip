@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/home/presntation/screens/tour_detail_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,8 +10,6 @@ class TourItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var logger = Logger();
-    
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -22,12 +19,12 @@ class TourItemWidget extends StatelessWidget {
         );
       },
       child: Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         // margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(16),
           // boxShadow: [
           //   BoxShadow(
           //     color: Colors.grey.withOpacity(0.5),
