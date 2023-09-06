@@ -18,17 +18,5 @@ class RemoteTourBloc extends Bloc<RemoteTourEvent, RemoteTourState> {
         emit(RemoteTourError(dataState.error!));
       }
     });
-    //  on<GetToursWithTag>((event, emit) async {
-    //   final dataState = await _getTourUseCase.call();
-
-    //   if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
-    //     final filteredTours = dataState.data!
-    //         .where((tour) => tour.tags!.contains(event.tag) )
-    //         .toList();
-    //     emit(RemoteTourDone(filteredTours));
-    //   } else if (dataState is DataFailed) {
-    //     emit(RemoteTourError(dataState.error!));
-    //   }
-    // });
   }
 }

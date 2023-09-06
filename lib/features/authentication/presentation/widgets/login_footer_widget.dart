@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 import 'package:zest_trip/config/routes/routes.dart';
+import 'package:zest_trip/config/theme/text_theme.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/config/utils/constants/size_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
@@ -32,6 +33,13 @@ class LoginFooterWidget extends StatelessWidget {
             },
             label: const Text(tSignInWithGoogle),
           ),
+          //     OutlinedButtonCustom(
+          //   text: tSignInWithGoogle,
+          //   onPressed: () {
+          //     BlocProvider.of<AuthBloc>(context).add(SignInWithGoogleEvent());
+          //   },
+          //   iconData: Icons.mail,
+          // ),
         ),
         const SizedBox(height: tFormHeight - 20),
         TextButton(
@@ -39,11 +47,11 @@ class LoginFooterWidget extends StatelessWidget {
             // Navigate to the sign-up screen
             Navigator.pushNamed(context, AppRoutes.signup);
           },
-          child: Text.rich(
+          child: const Text.rich(
             TextSpan(
                 text: tDontHaveAnAccount,
-                style: Theme.of(context).textTheme.bodyLarge,
-                children: const [
+                style: AppTextStyles.body,
+                children: [
                   TextSpan(text: tSignup, style: TextStyle(color: Colors.blue))
                 ]),
           ),

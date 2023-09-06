@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
+import 'package:zest_trip/config/theme/custom_elevated_button.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/size_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
@@ -41,10 +43,13 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.person_outline_outlined),
-                    labelText: tEmail,
-                    hintText: tEmail,
-                    border: OutlineInputBorder()),
+                  prefixIcon: Icon(Icons.person_outline_outlined),
+                  labelText: tEmail,
+                  hintText: tEmail,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                  ),
+                ),
                 validator:
                     _validateEmail, // Assign the email validator function
                 keyboardType: TextInputType.emailAddress,
@@ -56,7 +61,9 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                   prefixIcon: const Icon(Icons.fingerprint),
                   labelText: tPassword,
                   hintText: tPassword,
-                  border: const OutlineInputBorder(),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                  ),
                   suffixIcon: IconButton(
                     onPressed:
                         _toggleObscureText, // Toggle obscureText when the icon is pressed
@@ -78,9 +85,10 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
               ),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _onLoginPressed, // Assign the login function
-                  child: const Text(tLogin),
+                child: ElevatedButtonCustom(
+                  text: tLogin,
+                  onPressed: _onLoginPressed,
+                  backgroundColor: primaryColor,
                 ),
               ),
             ],

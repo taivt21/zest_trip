@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/routes/routes.dart';
+import 'package:zest_trip/config/theme/text_theme.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
@@ -14,6 +15,9 @@ class SignUpFooterWidget extends StatelessWidget {
     return Column(
       children: [
         const Text("OR"),
+        const SizedBox(
+          height: 16,
+        ),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
@@ -33,13 +37,19 @@ class SignUpFooterWidget extends StatelessWidget {
             // Navigate to the sign-up screen
             Navigator.pushNamed(context, AppRoutes.login);
           },
-          child: Text.rich(TextSpan(children: [
+          child: const Text.rich(
             TextSpan(
-              text: tAlreadyHaveAnAccount,
-              style: Theme.of(context).textTheme.bodySmall,
+              children: [
+                TextSpan(
+                  text: tAlreadyHaveAnAccount,
+                  style: AppTextStyles.body,
+                ),
+                TextSpan(
+                    text: tLogin,
+                    style: TextStyle(color: Colors.blue, fontSize: 16))
+              ],
             ),
-            const TextSpan(text: tLogin)
-          ])),
+          ),
         )
       ],
     );

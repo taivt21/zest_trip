@@ -11,13 +11,13 @@ class TourRepositoryImpl implements TourRepository {
   TourRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<DataState<void>> addToCart(String tourId) {
+  Future<DataState<bool>> addToCart(String tourId) {
     throw UnimplementedError();
   }
 
   @override
-  Future<DataState<void>> addToWishlist(String tourId) {
-    throw UnimplementedError();
+  Future<DataState<bool>> addToWishlist(String tourId) {
+    return _remoteDataSource.addToWishlist(tourId);
   }
 
   @override
@@ -36,12 +36,12 @@ class TourRepositoryImpl implements TourRepository {
   }
 
   @override
-  Future<DataState<void>> removeFromCart(String tourId) {
+  Future<DataState<bool>> removeFromCart(String tourId) {
     throw UnimplementedError();
   }
 
   @override
-  Future<DataState<void>> removeFromWishlist(String tourId) {
+  Future<DataState<bool>> removeFromWishlist(String tourId) {
     throw UnimplementedError();
   }
 }

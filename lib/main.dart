@@ -8,6 +8,12 @@ import 'package:zest_trip/features/authentication/data/data_sources/authenticati
 import 'package:zest_trip/features/authentication/data/repositories/auth_repository_impl.dart';
 import 'package:zest_trip/features/authentication/domain/usecases/authentication_usecase.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
+import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service.dart';
+import 'package:zest_trip/features/home/data/repository/tour_repository_impl.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_tags.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_tours.dart';
+import 'package:zest_trip/features/home/presntation/bloc/tour/remote/tour_bloc_ex.dart';
+import 'package:zest_trip/features/home/presntation/bloc/tour_resource/remote/tags/tour_tag_bloc.dart';
 import 'package:zest_trip/firebase_options.dart';
 
 void main() async {
@@ -19,22 +25,33 @@ void main() async {
   logger.i('Firebase is connected: ${Firebase.apps.isNotEmpty}');
   // log BlocObserver
   Bloc.observer = MyBlocObserver();
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  MyApp({super.key});
 
   final authRepository = AuthRepositoryImpl(AuthApiServiceImpl());
-  // final tourRepository = TourRepositoryImpl(TourRemoteDataSourceIml());
+
+  final tourRepository = TourRepositoryImpl(TourRemoteDataSourceIml());
 
   final authBloc = AuthBloc(
-    LogoutUseCase(authRepository),
-    SignInWithPhoneNumberUseCase(authRepository),
+    LogoutUseCase(AuthRepositoryImpl(AuthApiServiceImpl())),
+    SignInWithPhoneNumberUseCase(AuthRepositoryImpl(AuthApiServiceImpl())),
     LoginWithEmailAndPasswordUseCase(
-      authRepository,
+      AuthRepositoryImpl(AuthApiServiceImpl()),
     ),
-    RegisterWithEmailAndPasswordUseCase(authRepository),
-    SignInWithGoogleUseCase(authRepository),
+    RegisterWithEmailAndPasswordUseCase(
+        AuthRepositoryImpl(AuthApiServiceImpl())),
+    SignInWithGoogleUseCase(AuthRepositoryImpl(AuthApiServiceImpl())),
   );
-  // final tourBloc = RemoteTourBloc(GetTourUseCase(tourRepository));
-  runApp(
-    MultiBlocProvider(
+
+  final tourBloc = RemoteTourBloc(
+      GetTourUseCase(TourRepositoryImpl(TourRemoteDataSourceIml())));
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
       providers: [
         //   BlocProvider<AuthBloc>.value(
         //     value: authBloc,
@@ -42,30 +59,35 @@ void main() async {
         //   BlocProvider<RemoteTourBloc>.value(
         //     value: tourBloc,
         //   ),
+        BlocProvider<RemoteTourBloc>(
+          create: (context) => tourBloc
+            ..add(
+              const GetTours(),
+            ),
+        ),
+        BlocProvider<TourTagBloc>(
+          create: (context) => TourTagBloc(
+            GetTourTagsUseCase(
+              TourRepositoryImpl(TourRemoteDataSourceIml()),
+            ),
+          )..add(const GetTourTags()),
+        ),
         BlocProvider<AuthBloc>(
-          create: (BuildContext context) => authBloc,
+          create: (context) => authBloc,
         ),
         // BlocProvider<RemoteTourBloc>(
-        //   create: (BuildContext context) => tourBloc,
+        //   create: (_) => tourBloc,
         // ),
       ],
-      child: const MyApp(),
-    ),
-  );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: AppRoutes.login, // Set the initial route
-      onGenerateRoute: AppRoutes.generateRoute,
-      theme: ThemeData(fontFamily: 'AirbnbCereal', useMaterial3: true),
-      // darkTheme: ZAppTheme.darkTheme,
-      // themeMode: ThemeMode.system,
-      title: 'ZestTrip',
+      child: MaterialApp(
+        initialRoute: AppRoutes.login,
+        onGenerateRoute: AppRoutes.onGenerateRoute,
+        theme: ThemeData(fontFamily: 'AirbnbCereal', useMaterial3: true),
+        // darkTheme: ZAppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        title: 'ZestTrip',
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

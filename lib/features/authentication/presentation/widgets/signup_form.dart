@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zest_trip/config/theme/custom_elevated_button.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/size_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
@@ -49,7 +51,9 @@ class SignUpFormWidgetState extends State<SignUpFormWidget> {
                 prefixIcon: Icon(Icons.person_outline_outlined),
                 labelText: tEmail,
                 hintText: tEmail,
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                ),
               ),
               validator: _validateEmail, // Assign the email validator function
               keyboardType: TextInputType.emailAddress,
@@ -61,7 +65,9 @@ class SignUpFormWidgetState extends State<SignUpFormWidget> {
                 prefixIcon: const Icon(Icons.fingerprint),
                 labelText: tPassword,
                 hintText: tPassword,
-                border: const OutlineInputBorder(),
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16)),
+                ),
                 suffixIcon: IconButton(
                   onPressed:
                       _toggleObscureText, // Toggle obscureText when the icon is pressed
@@ -122,9 +128,10 @@ class SignUpFormWidgetState extends State<SignUpFormWidget> {
             ),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _onSignUpPressed, // Assign the sign up function
-                child: const Text(tSignup),
+              child: ElevatedButtonCustom(
+                text: tSignup,
+                onPressed: _onSignUpPressed,
+                backgroundColor: primaryColor,
               ),
             ),
           ],

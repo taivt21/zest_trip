@@ -14,10 +14,10 @@ abstract class TourRemoteDataSource {
   Future<DataState<List<TourTag>>> getAllTags();
   Future<DataState<List<TourVehicle>>> getAllVehicles();
 
-  Future<void> addToWishlist(String tourId);
-  Future<void> removeFromWishlist(String tourId);
-  Future<void> addToCart(String tourId);
-  Future<void> removeFromCart(String tourId);
+  Future<DataState<bool>> addToWishlist(String tourId);
+  Future<DataState<bool>> removeFromWishlist(String tourId);
+  Future<DataState<bool>> addToCart(String tourId);
+  Future<DataState<bool>> removeFromCart(String tourId);
 }
 
 class TourRemoteDataSourceIml implements TourRemoteDataSource {
@@ -36,7 +36,7 @@ class TourRemoteDataSourceIml implements TourRemoteDataSource {
       final tours = (response.data['data'] as List)
           .map((e) => TourModel.fromJson(e))
           .toList();
-      print(tours);
+      print("call api tour: $tours");
       return DataSuccess(tours);
     } on DioException catch (e) {
       return DataFailed(e);
@@ -50,7 +50,7 @@ class TourRemoteDataSourceIml implements TourRemoteDataSource {
       final tags = (response.data['data'] as List)
           .map((e) => TourTag.fromJson(e))
           .toList();
-      print(tags);
+      print("call api tags: $tags");
       return DataSuccess(tags);
     } on DioException catch (e) {
       return DataFailed(e);
@@ -64,7 +64,7 @@ class TourRemoteDataSourceIml implements TourRemoteDataSource {
       final vehicles = (response.data['data'] as List)
           .map((e) => TourVehicle.fromJson(e))
           .toList();
-      print(vehicles);
+      print("call api vehicles: $vehicles");
       return DataSuccess(vehicles);
     } on DioException catch (e) {
       return DataFailed(e);
@@ -72,22 +72,38 @@ class TourRemoteDataSourceIml implements TourRemoteDataSource {
   }
 
   @override
-  Future<void> addToCart(String tourId) {
+  Future<DataState<bool>> addToCart(String tourId) {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> addToWishlist(String tourId) {
+  Future<DataState<bool>> addToWishlist(String tourId) async {
+    try {
+      final data = {tourId: tourId};
+      final res = await DioHelper.post('/user/favorite', data: data);
+      if (res.statusCode == 200) {
+        return DataSuccess(true);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${res.statusCode}.',
+          requestOptions: res.requestOptions,
+          response: res,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<bool>> removeFromCart(String tourId) {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> removeFromCart(String tourId) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> removeFromWishlist(String tourId) {
+  Future<DataState<bool>> removeFromWishlist(String tourId) {
     throw UnimplementedError();
   }
 }

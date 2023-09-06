@@ -7,8 +7,8 @@ abstract class TourRepository {
   Future<DataState<List<TourEntity>>> getAllTours();
   Future<DataState<List<TourTag>>> getAllTags();
   Future<DataState<List<TourVehicle>>> getAllVehicles();
-  Future<DataState<void>> addToWishlist(String tourId);
-  Future<DataState<void>> removeFromWishlist(String tourId);
-  Future<DataState<void>> addToCart(String tourId);
-  Future<DataState<void>> removeFromCart(String tourId);
+  Future<DataState<bool>> addToWishlist(String tourId);
+  Future<DataState<bool>> removeFromWishlist(String tourId);
+  Future<DataState<bool>> addToCart(String tourId);
+  Future<DataState<bool>> removeFromCart(String tourId);
 }

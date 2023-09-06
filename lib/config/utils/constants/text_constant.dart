@@ -29,10 +29,12 @@ const String tSignInWithGoogle = "Sign In with Google";
 // const String tOnBoardingCounter2 = "2/3";
 // const String tOnBoardingCounter3 = "3/3";
 
-// -- Welcome Screen Text
+// -- Main Screen, detail screen Text
 // const String tWelcomeTitle = "Build Awesome Apps";
 // const String tWelcomeSubTitle =
 //     "Let's put your creativity on the development highway.";
+const String tBookTour = "Book now";
+const String tApplyfilter = "Apply filter";
 
 // -- Login Screen Text
 const String tLoginTitle = "Welcome to ZestTrip!";
@@ -58,4 +60,3 @@ const String tForgetPhoneSubTitle =
 
 // -- Forget Password Via E-Mail - Text
 const String tForgetMailSubTitle = "Enter your registered email to receive OTP";
-

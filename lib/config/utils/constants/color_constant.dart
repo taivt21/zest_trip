@@ -5,6 +5,7 @@ const secondaryColor = Color(0xFFE95D77);
 const thirdColor = Color(0xFFFFAD9F);
 const fourthColor = Color(0xFFFEE7ED);
 const fivethColor = Color(0xFFF58601);
+const sixthColor = Color(0xFFFFEA00);
 
 const accentColor = Color(0xFF001BFF);
 

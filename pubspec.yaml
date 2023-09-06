@@ -77,16 +77,16 @@ dev_dependencies:
   firebase_core_platform_interface: ^4.8.0
 
 flutter_native_splash:
-  color: "#f7f6f1"
-  color_dark: "#272727"
-  image: assets/images/logo-black.png
-  image_dark: assets/images/logo-black.png
+  color: "#FFEA00"
+  color_dark: "#FFEA00"
+  image: assets/images/splash-screen.png
+  image_dark: assets/images/splash-screen.png
 
   android_12:
-    image: assets/images/logo-black.png
-    icon_background_color: "#f7f6f1"
-    image_dark: assets/images/logo-black.png
-    icon_background_color_dark: "#272727"
+    image: assets/images/splash-screen.png
+    icon_background_color: "#FFEA00"
+    image_dark: assets/images/splash-screen.png
+    icon_background_color_dark: "#FFEA00"
 
 flutter:
   uses-material-design: true
