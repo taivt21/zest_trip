@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';
 
 class ConversationScreen extends StatelessWidget {
-  const ConversationScreen({super.key});
+  final AuthUser user;
+
+  const ConversationScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat with John Doe'),
+        title: const Text('Chat with user}'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () {
+              // Hiển thị menu tùy chọn cho cuộc trò chuyện
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -29,9 +40,9 @@ class ConversationScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15.0),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 4,
                           offset: const Offset(0, 3),
                         ),
                       ],
@@ -40,6 +51,7 @@ class ConversationScreen extends StatelessWidget {
                       'Message $index',
                       style: TextStyle(
                         color: index % 2 == 0 ? Colors.white : Colors.black,
+                        fontSize: 16.0, // Kích thước chữ tối ưu
                       ),
                     ),
                   ),
@@ -49,6 +61,17 @@ class ConversationScreen extends StatelessWidget {
           ),
           Container(
             padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: const Offset(0, -2), // Điều chỉnh độ sâu của bóng đổ
+                ),
+              ],
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -60,7 +83,7 @@ class ConversationScreen extends StatelessWidget {
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Colors.grey[300],
+                      fillColor: Colors.grey[200], // Màu nền hộp văn bản
                     ),
                   ),
                 ),
@@ -68,7 +91,7 @@ class ConversationScreen extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: () {
-                    // Send the message
+                    // Gửi tin nhắn
                   },
                 ),
               ],

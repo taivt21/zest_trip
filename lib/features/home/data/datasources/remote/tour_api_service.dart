@@ -8,7 +8,7 @@ import 'package:zest_trip/features/home/data/models/tour_vehicle.dart';
 
 var logger = Logger();
 
-abstract class TourRemoteDataSource {
+abstract class TourApiService {
   Future<DataState<List<TourModel>>> getAllTours(
       {String? search, int? page, int? limit, String? orderBy});
   Future<DataState<List<TourTag>>> getAllTags();
@@ -20,7 +20,7 @@ abstract class TourRemoteDataSource {
   Future<DataState<bool>> removeFromCart(String tourId);
 }
 
-class TourRemoteDataSourceIml implements TourRemoteDataSource {
+class TourApiServiceIml implements TourApiService {
   @override
   Future<DataState<List<TourModel>>> getAllTours(
       {String? search, int? page, int? limit, String? orderBy}) async {

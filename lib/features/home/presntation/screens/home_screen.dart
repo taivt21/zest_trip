@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service.dart';
-import 'package:zest_trip/features/home/data/repository/tour_repository_impl.dart';
-import 'package:zest_trip/features/home/domain/usecases/get_tags.dart';
-import 'package:zest_trip/features/home/domain/usecases/get_tours.dart';
-import 'package:zest_trip/features/home/presntation/bloc/tour/remote/remote_tour_bloc.dart';
-import 'package:zest_trip/features/home/presntation/bloc/tour_resource/remote/tags/tour_tag_bloc.dart';
+import 'package:zest_trip/features/home/presntation/screens/order_screen.dart';
+import 'package:zest_trip/features/home/presntation/screens/profile_screen.dart';
 import './chat_screen.dart';
 import './main_screen.dart';
-import './order_screen.dart';
-import './profile_screen.dart';
 import './wishlist_screen.dart';
 
 const List<Widget> bottomNavScreen = <Widget>[
@@ -34,32 +28,26 @@ class _HomeScreen extends State<HomeScreen> {
     super.initState();
   }
 
-  final RemoteTourBloc tourBloc = RemoteTourBloc(
-    GetTourUseCase(
-      TourRepositoryImpl(TourRemoteDataSourceIml()),
-    ),
-  );
-  final TourTagBloc tourTagBloc = TourTagBloc(
-    GetTourTagsUseCase(
-      TourRepositoryImpl(TourRemoteDataSourceIml()),
-    ),
-  );
-
   @override
   Widget build(BuildContext context) {
     return
         // MultiBlocProvider(
-        //     providers: [
-        //       BlocProvider<RemoteTourBloc>(
-        //         create: (context) => tourBloc..add(const GetTours()),
-        //       ),
-        //       BlocProvider<TourTagBloc>(
-        //         create: (context) => tourTagBloc..add(const GetTourTags()),
-        //       )
-
-        //       // BlocProvider(create: (BuildContext context) => authBloc),
-        //     ],
-        //     child:
+        //   providers: [
+        //     BlocProvider(
+        //       create: (context) => sl<AuthBloc>(),
+        //     ),
+        //     BlocProvider(
+        //       create: (context) => sl<RemoteTourBloc>()..add(const GetTours()),
+        //     ),
+        //     BlocProvider(
+        //       create: (context) => sl<TourTagBloc>()..add(const GetTourTags()),
+        //     ),
+        //     BlocProvider(
+        //       create: (context) =>
+        //           sl<TourVehicleBloc>()..add(const GetTourVehicles()),
+        //     ),
+        //   ],
+        //   child:
         Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {

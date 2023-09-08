@@ -11,7 +11,8 @@
 
 // // -- Welcome Screen Images
 // // -- also used in Login & SignUp
-const String tWelcomeScreenImage = "assets/images/logo-no-background.png";
+// const String tWelcomeScreenImage = "assets/images/splash-screen.png";
+const String tBannerImage = "assets/images/banner.png";
 
 // // -- Login & SignUp Images
 const String tGoogleLogoImage = "assets/images/google-logo.png";

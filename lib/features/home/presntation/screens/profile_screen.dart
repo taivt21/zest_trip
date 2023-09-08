@@ -1,4 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -7,84 +12,120 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Profile'),
+        title: Text('My Profile',
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: const Column(
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is AuthSuccess) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: CircleAvatar(
-                        radius: 50.0,
-                        backgroundImage: AssetImage('assets/profile_image.jpg'),
+                    // -- IMAGE
+                    Stack(
+                      children: [
+                        SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: CachedNetworkImage(
+                              imageUrl: state.user.avatarImageUrl!,
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) => Center(
+                                child: CircularProgressIndicator(
+                                    value: downloadProgress.progress),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: primaryColor),
+                            child: const Icon(
+                              Icons.edit,
+                              color: whiteColor,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(state.user.fullName ?? "username",
+                        style: Theme.of(context).textTheme.headlineSmall),
+                    Text(state.user.email ?? "email",
+                        style: Theme.of(context).textTheme.bodyMedium),
+                    const SizedBox(height: 16),
+
+                    // -- BUTTON
+                    SizedBox(
+                      width: 160,
+                      child: ElevatedButton(
+                        onPressed: () => {},
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            side: BorderSide.none,
+                            shape: const StadiumBorder()),
+                        child: Text(
+                          "Edit profile",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(color: Colors.white),
+                        ),
                       ),
                     ),
-                    Text(
-                      'John Doe',
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      'Travel enthusiast',
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    SizedBox(height: 16.0),
-                    Divider(),
-                    ListTile(
-                      leading: Icon(Icons.mail_outline),
-                      title: Text('john.doe@example.com'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.location_on),
-                      title: Text('San Francisco, CA'),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.phone),
-                      title: Text('+1 123-456-7890'),
-                    ),
-                    Divider(),
-                    ListTile(
-                      leading: Icon(Icons.favorite),
-                      title: Text('Wishlist'),
-                      trailing: Icon(Icons.arrow_forward_ios),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.shopping_cart),
-                      title: Text('My Bookings'),
-                      trailing: Icon(Icons.arrow_forward_ios),
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.chat_bubble_outline),
-                      title: Text('Chat'),
-                      trailing: Icon(Icons.arrow_forward_ios),
-                    ),
+                    const SizedBox(height: 16),
+                    const Divider(),
+                    const SizedBox(height: 16),
+
+                    /// -- MENU
+                    Card(
+                      elevation: 3,
+                      color: Colors.white,
+                      child: ListTile(
+                          onTap: null,
+                          leading: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: const Icon(
+                              Icons.manage_search,
+                              color: primaryColor,
+                            ),
+                          ),
+                          title: Text("Manage booking",
+                              style: Theme.of(context).textTheme.bodyLarge),
+                          trailing:
+                              const Icon(Icons.arrow_forward_ios, size: 20.0)),
+                    )
                   ],
-                ),
-              ),
-            ],
+                );
+              } else {
+                return const Center(
+                  child: Text("Please login!"),
+                );
+              }
+            },
           ),
         ),
       ),

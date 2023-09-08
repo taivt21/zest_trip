@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../../config/utils/constants/text_constant.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
 
 class FormHeaderWidget extends StatelessWidget {
   const FormHeaderWidget({super.key});
@@ -9,18 +8,20 @@ class FormHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // final size = MediaQuery.of(context).size;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Image(
-        //     image: const AssetImage(tWelcomeScreenImage),
-        //     height: size.height * 0.1),
-        Text(
-          tLoginTitle,
-          style: Theme.of(context).textTheme.displaySmall,
+    return Center(
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: 'Welcome to \n',
+          style: Theme.of(context).textTheme.headlineLarge,
+          children: const <TextSpan>[
+            TextSpan(
+                text: 'ZEST TRIP!',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: primaryColor)),
+          ],
         ),
-        // Text(tLoginSubTitle, style: Theme.of(context).textTheme.bodySmall),
-      ],
+      ),
     );
   }
 }

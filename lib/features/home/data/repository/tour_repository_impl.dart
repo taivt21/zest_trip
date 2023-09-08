@@ -6,7 +6,7 @@ import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/home/domain/repository/tour_repository.dart';
 
 class TourRepositoryImpl implements TourRepository {
-  final TourRemoteDataSource _remoteDataSource;
+  final TourApiService _remoteDataSource;
 
   TourRepositoryImpl(this._remoteDataSource);
 
@@ -16,23 +16,23 @@ class TourRepositoryImpl implements TourRepository {
   }
 
   @override
-  Future<DataState<bool>> addToWishlist(String tourId) {
-    return _remoteDataSource.addToWishlist(tourId);
+  Future<DataState<bool>> addToWishlist(String tourId) async {
+    return await _remoteDataSource.addToWishlist(tourId);
   }
 
   @override
-  Future<DataState<List<TourEntity>>> getAllTours() {
-    return _remoteDataSource.getAllTours();
+  Future<DataState<List<TourEntity>>> getAllTours() async {
+    return await _remoteDataSource.getAllTours();
   }
 
   @override
-  Future<DataState<List<TourTag>>> getAllTags() {
-    return _remoteDataSource.getAllTags();
+  Future<DataState<List<TourTag>>> getAllTags() async {
+    return await _remoteDataSource.getAllTags();
   }
 
   @override
-  Future<DataState<List<TourVehicle>>> getAllVehicles() {
-    return _remoteDataSource.getAllVehicles();
+  Future<DataState<List<TourVehicle>>> getAllVehicles() async {
+    return await _remoteDataSource.getAllVehicles();
   }
 
   @override

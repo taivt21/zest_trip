@@ -10,6 +10,7 @@ class WishlistScreen extends StatelessWidget {
         title: const Text('Wishlist'),
       ),
       body: GridView.builder(
+        shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 16.0,

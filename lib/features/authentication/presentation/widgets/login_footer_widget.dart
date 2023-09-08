@@ -29,7 +29,7 @@ class LoginFooterWidget extends StatelessWidget {
             icon: const Image(image: AssetImage(tGoogleLogoImage), width: 20.0),
             onPressed: () {
               // Gọi sự kiện đăng nhập bằng Google ở đây
-              BlocProvider.of<AuthBloc>(context).add(SignInWithGoogleEvent());
+              context.read<AuthBloc>().add(SignInWithGoogleEvent());
             },
             label: const Text(tSignInWithGoogle),
           ),
