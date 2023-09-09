@@ -17,3 +17,5 @@ const cardBgColor = Color(0xFFF7F6F1);
 const onBoardingPage1Color = Colors.white;
 const onBoardingPage2Color = Color(0xfffddcdf);
 const onBoardingPage3Color = Color(0xffffdcbd);
+//check dribble
+

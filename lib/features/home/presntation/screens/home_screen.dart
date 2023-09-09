@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service.dart';
 import 'package:zest_trip/features/home/data/repository/tour_repository_impl.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tags.dart';
@@ -62,12 +63,13 @@ class _HomeScreen extends State<HomeScreen> {
         //     child:
         Scaffold(
       bottomNavigationBar: NavigationBar(
+        backgroundColor: Colors.blue[100],
         onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;
           });
         },
-        indicatorColor: Colors.blue[100],
+        indicatorColor: cardBgColor,
         selectedIndex: currentPageIndex,
         animationDuration: const Duration(microseconds: 1000),
         destinations: const <Widget>[

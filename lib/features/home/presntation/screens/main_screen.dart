@@ -120,7 +120,7 @@ class _MainScreenState extends State<MainScreen> {
                         return const CircularProgressIndicator(); // Placeholder loading indicator
                       },
                     ),
-                    Text('Welcome, ${authState.user.fullName}'),
+                    // Text('Welcome, ${authState.user.fullName}'),
                   ],
                 ),
               );
@@ -132,7 +132,6 @@ class _MainScreenState extends State<MainScreen> {
           },
         ),
         BlocBuilder<RemoteTourBloc, RemoteTourState>(
-          
           builder: (context, tourState) {
             if (tourState is RemoteTourLoading) {
               return const TourShimmer();
