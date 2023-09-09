@@ -7,6 +7,7 @@ import 'package:zest_trip/features/authentication/presentation/blocs/authenticat
 import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service.dart';
 import 'package:zest_trip/features/home/data/repository/tour_repository_impl.dart';
 import 'package:zest_trip/features/home/domain/repository/tour_repository.dart';
+import 'package:zest_trip/features/home/domain/usecases/add_wishlist.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tags.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tours.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_vehicles.dart';
@@ -50,9 +51,14 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<GetTourVehiclesUseCase>(
       () => GetTourVehiclesUseCase(sl()));
 
+  sl.registerLazySingleton<AddWishlistUseCase>(() => AddWishlistUseCase(sl()));
+
   //Blocs
-  sl.registerFactory<RemoteTourBloc>(() => RemoteTourBloc(sl()));
+  sl.registerFactory<RemoteTourBloc>(() => RemoteTourBloc(sl(), sl()));
+
   sl.registerFactory<TourTagBloc>(() => TourTagBloc(sl()));
+
   sl.registerFactory<TourVehicleBloc>(() => TourVehicleBloc(sl()));
+
   sl.registerFactory<AuthBloc>(() => AuthBloc(sl(), sl(), sl(), sl(), sl()));
 }

@@ -23,3 +23,16 @@ class RemoteTourDone extends RemoteTourState {
 class RemoteTourError extends RemoteTourState {
   const RemoteTourError(DioException error) : super(error: error);
 }
+
+class AddingToWishlist extends RemoteTourState {
+  const AddingToWishlist() : super();
+}
+
+//wishlist
+class AddedToWishlist extends RemoteTourState {
+  const AddedToWishlist() : super();
+}
+
+class AddToWishlistError extends RemoteTourState {
+  const AddToWishlistError(DioException error) : super(error: error);
+}

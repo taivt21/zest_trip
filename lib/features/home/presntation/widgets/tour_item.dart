@@ -62,7 +62,8 @@ class TourItemWidget extends StatelessWidget {
                     color: Color.fromARGB(255, 126, 124, 124),
                   ),
                   onPressed: () {
-                    // Handle adding the tour to the wishlist
+                    // BlocProvider.of<RemoteTourBloc>(context)
+                    //     .add(AddToWishlist(tour.id!));
                   },
                 ),
               ),

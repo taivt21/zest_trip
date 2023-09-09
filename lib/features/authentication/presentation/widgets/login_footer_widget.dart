@@ -33,13 +33,6 @@ class LoginFooterWidget extends StatelessWidget {
             },
             label: const Text(tSignInWithGoogle),
           ),
-          //     OutlinedButtonCustom(
-          //   text: tSignInWithGoogle,
-          //   onPressed: () {
-          //     BlocProvider.of<AuthBloc>(context).add(SignInWithGoogleEvent());
-          //   },
-          //   iconData: Icons.mail,
-          // ),
         ),
         const SizedBox(height: tFormHeight - 20),
         TextButton(
