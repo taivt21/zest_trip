@@ -6,7 +6,7 @@ class AddWishlistUseCase {
 
   AddWishlistUseCase(this._repository);
 
-  Future<DataState<bool>> call(String tourId) {
-    return _repository.addToWishlist(tourId);
+  Future<DataState<bool>> call(String tourId) async {
+    return await _repository.addToWishlist(tourId);
   }
 }

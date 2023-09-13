@@ -23,8 +23,6 @@ class RemoteTourBloc extends Bloc<RemoteTourEvent, RemoteTourState> {
     });
 
     on<AddToWishlist>((event, emit) async {
-      emit(const AddingToWishlist());
-
       final dataState = await _addWishlistUseCase.call(event.tourId);
 
       if (dataState is DataSuccess) {

@@ -21,14 +21,16 @@ class LoginWithEmailAndPasswordEvent extends AuthEvent {
 class RegisterWithEmailAndPasswordEvent extends AuthEvent {
   final String email;
   final String password;
+  final String otp;
 
   const RegisterWithEmailAndPasswordEvent({
     required this.email,
     required this.password,
+    required this.otp,
   });
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => [email, password, otp];
 }
 
 class SignInWithGoogleEvent extends AuthEvent {}
@@ -42,4 +44,13 @@ class LoginWithPhoneNumberEvent extends AuthEvent {
 
   @override
   List<Object> get props => [phoneNumber];
+}
+
+class VerificationEmailEvent extends AuthEvent {
+  final String email;
+
+  const VerificationEmailEvent(this.email);
+
+  @override
+  List<Object> get props => [email];
 }

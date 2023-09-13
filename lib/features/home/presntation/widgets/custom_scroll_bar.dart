@@ -13,10 +13,10 @@ class CustomScrollTabBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CustomScrollTabBarState createState() => _CustomScrollTabBarState();
+  CustomScrollTabBarState createState() => CustomScrollTabBarState();
 }
 
-class _CustomScrollTabBarState extends State<CustomScrollTabBar> {
+class CustomScrollTabBarState extends State<CustomScrollTabBar> {
   late int _selectedIndex;
 
   @override

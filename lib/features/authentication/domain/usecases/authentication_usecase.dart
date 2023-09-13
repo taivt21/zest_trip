@@ -19,11 +19,15 @@ class RegisterWithEmailAndPasswordUseCase {
 
   RegisterWithEmailAndPasswordUseCase(this._authRepository);
 
-  Future<DataState<bool>> call(String email, String password,
-      ) {
+  Future<DataState<bool>> call(
+    String email,
+    String password,
+    String otp,
+  ) {
+    final result =
+        _authRepository.registerWithEmailAndPassword(email, password, otp);
     // Gọi phương thức đăng ký từ repository để lấy dữ liệu
-    return _authRepository.registerWithEmailAndPassword(
-        email, password);
+    return result;
   }
 }
 
@@ -34,9 +38,7 @@ class SignInWithGoogleUseCase {
 
   Future<DataState<AuthUser>> call(String accessToken) async {
     try {
-      // Gọi phương thức signInWithGoogle từ repository
-      final result = await _authRepository.signInWithGoogle(accessToken);
-      return result;
+      return await _authRepository.signInWithGoogle(accessToken);
     } on DioException catch (e) {
       return DataFailed(e);
     }
@@ -64,8 +66,18 @@ class SignInWithPhoneNumberUseCase {
 
   SignInWithPhoneNumberUseCase(this._authRepository);
 
-  Future<DataState<AuthUser>> call(String phoneNumber) {
+  Future<DataState<AuthUser>> call(String phoneNumber) async {
     // Call the phone number login method from the repository
-    return _authRepository.signInWithPhoneNumber(phoneNumber);
+    return await _authRepository.signInWithPhoneNumber(phoneNumber);
+  }
+}
+
+class VerificationEmailUseCase {
+  final AuthRepository _authRepository;
+
+  VerificationEmailUseCase(this._authRepository);
+
+  Future<DataState<bool>> call(String email) async {
+    return await _authRepository.verificationEmail(email);
   }
 }

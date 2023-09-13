@@ -42,6 +42,8 @@ Future<void> initializeDependencies() async {
 
   sl.registerLazySingleton<SignInWithPhoneNumberUseCase>(
       () => SignInWithPhoneNumberUseCase(sl()));
+  sl.registerLazySingleton<VerificationEmailUseCase>(
+      () => VerificationEmailUseCase(sl()));
 
 //tour
   sl.registerLazySingleton<GetTourUseCase>(() => GetTourUseCase(sl()));
@@ -60,5 +62,6 @@ Future<void> initializeDependencies() async {
 
   sl.registerFactory<TourVehicleBloc>(() => TourVehicleBloc(sl()));
 
-  sl.registerFactory<AuthBloc>(() => AuthBloc(sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory<AuthBloc>(
+      () => AuthBloc(sl(), sl(), sl(), sl(), sl(), sl()));
 }

@@ -26,6 +26,7 @@ class LoginFooterWidget extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
+            
             icon: const Image(image: AssetImage(tGoogleLogoImage), width: 20.0),
             onPressed: () {
               // Gọi sự kiện đăng nhập bằng Google ở đây

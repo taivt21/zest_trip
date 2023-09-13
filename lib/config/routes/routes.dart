@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zest_trip/features/authentication/presentation/screens/forget_password_screen.dart';
 import 'package:zest_trip/features/authentication/presentation/screens/login_screen.dart';
+import 'package:zest_trip/features/authentication/presentation/screens/otp_screen.dart';
 import 'package:zest_trip/features/authentication/presentation/screens/signup_screen.dart';
 import 'package:zest_trip/features/home/presntation/screens/home_screen.dart';
 import 'package:zest_trip/features/home/presntation/screens/main_screen.dart';
@@ -15,6 +17,8 @@ class AppRoutes {
   static const String wishlist = '/wishlist';
   static const String order = '/order';
   static const String chat = '/chat';
+  static const String otp = '/otp';
+  static const String forgetPassword = '/forget_password';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -33,6 +37,14 @@ class AppRoutes {
       case wishlist:
         return _materialRoute(
           const WishlistScreen(),
+        );
+      case otp:
+        return _materialRoute(
+          const OTPScreen(),
+        );
+      case forgetPassword:
+        return _materialRoute(
+          const ForgetPasswordScreen(),
         );
 
       // case order:

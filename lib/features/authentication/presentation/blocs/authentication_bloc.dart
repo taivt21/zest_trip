@@ -14,6 +14,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignInWithGoogleUseCase _signInWithGoogleUseCase;
   final LogoutUseCase _logoutUseCase;
   final SignInWithPhoneNumberUseCase _signInWithPhoneNumberUseCase;
+  final VerificationEmailUseCase _verificationEmailUseCase;
 
   AuthBloc(
     this._logoutUseCase,
@@ -21,6 +22,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._loginWithEmailAndPasswordUseCase,
     this._registerWithEmailAndPasswordUseCase,
     this._signInWithGoogleUseCase,
+    this._verificationEmailUseCase,
   ) : super(AuthInitial()) {
     on<LoginWithEmailAndPasswordEvent>((event, emit) async {
       // Xử lý đăng nhập bằng email và password
@@ -37,17 +39,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<RegisterWithEmailAndPasswordEvent>((event, emit) async {
-      emit(AuthLoading());
-      final result = await _registerWithEmailAndPasswordUseCase.call(
-        event.email,
-        event.password,
-      );
-      if (result is DataSuccess<bool>) {
-        if (result.data == true) {
+      emit(VerifyInProgressState());
+
+      final verificationResult =
+          await _verificationEmailUseCase.call(event.email);
+
+      if (verificationResult.data == true) {
+        emit(VerifiedState());
+
+        emit(AuthLoading());
+
+        final registrationResult =
+            await _registerWithEmailAndPasswordUseCase.call(
+          event.email,
+          event.password,
+          event.otp,
+        );
+
+        if (registrationResult.data == true) {
           emit(RegisterSuccess());
+        } else if (registrationResult.data == false) {
+          emit(AuthFailure(registrationResult.error!.message!));
         }
-      } else if (result is DataFailed) {
-        emit(AuthFailure(result.error!.message!));
+      } else if (verificationResult.data == false) {
+        emit(AuthFailure(verificationResult.error!.message!));
       }
     });
 

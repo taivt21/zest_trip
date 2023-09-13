@@ -47,7 +47,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                   labelText: tEmail,
                   hintText: tEmail,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderRadius: BorderRadius.all(Radius.circular(32)),
                   ),
                 ),
                 validator:
@@ -62,7 +62,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                   labelText: tPassword,
                   hintText: tPassword,
                   border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderRadius: BorderRadius.all(Radius.circular(32)),
                   ),
                   suffixIcon: IconButton(
                     onPressed:

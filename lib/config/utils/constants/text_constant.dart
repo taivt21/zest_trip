@@ -1,5 +1,8 @@
 /* -- App Text Strings -- */
 
+//app name
+const String appName = "Zest Travel";
+
 // -- GLOBAL Texts
 const String tNext = "Next";
 const String tLogin = "Login";
@@ -37,10 +40,10 @@ const String tBookTour = "Book now";
 const String tApplyfilter = "Apply filter";
 
 // -- Login Screen Text
-const String tLoginTitle = "Welcome to ZestTrip!";
+const String tLoginTitle = "Welcome to Zest Travel!";
 const String tLoginSubTitle = "Make it work, make it right, make it fast.";
-const String tRememberMe = "Remember Me?";
-const String tDontHaveAnAccount = "Don't have an Account? ";
+const String tRememberMe = "Remember me?";
+const String tDontHaveAnAccount = "Don't have an account? ";
 
 // -- Sign Up Screen Text
 const String tSignUpTitle = "Get On Board!";
@@ -52,6 +55,7 @@ const String tForgetPasswordTitle = "Make Selection!";
 const String tForgetPasswordSubTitle =
     "Select one of the options given below to reset your password.";
 const String tResetViaEMail = "Reset via Mail Verification";
+const String tEmailVerify = "Email Verification";
 const String tResetViaPhone = "Reset via Phone Verification";
 
 // -- Forget Password Via Phone - Text
@@ -60,3 +64,7 @@ const String tForgetPhoneSubTitle =
 
 // -- Forget Password Via E-Mail - Text
 const String tForgetMailSubTitle = "Enter your registered email to receive OTP";
+
+//otp screen
+const String tOtpTitle = "CODE";
+const String tOtpSubTitle = "Verification";

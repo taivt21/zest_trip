@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:zest_trip/config/theme/text_theme.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
@@ -13,10 +16,10 @@ class TourDetailScreen extends StatefulWidget {
   const TourDetailScreen({Key? key, required this.tour}) : super(key: key);
 
   @override
-  _TourDetailScreenState createState() => _TourDetailScreenState();
+  TourDetailScreenState createState() => TourDetailScreenState();
 }
 
-class _TourDetailScreenState extends State<TourDetailScreen> {
+class TourDetailScreenState extends State<TourDetailScreen> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
 
@@ -28,10 +31,36 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final remoteTourBloc = BlocProvider.of<RemoteTourBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.tour.name!),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: CircleAvatar(
+              backgroundColor: whiteColor,
+              child: SvgPicture.asset(
+                shareSvg,
+                height: 20,
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              // remoteTourBloc.add(AddToWishlist(widget.tour.id!));
+            },
+            icon: CircleAvatar(
+              backgroundColor: whiteColor,
+              child: SvgPicture.asset(
+                heartSvg,
+                height: 20,
+              ),
+            ),
+          ),
+        ],
         iconTheme: const IconThemeData(color: Colors.black),
         toolbarTextStyle: Theme.of(context)
             .textTheme
@@ -74,9 +103,14 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                       return CachedNetworkImage(
                         imageUrl: widget.tour.tourImages![index],
                         progressIndicatorBuilder:
-                            (context, url, downloadProgress) => Center(
-                          child: CircularProgressIndicator(
-                              value: downloadProgress.progress),
+                            (context, url, downloadProgress) =>
+                                Shimmer.fromColors(
+                          baseColor: Colors.grey,
+                          highlightColor:
+                              const Color.fromARGB(255, 116, 112, 112),
+                          child: const SizedBox(
+                            height: 300,
+                          ),
                         ),
                         errorWidget: (context, url, error) =>
                             const Icon(Icons.error),
@@ -344,6 +378,7 @@ class _TourDetailScreenState extends State<TourDetailScreen> {
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor: primaryColor,
+                      shape: const StadiumBorder(),
                     ),
                     onPressed: () {
                       // Handle booking

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 //116f59
 //0a847e
+//FBFBFD
 const primaryColor = Color(0xFF00C5A7);
 const secondaryColor = Color(0xFFE95D77);
 const thirdColor = Color(0xFFFFAD9F);
@@ -9,6 +10,7 @@ const fourthColor = Color(0xFFFEE7ED);
 const fivethColor = Color(0xFFF58601);
 const sixthColor = Color(0xFFFFEA00);
 
+const bgColor = Color(0xFFFBFBFD);
 const accentColor = Color(0xFF001BFF);
 
 const whiteColor = Colors.white;

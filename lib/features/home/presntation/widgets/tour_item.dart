@@ -61,10 +61,7 @@ class TourItemWidget extends StatelessWidget {
                     Icons.favorite_border_outlined,
                     color: Color.fromARGB(255, 126, 124, 124),
                   ),
-                  onPressed: () {
-                    // BlocProvider.of<RemoteTourBloc>(context)
-                    //     .add(AddToWishlist(tour.id!));
-                  },
+                  onPressed: () {},
                 ),
               ),
             ],

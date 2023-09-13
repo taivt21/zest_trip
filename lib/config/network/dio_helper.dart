@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:zest_trip/config/network/auth_interceptor.dart';
 import 'package:zest_trip/config/utils/constants/url_constant.dart';
 
 class DioHelper {
@@ -9,24 +10,19 @@ class DioHelper {
       BaseOptions(
         baseUrl: Constants.baseUrl,
         receiveDataWhenStatusError: true,
-        // receiveTimeout: const Duration(seconds: 10),
-        // connectTimeout: const Duration(seconds: 10),
-        // sendTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: 10),
         headers: {
           'Content-Type': 'application/json',
         },
         responseType: ResponseType.json,
       ),
     );
-    // Add your custom interceptors here
-    // _dio.interceptors.add(AuthInterceptor());
+
+    AuthInterceptor authInterceptor = AuthInterceptor();
+    _dio.interceptors.add(authInterceptor);
 
     return _dio;
-  }
-
-  // Add a method to set the accessToken to the Dio instance
-  static void setAccessToken(String accessToken) {
-    _dio.options.headers['Authorization'] = 'Bearer $accessToken';
   }
 
   static Future<Response> get(
@@ -84,7 +80,6 @@ class DioHelper {
   }
 
   static DioException _handleError(DioException e) {
-    //xử lý lỗi theo yêu cầu cụ thể ở đây
     return e;
   }
 }

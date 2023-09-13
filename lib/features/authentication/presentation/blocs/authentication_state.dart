@@ -23,6 +23,10 @@ class AuthSuccess extends AuthState {
 
 class RegisterSuccess extends AuthState {}
 
+class VerifyInProgressState extends AuthState {}
+
+class VerifiedState extends AuthState {}
+
 class AuthFailure extends AuthState {
   final String errorMessage;
 

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/theme/text_theme.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
-import 'package:zest_trip/features/home/presntation/bloc/tour/remote/remote_tour_bloc.dart';
-import 'package:zest_trip/features/home/presntation/bloc/tour/remote/remote_tour_state.dart';
-import 'package:zest_trip/features/home/presntation/widgets/tour_item.dart';
 
 class OrderScreen extends StatelessWidget {
   const OrderScreen({super.key});
@@ -64,51 +60,115 @@ class OrderScreen extends StatelessWidget {
               ],
             ),
           ),
-          BlocBuilder<RemoteTourBloc, RemoteTourState>(
-            builder: (context, tourState) {
-              if (tourState is RemoteTourDone) {
-                return SizedBox(
-                  height: 200,
-                  width: 200,
-                  child: ListView.builder(
-                    itemCount: tourState.tours?.length ?? 0,
-                    itemExtent:
-                        null, // Set itemExtent to null to remove spacing
-                    itemBuilder: (context, index) {
-                      final tour = tourState.tours![index];
-                      return TourItemWidget(
-                          tour:
-                              tour); // Create a  widgetto display each tour item
-                    },
-                  ),
-                );
-              } else {
-                return const Text('error');
-              }
-            },
+          Container(
+            height: 100,
+            width: 200,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6.0),
+              color: Colors.grey.shade50,
+              shape: BoxShape.rectangle,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey.shade300,
+                    spreadRadius: 0.0,
+                    blurRadius: 10,
+                    offset: const Offset(3.0, 3.0)),
+                BoxShadow(
+                    color: Colors.grey.shade400,
+                    spreadRadius: 0.0,
+                    blurRadius: 10 / 2.0,
+                    offset: const Offset(3.0, 3.0)),
+                const BoxShadow(
+                    color: Colors.white,
+                    spreadRadius: 2.0,
+                    blurRadius: 10,
+                    offset: Offset(-3.0, -3.0)),
+                const BoxShadow(
+                    color: Colors.white,
+                    spreadRadius: 2.0,
+                    blurRadius: 10 / 2,
+                    offset: Offset(-3.0, -3.0)),
+              ],
+            ),
+            child: const Icon(
+              Icons.star,
+              color: Colors.yellow,
+            ),
           ),
-          SizedBox(
-            // Most Visited section
-            height:
-                200, // Điều chỉnh kích thước "Most Visited" theo yêu cầu của bạn
-            child: ListView(
-              scrollDirection: Axis.horizontal, // Cuộn ngang
-              children: <Widget>[
-                // Thêm các mục "Most Visited" ở đây, mỗi mục có thể là một Container chứa thông tin
-                // Ví dụ:
+          const SizedBox(
+            height: 40,
+          ),
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 Container(
-                  width: 150,
-                  color: Colors.green,
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Most Visited Item 1',
-                          style: TextStyle(fontSize: 16)),
-                      Text('Description 1', style: TextStyle(fontSize: 14)),
-                    ],
+                  height: 100,
+                  width: 200,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.grey.shade300,
+                      boxShadow: const [
+                        BoxShadow(
+                            offset: Offset(10, 10),
+                            color: Colors.black38,
+                            blurRadius: 20)
+                      ]),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Futter',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 60,
+                          shadows: [
+                            const Shadow(
+                                offset: Offset(3, 3),
+                                color: Colors.black38,
+                                blurRadius: 10),
+                            Shadow(
+                                offset: const Offset(-3, -3),
+                                color: Colors.white.withOpacity(0.85),
+                                blurRadius: 10)
+                          ],
+                          color: Colors.grey.shade300),
+                    ),
                   ),
                 ),
-                // Thêm các mục "Most Visited" khác tương tự
+                const SizedBox(
+                  height: 40,
+                ),
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color.fromRGBO(50, 50, 93, 0.25),
+                        offset: Offset(0, 30),
+                        blurRadius: 60,
+                        spreadRadius: -12,
+                      ),
+                      BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.3),
+                        offset: Offset(0, 18),
+                        blurRadius: 36,
+                        spreadRadius: -18,
+                      ),
+                    ],
+                  ),
+                  child: const Center(
+                    child: Text(
+                      "BoxShadow",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
