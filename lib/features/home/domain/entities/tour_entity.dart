@@ -1,9 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
 import 'package:zest_trip/features/home/data/models/tour_vehicle.dart';
-import 'package:zest_trip/features/home/domain/entities/tour_component_entity.dart';
+import 'package:zest_trip/features/home/domain/entities/provider_entity.dart';
+import 'package:zest_trip/features/home/domain/entities/tour_schedule_entity.dart';
 
 class TourEntity extends Equatable {
   final String? id;
@@ -12,20 +12,21 @@ class TourEntity extends Equatable {
   final String? description;
   final String? footnote;
   final List<String>? tourImages;
-  final double? price;
-  final int? durationDay;
-  final int? durationNight;
+  final int? price;
+  final int? duration;
   final String? status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final String? addressName;
+  final String? addressDistrict;
   final String? addressCity;
   final String? addressProvince;
   final String? addressCountry;
   final String? tourLocationType;
-  final List<TourComponentEntity>? tourComponents;
+  final List<TourScheduleEntity>? tourSchedule;
   final List<TourTag>? tags;
   final List<TourVehicle>? vehicles;
+  final ProviderEntity? provider;
 
   const TourEntity({
     this.id,
@@ -35,19 +36,20 @@ class TourEntity extends Equatable {
     this.footnote,
     this.tourImages,
     this.price,
-    this.durationDay,
-    this.durationNight,
+    this.duration,
     this.status,
     this.createdAt,
     this.updatedAt,
     this.addressName,
+    this.addressDistrict,
     this.addressCity,
     this.addressProvince,
     this.addressCountry,
     this.tourLocationType,
-    this.tourComponents,
+    this.tourSchedule,
     this.tags,
     this.vehicles,
+    this.provider,
   });
 
   @override
@@ -59,18 +61,19 @@ class TourEntity extends Equatable {
         footnote,
         tourImages,
         price,
-        durationDay,
-        durationNight,
+        duration,
         status,
         createdAt,
         updatedAt,
         addressName,
+        addressDistrict,
         addressCity,
         addressProvince,
         addressCountry,
         tourLocationType,
-        tourComponents,
+        tourSchedule,
         tags,
-        vehicles
+        vehicles,
+        provider,
       ];
 }

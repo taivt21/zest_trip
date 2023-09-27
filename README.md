@@ -1,4 +1,4 @@
-# zest_trip
+# ZEST TRAVEL
 
 A new Flutter project.
 

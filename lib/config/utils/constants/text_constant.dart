@@ -37,6 +37,7 @@ const String tSignInWithGoogle = "Sign In with Google";
 // const String tWelcomeSubTitle =
 //     "Let's put your creativity on the development highway.";
 const String tBookTour = "Book now";
+const String tCheckAvailable = "Check availability";
 const String tApplyfilter = "Apply filter";
 
 // -- Login Screen Text

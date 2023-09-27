@@ -1,9 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zest_trip/config/utils/constants/color_constant.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
+import 'package:zest_trip/config/utils/constants/image_constant.dart';
+import '../../../../config/utils/constants/color_constant.dart';
+import '../../../authentication/presentation/blocs/auth_bloc_ex.dart';
+import '../widgets/card_profile.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -12,11 +14,12 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Profile',
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.bold)),
+        automaticallyImplyLeading: false,
+        title: Text(
+          'My Profile',
+          style:
+              Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 18),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -36,17 +39,22 @@ class ProfileScreen extends StatelessWidget {
                           height: 80,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
-                            child: CachedNetworkImage(
-                              imageUrl: state.user.avatarImageUrl!,
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) => Center(
-                                child: CircularProgressIndicator(
-                                    value: downloadProgress.progress),
-                              ),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                              fit: BoxFit.cover,
-                            ),
+                            child: state.user.avatarImageUrl != null
+                                ? CachedNetworkImage(
+                                    imageUrl: state.user.avatarImageUrl!,
+                                    progressIndicatorBuilder:
+                                        (context, url, downloadProgress) =>
+                                            Center(
+                                      child: CircularProgressIndicator(
+                                          value: downloadProgress.progress),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                    fit: BoxFit.cover,
+                                  )
+                                : const Image(
+                                    image: AssetImage(noAvatar),
+                                  ),
                           ),
                         ),
                         Positioned(
@@ -68,7 +76,7 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Text(state.user.fullName ?? "username",
+                    Text(state.user.fullName ?? state.user.email!,
                         style: Theme.of(context).textTheme.headlineSmall),
                     Text(state.user.email ?? "email",
                         style: Theme.of(context).textTheme.bodyMedium),
@@ -92,37 +100,66 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
                     const Divider(),
-                    const SizedBox(height: 16),
 
                     /// -- MENU
-                    Card(
-                      elevation: 3,
-                      color: Colors.white,
-                      child: ListTile(
-                          onTap: null,
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: const Icon(
-                              Icons.manage_search,
-                              color: primaryColor,
-                            ),
-                          ),
-                          title: Text("Manage booking",
-                              style: Theme.of(context).textTheme.bodyLarge),
-                          trailing:
-                              const Icon(Icons.arrow_forward_ios, size: 20.0)),
-                    )
+                    CardProfile(
+                      ontap: null,
+                      icon: Icons.manage_search,
+                      title: "Manage Booking",
+                    ),
+
+                    CardProfile(
+                      ontap: null,
+                      icon: Icons.payment,
+                      title: "Payment method",
+                    ),
+                    CardProfile(
+                      ontap: null,
+                      icon: Icons.help_center,
+                      title: "Help center",
+                    ),
+                    CardProfile(
+                      ontap: null,
+                      icon: Icons.policy,
+                      title: "Policy",
+                    ),
+                    CardProfile(
+                      ontap: () => context.read<AuthBloc>().add(LogoutEvent()),
+                      icon: Icons.logout,
+                      title: "Logout",
+                    ),
                   ],
                 );
               } else {
-                return const Center(
-                  child: Text("Please login!"),
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const CircleAvatar(
+                        radius: 80,
+                        backgroundImage: AssetImage(logoNoLetter),
+                        backgroundColor: whiteColor,
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Please login',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Navigate to the login screen when the button is pressed
+                          Navigator.pushNamed(context, '/login');
+                        },
+                        child: const Text('Login'),
+                      ),
+                    ],
+                  ),
                 );
               }
             },

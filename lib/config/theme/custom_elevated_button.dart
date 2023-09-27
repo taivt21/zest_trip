@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
 
 class ElevatedButtonCustom extends StatelessWidget {
   final String text;
@@ -15,7 +16,7 @@ class ElevatedButtonCustom extends StatelessWidget {
     required this.onPressed,
     this.buttonHeight = 42,
     this.textColor = Colors.white,
-    this.backgroundColor = Colors.blue,
+    this.backgroundColor = primaryColor,
   });
 
   @override

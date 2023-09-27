@@ -1,14 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:timeline_tile/timeline_tile.dart';
+import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/theme/text_theme.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
+import 'package:zest_trip/config/utils/constants/text_constant.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
+import 'package:zest_trip/features/home/presntation/widgets/bottomsheet_booking.dart';
 
 class TourDetailScreen extends StatefulWidget {
   final TourEntity tour;
@@ -22,6 +23,7 @@ class TourDetailScreen extends StatefulWidget {
 class TourDetailScreenState extends State<TourDetailScreen> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
+  bool showReadMore = false;
 
   @override
   void dispose() {
@@ -31,10 +33,9 @@ class TourDetailScreenState extends State<TourDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final remoteTourBloc = BlocProvider.of<RemoteTourBloc>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.tour.name!),
+        title: Text(widget.tour.name ?? "Place details"),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -49,9 +50,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
             ),
           ),
           IconButton(
-            onPressed: () {
-              // remoteTourBloc.add(AddToWishlist(widget.tour.id!));
-            },
+            onPressed: () {},
             icon: CircleAvatar(
               backgroundColor: whiteColor,
               child: SvgPicture.asset(
@@ -61,27 +60,6 @@ class TourDetailScreenState extends State<TourDetailScreen> {
             ),
           ),
         ],
-        iconTheme: const IconThemeData(color: Colors.black),
-        toolbarTextStyle: Theme.of(context)
-            .textTheme
-            .copyWith(
-              titleLarge: const TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            )
-            .bodyMedium,
-        titleTextStyle: Theme.of(context)
-            .textTheme
-            .copyWith(
-              titleLarge: const TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            )
-            .titleLarge,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -139,70 +117,92 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                 ),
               ],
             ),
-            Padding(
+            Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: const BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    widget.tour.name!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                      '${widget.tour.addressCity}, ${widget.tour.addressCountry}',
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  const SizedBox(
+                    height: 4,
+                  ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        widget.tour.name!,
-                        style: AppTextStyles.title,
+                      Icon(Icons.star, color: Colors.yellow[800], size: 16),
+                      const SizedBox(width: 4),
+                      Text('4.5 ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  color: Colors.yellow[800],
+                                  fontWeight: FontWeight.w400)),
+                      RichText(
+                        text: const TextSpan(
+                          text: '(22+  ',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400, color: Colors.black),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: 'reviews',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                    decoration: TextDecoration.underline)),
+                            TextSpan(text: ") •")
+                          ],
+                        ),
                       ),
-                      const Row(
-                        children: [
-                          Icon(Icons.star, size: 20),
-                          SizedBox(width: 4),
-                          Text(
-                            '4.5', // Replace with actual rating
-                            style: AppTextStyles.headline,
-                          ),
-                        ],
+                      const Text(
+                        " 400+ booked",
+                        style: TextStyle(fontWeight: FontWeight.w400),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '\$${widget.tour.price}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text('${widget.tour.durationDay} days',
+
+                  const SizedBox(height: 4),
+                  Text('${widget.tour.duration} days',
                       style: AppTextStyles.body),
                   const SizedBox(height: 8),
-                  const Text(
+                  Text(
                     'Description:',
-                    style: AppTextStyles.headline,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontWeight: FontWeight.w400, fontSize: 20),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     widget.tour.description!,
-                    style: AppTextStyles.body,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontSize: 16),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildTourComponentIcon(Icons.restaurant, 'Meals'),
-                      _buildTourComponentIcon(Icons.hotel, 'Accommodation'),
-                      _buildTourComponentIcon(
-                          Icons.directions_bus, 'Transportation'),
-                    ],
-                  ),
+
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // const Text(
-                      //   'Tags:',
-                      //   style: AppTextStyles.headline,
-                      // ),
-                      // const SizedBox(height: 8),
-                      const Divider(),
                       Wrap(
                         spacing: 8,
                         children: widget.tour.tags!.map((tag) {
@@ -229,18 +229,72 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                     'Schedule:',
                     style: AppTextStyles.headline,
                   ),
-                  Column(
-                    children: widget.tour.tourComponents!.map((component) {
-                      return ListTile(
-                        title: Text(component.title!,
-                            style: AppTextStyles.headline),
-                        subtitle: Text(
-                          component.description!,
-                          style: AppTextStyles.body,
-                        ),
-                      );
-                    }).toList(),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    child: ListView.builder(
+                      itemCount: widget.tour.tourSchedule!.length,
+                      itemBuilder: (context, index) {
+                        final component = widget.tour.tourSchedule![index];
+                        return Expanded(
+                          child: TimelineTile(
+                            afterLineStyle: const LineStyle(
+                              color: Color.fromARGB(255, 245, 238, 238),
+                            ),
+                            beforeLineStyle: const LineStyle(
+                              color: Color.fromARGB(255, 245, 238, 238),
+                            ),
+                            axis: TimelineAxis.vertical,
+                            alignment: TimelineAlign.manual,
+                            lineXY: 0,
+                            isFirst: index == 0,
+                            isLast:
+                                index == widget.tour.tourSchedule!.length - 1,
+                            indicatorStyle: IndicatorStyle(
+                              width: 30,
+                              color: const Color.fromARGB(255, 245, 238, 238),
+                              iconStyle: IconStyle(
+                                iconData: Icons.location_on,
+                                color: primaryColor,
+                              ),
+                            ),
+                            endChild: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    width: 16,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(component.title!,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(fontSize: 20)),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          component.description!,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
+
                   const SizedBox(height: 8),
 
                   // Display host information
@@ -257,32 +311,27 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                           children: [
                             Expanded(
                               flex: 6,
-                              child: BlocBuilder<AuthBloc, AuthState>(
-                                  builder: (context, state) {
-                                if (state is AuthSuccess) {
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 40,
-                                        backgroundImage: NetworkImage(
-                                            '${state.user.avatarImageUrl}'),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        '${state.user.email}',
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                } else {
-                                  return const CircularProgressIndicator();
-                                }
-                              }),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  CircleAvatar(
+                                      radius: 40,
+                                      backgroundImage: widget.tour.provider
+                                                  ?.avatarImageUrl !=
+                                              null
+                                          ? NetworkImage(
+                                              '${widget.tour.provider?.avatarImageUrl}')
+                                          : null),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    widget.tour.provider?.email ?? "Email null",
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                             const SizedBox(width: 16),
                             const Expanded(
@@ -348,68 +397,64 @@ class TourDetailScreenState extends State<TourDetailScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomSheet: BottomAppBar(
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-          child: Stack(
-            alignment: Alignment.centerRight,
+          width: MediaQuery.of(context).size.width,
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).padding.bottom,
+            left: 8,
+            right: 8,
+          ),
+          child: Row(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.attach_money, color: Colors.black),
-                      const SizedBox(width: 4),
-                      Text(
-                        '\$${widget.tour.price}',
-                        style: AppTextStyles.body,
-                      ),
-                      const SizedBox(width: 16),
-                      const Icon(Icons.calendar_today, color: Colors.black),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${widget.tour.durationDay} days',
-                        style: AppTextStyles.body,
-                      ),
-                    ],
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: primaryColor,
-                      shape: const StadiumBorder(),
+              Expanded(
+                flex: 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("From"),
+                    Text(
+                      '₫ ${widget.tour.price},000',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(fontWeight: FontWeight.w500),
                     ),
-                    onPressed: () {
-                      // Handle booking
-                    },
-                    child: const Text(
-                      'Book Now',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
+                    // Text(
+                    //   '/person',
+                    //   style: Theme.of(context)
+                    //       .textTheme
+                    //       .bodySmall
+                    //       ?.copyWith(fontWeight: FontWeight.w300),
+                    // ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 6,
+                child: ElevatedButtonCustom(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(16))),
+                      context: context,
+                      builder: (context) {
+                        return Container(
+                            height: MediaQuery.of(context).size.height * 0.75,
+                            padding: const EdgeInsets.all(16),
+                            child: const BookingBottomSheet());
+                      },
+                    );
+                  },
+                  text: tCheckAvailable,
+                ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTourComponentIcon(IconData icon, String label) {
-    return Column(
-      children: [
-        CircleAvatar(
-          backgroundColor: Colors.black,
-          child: Icon(icon, color: Colors.white),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: AppTextStyles.body,
-        ),
-      ],
     );
   }
 }

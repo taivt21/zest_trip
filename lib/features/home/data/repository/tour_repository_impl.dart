@@ -3,7 +3,7 @@ import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
 import 'package:zest_trip/features/home/data/models/tour_vehicle.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
-import 'package:zest_trip/features/home/domain/repository/tour_repository.dart';
+import 'package:zest_trip/features/home/domain/repositories/tour_repository.dart';
 
 class TourRepositoryImpl implements TourRepository {
   final TourApiService _remoteDataSource;

@@ -1,7 +1,7 @@
-import 'package:zest_trip/features/home/domain/entities/tour_component_entity.dart';
+import 'package:zest_trip/features/home/domain/entities/tour_schedule_entity.dart';
 
-class TourComponentModel extends TourComponentEntity {
-  const TourComponentModel({
+class TourScheduleModel extends TourScheduleEntity {
+  const TourScheduleModel({
     final int? id,
     final String? title,
     final String? tourId,
@@ -17,9 +17,9 @@ class TourComponentModel extends TourComponentEntity {
           updatedAt: updatedAt,
         );
 
-  factory TourComponentModel.fromJson(Map<String, dynamic> json) {
-    return TourComponentModel(
-      id: json['id'] as int,
+  factory TourScheduleModel.fromJson(Map<String, dynamic> json) {
+    return TourScheduleModel(
+      id: json['id'],
       title: json['title'],
       description: json['description'],
       tourId: json['tour_id'],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -38,69 +39,60 @@ class TourItemWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: CachedNetworkImage(
-                  // Assuming tourImages is a list of URLs
-                  imageUrl: tour.tourImages![0],
-                  placeholder: (context, url) =>
-                      const Center(child: CircularProgressIndicator()),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: CachedNetworkImage(
+              // Assuming tourImages is a list of URLs
+              imageUrl: tour.tourImages![0],
+              placeholder: (context, url) => Container(
+                color: colorGrey,
               ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.favorite_border_outlined,
-                    color: Color.fromARGB(255, 126, 124, 124),
-                  ),
-                  onPressed: () {},
-                ),
-              ),
-            ],
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
+          Text(
+            tour.name!,
+            style:
+                Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 18),
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text('${tour.addressCity}, ${tour.addressCountry}',
+              style: Theme.of(context).textTheme.bodyMedium),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: Text(
-                  tour.name!,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
+              Icon(Icons.star, color: Colors.yellow[800], size: 16),
+              const SizedBox(width: 4),
+              Text('4.5 ',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Colors.yellow[800], fontWeight: FontWeight.bold)),
+              const Text(
+                style: TextStyle(fontWeight: FontWeight.w300),
+                "(22) • ",
               ),
-              const Row(
-                children: [
-                  Icon(Icons.star, color: Colors.black, size: 16),
-                  SizedBox(width: 4),
-                  Text(
-                    '4.5', // Replace with the actual rating value
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ],
+              const Text(
+                "400+ booked",
+                style: TextStyle(fontWeight: FontWeight.w300),
               ),
             ],
           ),
           const SizedBox(height: 4),
-          Text(
-            '\$${tour.price}',
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            '${tour.durationDay} days',
-            style: const TextStyle(fontSize: 14),
+          RichText(
+            text: TextSpan(
+                text: "From ",
+                style: DefaultTextStyle.of(context).style,
+                children: [
+                  TextSpan(
+                    text: '₫ ${tour.price},000',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.w500),
+                  )
+                ]),
           ),
         ],
       ),

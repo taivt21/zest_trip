@@ -12,6 +12,7 @@ abstract class AuthApiService {
       String email, String password, String otp);
   Future<DataState<bool>> verificationEmail(String email);
   Future<DataState<AuthUserModel>> signInWithGoogle(String accessToken);
+  Future<DataState<AuthUserModel>> getUser();
   Future<DataState<void>> logout();
 }
 
@@ -46,7 +47,13 @@ class AuthApiServiceImpl implements AuthApiService {
   Future<DataState<bool>> registerWithEmailAndPassword(
       String email, String password, String otp) async {
     try {
-      final data = {'email': email, 'password': password, 'otp': otp};
+      final data = {
+        'email': email,
+        'password': password,
+        'otp': otp,
+        'phoneNumber': "123456789",
+        'fullName': "fullname",
+      };
 
       final response = await DioHelper.post('/auth/signup', data: data);
       if (response.statusCode == 201) {
@@ -71,8 +78,9 @@ class AuthApiServiceImpl implements AuthApiService {
       final data = {
         'email': email,
       };
-      final response = await DioHelper.post('/auth/verification', data: data);
-      if (response.statusCode == 200) {
+      final response = await DioHelper.post('/otp/generate', data: data);
+      print("otp $response");
+      if (response.statusCode == 201) {
         return DataSuccess(true);
       }
       return DataFailed(DioException(
@@ -102,6 +110,7 @@ class AuthApiServiceImpl implements AuthApiService {
       await secureStorage.write(key: 'refresh_token', value: refreshToken);
       Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
       final user = AuthUserModel.fromJson(payload);
+      print("user: $user");
       return DataSuccess(user);
     } on DioException catch (e) {
       return DataFailed(e);
@@ -111,15 +120,11 @@ class AuthApiServiceImpl implements AuthApiService {
   @override
   Future<DataState<void>> logout() async {
     try {
-      // Gọi API đăng xuất tại đây
-      final response = await DioHelper.post('/auth/logout');
+      final response = await DioHelper.post('/auth/signout');
 
-      // Kiểm tra mã trạng thái của response để xác định xem đăng xuất thành công hay không
-      if (response.statusCode == 200) {
-        // Nếu thành công, trả về DataSuccess<void> (không có dữ liệu)
-        return DataSuccess<void>(null);
+      if (response.statusCode == 204) {
+        return DataSuccess(null);
       } else {
-        // Nếu không thành công, trả về DataFailed với thông báo lỗi từ response
         return DataFailed(DioException(
           requestOptions: response.requestOptions,
           response: response,
@@ -128,7 +133,21 @@ class AuthApiServiceImpl implements AuthApiService {
         ));
       }
     } on DioException catch (e) {
-      // Nếu xảy ra lỗi trong quá trình gọi API, trả về DataFailed với thông báo lỗi từ DioException
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<AuthUserModel>> getUser() async {
+    try {
+      final response = await DioHelper.get(
+        '/users/me',
+      );
+
+      final user = AuthUserModel.fromJson(response.data['data']);
+      print("user: $user ");
+      return DataSuccess(user);
+    } on DioException catch (e) {
       return DataFailed(e);
     }
   }

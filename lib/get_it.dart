@@ -6,7 +6,7 @@ import 'package:zest_trip/features/authentication/domain/usecases/authentication
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
 import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service.dart';
 import 'package:zest_trip/features/home/data/repository/tour_repository_impl.dart';
-import 'package:zest_trip/features/home/domain/repository/tour_repository.dart';
+import 'package:zest_trip/features/home/domain/repositories/tour_repository.dart';
 import 'package:zest_trip/features/home/domain/usecases/add_wishlist.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tags.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tours.dart';
@@ -22,7 +22,7 @@ Future<void> initializeDependencies() async {
 
   sl.registerLazySingleton<AuthApiService>(() => AuthApiServiceImpl());
 
-//repo
+// repository
   sl.registerLazySingleton<TourRepository>(() => TourRepositoryImpl(sl()));
 
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
@@ -44,24 +44,23 @@ Future<void> initializeDependencies() async {
       () => SignInWithPhoneNumberUseCase(sl()));
   sl.registerLazySingleton<VerificationEmailUseCase>(
       () => VerificationEmailUseCase(sl()));
+  sl.registerLazySingleton<GetUserUseCase>(() => GetUserUseCase(sl()));
 
-//tour
-  sl.registerLazySingleton<GetTourUseCase>(() => GetTourUseCase(sl()));
+//tour usecase
+  sl.registerLazySingleton(() => GetTourUseCase(sl()));
 
-  sl.registerLazySingleton<GetTourTagsUseCase>(() => GetTourTagsUseCase(sl()));
+  sl.registerLazySingleton(() => GetTourTagsUseCase(sl()));
 
-  sl.registerLazySingleton<GetTourVehiclesUseCase>(
-      () => GetTourVehiclesUseCase(sl()));
+  sl.registerLazySingleton(() => GetTourVehiclesUseCase(sl()));
 
-  sl.registerLazySingleton<AddWishlistUseCase>(() => AddWishlistUseCase(sl()));
+  sl.registerLazySingleton(() => AddWishlistUseCase(sl()));
 
   //Blocs
-  sl.registerFactory<RemoteTourBloc>(() => RemoteTourBloc(sl(), sl()));
+  sl.registerFactory(() => AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
-  sl.registerFactory<TourTagBloc>(() => TourTagBloc(sl()));
+  sl.registerFactory(() => RemoteTourBloc(sl(), sl()));
 
-  sl.registerFactory<TourVehicleBloc>(() => TourVehicleBloc(sl()));
+  sl.registerFactory(() => TourTagBloc(sl()));
 
-  sl.registerFactory<AuthBloc>(
-      () => AuthBloc(sl(), sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => TourVehicleBloc(sl()));
 }

@@ -19,9 +19,9 @@ class TourQuery extends Equatable {
   factory TourQuery.fromJson(Map<String, dynamic> json) {
     return TourQuery(
       search: json['search'] as String,
-      category: json['category'] as String?,
-      minPrice: json['minPrice'] as int?,
-      maxPrice: json['maxPrice'] as int?,
+      category: json['category'] as String,
+      minPrice: json['minPrice'] as int,
+      maxPrice: json['maxPrice'] as int,
     );
   }
 

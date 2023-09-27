@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
-import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/size_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_event.dart';
+import 'package:zest_trip/features/authentication/presentation/screens/otp_screen.dart';
 
 class SignUpFormWidget extends StatefulWidget {
   const SignUpFormWidget({Key? key}) : super(key: key);
@@ -54,31 +51,16 @@ class SignUpFormWidgetState extends State<SignUpFormWidget> {
     return null;
   }
 
-  void _onSignUpPressed(String otp) {
+  void _navigateToSignUpForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text;
       final password = _passwordController.text;
 
-      BlocProvider.of<AuthBloc>(context).add(
-        RegisterWithEmailAndPasswordEvent(
-          email: email,
-          password: password,
-          otp: otp,
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => OTPScreen(email: email, password: password),
         ),
       );
-      logger.i(email);
-      logger.i(password);
-      logger.i(otp);
-    }
-  }
-
-  void _navigateToSignUpForm(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
-      final otp = await Navigator.of(context).pushNamed(AppRoutes.otp);
-
-      if (otp != null && otp is String) {
-        _onSignUpPressed(otp);
-      }
     }
   }
 
@@ -124,15 +106,6 @@ class SignUpFormWidgetState extends State<SignUpFormWidget> {
               validator: _validatePassword,
             ),
             const SizedBox(height: tFormHeight - 20),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  // Forget password
-                },
-                child: const Text(tForgetPassword),
-              ),
-            ),
             SizedBox(
               width: double.infinity,
               child: ElevatedButtonCustom(

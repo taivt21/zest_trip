@@ -16,9 +16,6 @@ class LoginScreen extends StatelessWidget {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Login success'),
-          ));
           Navigator.of(context).pushReplacementNamed(AppRoutes.home);
         }
         if (state is AuthFailure) {
@@ -27,18 +24,21 @@ class LoginScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state is AuthSuccess) {
-          return const Center(
-            child: CircularProgressIndicator(),
+        if (state is AuthLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         } else {
           return Scaffold(
             appBar: AppBar(
               title: const Center(
-                  child: Text(
-                'Login',
-                style: TextStyle(color: Colors.black),
-              )),
+                child: Text(
+                  'Login',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
               backgroundColor: Colors.white,
               automaticallyImplyLeading: false,
             ),

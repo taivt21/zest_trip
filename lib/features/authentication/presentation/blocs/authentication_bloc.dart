@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';
@@ -15,6 +16,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LogoutUseCase _logoutUseCase;
   final SignInWithPhoneNumberUseCase _signInWithPhoneNumberUseCase;
   final VerificationEmailUseCase _verificationEmailUseCase;
+  final GetUserUseCase _getuserUseCase;
 
   AuthBloc(
     this._logoutUseCase,
@@ -23,9 +25,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._registerWithEmailAndPasswordUseCase,
     this._signInWithGoogleUseCase,
     this._verificationEmailUseCase,
-  ) : super(AuthInitial()) {
+    this._getuserUseCase,
+  ) : super(AuthLoading()) {
     on<LoginWithEmailAndPasswordEvent>((event, emit) async {
-      // Xử lý đăng nhập bằng email và password
       emit(AuthLoading());
       final result = await _loginWithEmailAndPasswordUseCase.call(
         event.email,
@@ -39,35 +41,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<RegisterWithEmailAndPasswordEvent>((event, emit) async {
-      emit(VerifyInProgressState());
+      final registrationResult =
+          await _registerWithEmailAndPasswordUseCase.call(
+        event.email,
+        event.password,
+        event.otp,
+      );
 
+      if (registrationResult is DataSuccess) {
+        emit(VerifiedState());
+      } else if (registrationResult is DataFailed) {
+        emit(VerifiedFailState());
+      }
+    });
+
+    on<VerificationEmailEvent>((event, emit) async {
       final verificationResult =
           await _verificationEmailUseCase.call(event.email);
-
-      if (verificationResult.data == true) {
-        emit(VerifiedState());
-
-        emit(AuthLoading());
-
-        final registrationResult =
-            await _registerWithEmailAndPasswordUseCase.call(
-          event.email,
-          event.password,
-          event.otp,
-        );
-
-        if (registrationResult.data == true) {
-          emit(RegisterSuccess());
-        } else if (registrationResult.data == false) {
-          emit(AuthFailure(registrationResult.error!.message!));
-        }
-      } else if (verificationResult.data == false) {
-        emit(AuthFailure(verificationResult.error!.message!));
+      if (verificationResult is DataSuccess) {
+        emit(VerifyInProgressState());
+      } else if (verificationResult is DataFailed) {
+        emit(VerifiedFailState());
       }
     });
 
     on<SignInWithGoogleEvent>((event, emit) async {
-      // Xử lý đăng nhập bằng tài khoản Google
       emit(AuthLoading());
       final GoogleSignInAccount? googleSignInAccount =
           await GoogleSignIn().signIn();
@@ -96,9 +94,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    // Xử lý sự kiện logout
+    on<CheckUserLoginEvent>((event, emit) async {
+      const secureStorage = FlutterSecureStorage();
+      String? accessToken = await secureStorage.read(key: 'access_token');
+      if (accessToken == null) {
+        emit(AuthLoggedOut());
+      } else {
+        final result = await _getuserUseCase.call();
+        if (result is DataSuccess<AuthUser>) {
+          emit(AuthSuccess(result.data!));
+        } else if (result is DataFailed) {
+          emit(AuthLoggedOut());
+        }
+      }
+    });
+
     on<LogoutEvent>((event, emit) async {
       emit(AuthLoading());
+      const secureStorage = FlutterSecureStorage();
+      await secureStorage.delete(key: 'access_token');
+      await secureStorage.delete(key: 'refresh_token');
       final result = await _logoutUseCase.call();
       if (result is DataSuccess) {
         emit(AuthLoggedOut());

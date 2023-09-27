@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
+import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/size_constant.dart';
@@ -17,7 +18,7 @@ class LoginFormWidget extends StatefulWidget {
 
 class LoginFormWidgetState extends State<LoginFormWidget> {
   bool _obscureText = true;
-  final _formKey = GlobalKey<FormState>(); // Create a GlobalKey for the Form
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -34,7 +35,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
     logger.i('render form login');
 
     return Form(
-        key: _formKey, // Assign the GlobalKey to the Form
+        key: _formKey,
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
           child: Column(
@@ -78,10 +79,11 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                    onPressed: () {
-                      //forget password
-                    },
-                    child: const Text(tForgetPassword)),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(AppRoutes.forgetPassword);
+                  },
+                  child: const Text(tForgetPassword),
+                ),
               ),
               SizedBox(
                 width: double.infinity,

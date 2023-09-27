@@ -57,4 +57,9 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<DataState<AuthUser>> signInWithPhoneNumber(String phoneNumber) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<DataState<AuthUser>> getUser() async {
+    return await _authApiService.getUser();
+  }
 }

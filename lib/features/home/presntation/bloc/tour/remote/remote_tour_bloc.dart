@@ -14,7 +14,7 @@ class RemoteTourBloc extends Bloc<RemoteTourEvent, RemoteTourState> {
     on<GetTours>((event, emit) async {
       final dataState = await _getTourUseCase.call();
 
-      if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
+      if (dataState is DataSuccess) {
         emit(RemoteTourDone(dataState.data!));
       }
       if (dataState is DataFailed) {

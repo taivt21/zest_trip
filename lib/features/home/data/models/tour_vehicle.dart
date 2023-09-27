@@ -15,8 +15,8 @@ class TourVehicle extends Equatable {
 
   factory TourVehicle.fromJson(Map<String, dynamic> json) {
     return TourVehicle(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? "",
+      id: json['id'] as int,
+      name: json['name'] as String,
     );
   }
 

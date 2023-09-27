@@ -27,6 +27,8 @@ class VerifyInProgressState extends AuthState {}
 
 class VerifiedState extends AuthState {}
 
+class VerifiedFailState extends AuthState {}
+
 class AuthFailure extends AuthState {
   final String errorMessage;
 

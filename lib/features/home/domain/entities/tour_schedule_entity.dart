@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class TourComponentEntity extends Equatable {
+class TourScheduleEntity extends Equatable {
   final int? id;
   final String? title;
   final String? description;
@@ -8,7 +8,7 @@ class TourComponentEntity extends Equatable {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  const TourComponentEntity({
+  const TourScheduleEntity({
     this.id,
     this.title,
     this.description,

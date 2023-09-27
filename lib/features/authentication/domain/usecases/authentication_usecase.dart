@@ -81,3 +81,13 @@ class VerificationEmailUseCase {
     return await _authRepository.verificationEmail(email);
   }
 }
+
+class GetUserUseCase {
+  final AuthRepository _authRepository;
+
+  GetUserUseCase(this._authRepository);
+
+  Future<DataState<AuthUser>> call() async {
+    return await _authRepository.getUser();
+  }
+}

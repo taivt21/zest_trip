@@ -49,8 +49,10 @@ class LoginWithPhoneNumberEvent extends AuthEvent {
 class VerificationEmailEvent extends AuthEvent {
   final String email;
 
-  const VerificationEmailEvent(this.email);
+  const VerificationEmailEvent({required this.email});
 
   @override
   List<Object> get props => [email];
 }
+
+class CheckUserLoginEvent extends AuthEvent {}

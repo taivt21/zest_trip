@@ -1,197 +1,172 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zest_trip/features/home/data/models/tour_tag.dart';
-import 'package:zest_trip/features/home/presntation/bloc/tour_resource/remote/tags/tour_tag_bloc.dart';
-import 'package:zest_trip/features/home/presntation/screens/tour_detail_screen.dart';
-import '/config/theme/text_theme.dart';
-import '../../presntation/widgets/tour_shimmer.dart';
-import '../bloc/tour/remote/tour_bloc_ex.dart';
+import 'package:zest_trip/config/routes/routes.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/config/utils/constants/image_constant.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
+import 'package:zest_trip/features/home/presntation/widgets/category.dart';
+import 'package:zest_trip/features/home/presntation/widgets/destination.dart';
+import 'package:zest_trip/features/home/presntation/widgets/populate.dart';
 
-import '../widgets/custom_scroll_bar.dart';
-import '../widgets/filter_bottomsheet.dart';
-import '../widgets/tour_item.dart'; // Import the widget to display each tour item
-import 'package:logger/logger.dart';
-
-class MainScreen extends StatefulWidget {
-  final TourTag? tag;
-  const MainScreen({super.key, this.tag});
+class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  @override
-  Widget build(context) {
-    var logger = Logger();
-    return
-        // MultiBlocProvider(
-        //   providers: [
-        //     // BlocProvider(
-        //     //   create: (context) => sl<AuthBloc>(),
-        //     // ),
-        //     BlocProvider(
-        //       create: (context) => sl<RemoteTourBloc>()..add(const GetTours()),
-        //     ),
-        //     BlocProvider(
-        //       create: (context) => sl<TourTagBloc>()..add(const GetTourTags()),
-        //     ),
-        //     BlocProvider(
-        //       create: (context) =>
-        //           sl<TourVehicleBloc>()..add(const GetTourVehicles()),
-        //     ),
-        //   ],
-        //   child:
-        Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Material(
-                  elevation: 3.0,
-                  shadowColor: Colors.grey.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(40),
-                  child: Row(
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, authState) {
+                  return Row(
                     children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(32),
-                            color: Colors.white,
-                          ),
-                          child: const TextField(
-                            maxLines: 1,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.black,
-                              ),
-                              border: InputBorder.none,
-                              hintText:
-                                  'Where to? \nAnywhere • Any week • Add guests',
-                              hintMaxLines: 2,
-                              hintStyle: TextStyle(
-                                color: Colors.black,
-                              ),
+                      Container(
+                        height: 64,
+                        width: 64,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider(
+                              authState is AuthSuccess
+                                  ? authState.user.avatarImageUrl ?? tBannerQC
+                                  : tBannerQC,
                             ),
                           ),
+                          shape: BoxShape.circle,
+                          border: Border.all(),
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(16))),
-                            context: context,
-                            builder: (context) {
-                              return const Padding(
-                                  padding: EdgeInsets.all(16),
-                                  child:
-                                      FilterBottomSheet()); // Hiển thị form filter trong bottom sheet
-                            },
-                          );
-                          //// Hiển thị BottomSheet khi nhấn vào biểu tượng "tune"
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.tune,
-                            color: Colors.black,
+                      const SizedBox(width: 16),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            authState is AuthSuccess
+                                ? authState.user.fullName ?? "Username"
+                                : "Username",
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
-                        ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "Where do you want to go ?",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                      const Expanded(child: SizedBox()),
+                      const Icon(
+                        Icons.notifications_none_rounded,
+                        size: 32,
                       ),
                     ],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              BlocBuilder<TourTagBloc, TourTagState>(
-                builder: (context, tagState) {
-                  if (tagState is RemoteTourTagDone) {
-                    print('load tour');
-                    return SizedBox(
-                      height: 58,
-                      child: CustomScrollTabBar(
-                        categories: tagState.tourTags ?? [],
-                        onTabChanged: (index) {
-                          // Do something when tab is changed
-                        },
-                      ),
-                    );
-                  }
-                  // Handle other states if needed
-                  return const CircularProgressIndicator(); // Placeholder loading indicator
+                  );
                 },
               ),
-            ],
-          ),
-        ),
-        BlocBuilder<RemoteTourBloc, RemoteTourState>(
-          builder: (context, tourState) {
-            if (tourState is RemoteTourLoading) {
-              return const TourShimmer();
-            }
-            if (tourState is RemoteTourDone) {
-              // Display the list of tours
-              logger.i('render tour item');
-
-              return Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    // fetch lại danh sách tours
-                    context.read<RemoteTourBloc>().add(const GetTours());
-                  },
-                  child: ListView.builder(
-                    itemCount: tourState.tours?.length ?? 0,
-                    itemExtent:
-                        null, // Set itemExtent to null to remove spacing
-                    itemBuilder: (context, index) {
-                      final tour = tourState.tours![index];
-                      return InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => BlocProvider.value(
-                                value: BlocProvider.of<RemoteTourBloc>(context),
-                                child: TourDetailScreen(tour: tour),
-                              ),
-                            ),
-                          );
-                        },
-                        child: TourItemWidget(tour: tour),
-                      ); // Create a  widgetto display each tour item
+            ),
+            Container(
+              height: 56,
+              width: MediaQuery.of(context).size.width - 48,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(16),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.all(24),
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(CupertinoIcons.search),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Search any location...",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: SizedBox(
+                height: 56,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: const [
+                    Category(
+                      text: "City",
+                      color: primaryColor,
+                    ),
+                    Category(
+                      text: "Beach",
+                      color: primaryColor,
+                    ),
+                    Category(
+                      text: "Mountain",
+                      color: primaryColor,
+                    ),
+                    Category(
+                      text: "Forest",
+                      color: primaryColor,
+                    ),
+                    Category(
+                      text: "Adventure",
+                      color: primaryColor,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                "Popular Destination",
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+            const SizedBox(height: 16),
+            const PopularDestinationWidget(),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Special For You",
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  TextButton(
+                    child: Text(
+                      "Explore All",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: primaryColor,
+                          decoration: TextDecoration.underline),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.landingScreen);
                     },
                   ),
-                ),
-              );
-            } else if (tourState is RemoteTourError) {
-              return const Center(
-                child: Text(
-                  'Error loading tours.',
-                  style: AppTextStyles.title,
-                ),
-              );
-            }
-            if (tourState is AddedToWishlist) {
-              return const SnackBar(content: Text("Added to wishlist"));
-            } else {
-              return const Center(
-                child: Text('Something wrong'),
-              );
-            }
-          },
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            const ForYouDestinationWidget(),
+          ],
         ),
-      ],
-      // ),
+      ),
     );
   }
 }

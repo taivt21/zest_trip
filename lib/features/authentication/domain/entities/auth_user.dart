@@ -4,14 +4,16 @@ import 'package:equatable/equatable.dart';
 // and encapsulate the most general and high-level rules.
 class AuthUser extends Equatable {
   final String? id;
-  final String? idRole;
+  final int? roleId;
   final String? countryCode;
   final String? fullName;
   final String? dob;
   final String? email;
+  final String? phoneNumber;
   final String? gender;
   final String? password;
   final String? avatarImageUrl;
+  final String? bannerImageUrl;
   final String? createdAt;
   final String? updatedAt;
   final String? status;
@@ -21,14 +23,16 @@ class AuthUser extends Equatable {
 
   const AuthUser({
     this.id,
-    this.idRole,
+    this.roleId,
     this.countryCode,
     this.fullName,
     this.dob,
     this.email,
+    this.phoneNumber,
     this.gender,
     this.password,
     this.avatarImageUrl,
+    this.bannerImageUrl,
     this.createdAt,
     this.updatedAt,
     this.status,
@@ -48,14 +52,16 @@ class AuthUser extends Equatable {
   @override
   List<Object?> get props => [
         id,
-        idRole,
+        roleId,
         countryCode,
         fullName,
         dob,
         email,
+        phoneNumber,
         gender,
         password,
         avatarImageUrl,
+        bannerImageUrl,
         createdAt,
         updatedAt,
         status,

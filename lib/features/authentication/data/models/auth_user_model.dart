@@ -3,20 +3,22 @@ import '../../domain/entities/auth_user.dart';
 class AuthUserModel extends AuthUser {
   const AuthUserModel({
     String? id,
-    String? idRole,
+    int? roleId,
     String? countryCode,
     String? fullName,
     String? dob,
     String? email,
+    String? phoneNumber,
     String? gender,
     String? password,
     String? avatarImageUrl,
+    String? bannerImageUrl,
     String? createdAt,
     String? updatedAt,
     String? status,
   }) : super(
           id: id,
-          idRole: idRole,
+          roleId: roleId,
           countryCode: countryCode,
           fullName: fullName,
           dob: dob,
@@ -32,7 +34,7 @@ class AuthUserModel extends AuthUser {
   factory AuthUserModel.fromJson(Map<String, dynamic> json) {
     return AuthUserModel(
       id: json['id'],
-      idRole: json['Id_Role'],
+      roleId: json['role_id'],
       countryCode: json['country_code'],
       fullName: json['full_name'],
       dob: json['dob'],
@@ -40,15 +42,16 @@ class AuthUserModel extends AuthUser {
       gender: json['gender'],
       password: json['password'],
       avatarImageUrl: json['avatar_image_url'],
-      createdAt: json['Created_At'],
-      updatedAt: json['Updated_At'],
+      bannerImageUrl: json['banner_image_url'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
       status: json['status'],
     );
   }
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'Id_Role': idRole,
+      'role_id': roleId,
       'country_code': countryCode,
       'full_name': fullName,
       'dob': dob,
@@ -56,8 +59,8 @@ class AuthUserModel extends AuthUser {
       'gender': gender,
       'password': password,
       'avatar_image_url': avatarImageUrl,
-      'Created_At': createdAt,
-      'Updated_At': updatedAt,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
       'status': status,
     };
   }

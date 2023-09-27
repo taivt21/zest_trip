@@ -32,7 +32,6 @@ class TourApiServiceIml implements TourApiService {
     // };
     try {
       final response = await DioHelper.get('/tour');
-      // logger.i('res...............${response.data['data']['tag_id']}');
       final tours = (response.data['data'] as List)
           .map((e) => TourModel.fromJson(e))
           .toList();
@@ -79,8 +78,8 @@ class TourApiServiceIml implements TourApiService {
   @override
   Future<DataState<bool>> addToWishlist(String tourId) async {
     try {
-      final data = {'id': tourId};
-      final res = await DioHelper.post('/user/favorite', data: data);
+      final data = {'tourId': tourId};
+      final res = await DioHelper.post('/favorite', data: data);
       if (res.statusCode == 200) {
         return DataSuccess(true);
       } else {

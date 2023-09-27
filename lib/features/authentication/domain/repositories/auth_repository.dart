@@ -24,7 +24,7 @@ abstract class AuthRepository {
   Future<DataState<void>> logout();
 
   Future<DataState<AuthUser>> signInWithPhoneNumber(String phoneNumber);
-  // Các phương thức khác liên quan đến xác thực, ví dụ: loginWithGmail, loginWithPhone, ...
+  Future<DataState<AuthUser>> getUser();
 }
 
 // This is crucial for the Clean Architecture's goal of separation

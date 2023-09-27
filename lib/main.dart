@@ -6,6 +6,7 @@ import 'package:zest_trip/bloc_observer.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/authentication_event.dart';
 import 'package:zest_trip/firebase_options.dart';
 import 'package:zest_trip/get_it.dart';
 
@@ -17,47 +18,39 @@ void main() async {
   );
   await initializeDependencies();
   logger.i('Firebase is connected: ${Firebase.apps.isNotEmpty}');
-  // log BlocObserver
+
   Bloc.observer = MyBlocObserver();
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => sl<AuthBloc>(),
-        ),
-        // BlocProvider(
-        //   create: (context) => sl<RemoteTourBloc>(),
-        // ),
-        // BlocProvider(
-        //   create: (context) => sl<TourTagBloc>(),
-        // ),
-      ],
-      child: const MyApp(),
-    ),
+    const MyApp(),
   );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // final tourBloc =
-  //     RemoteTourBloc(GetTourUseCase(TourRepositoryImpl(TourApiServiceIml())));
-
-  // final tourTagBloc =
-  //     TourTagBloc(GetTourTagsUseCase(TourRepositoryImpl(TourApiServiceIml())));
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: AppRoutes.home,
-      onGenerateRoute: AppRoutes.onGenerateRoute,
-      theme: ThemeData(
-        fontFamily: 'AirbnbCereal',
-        useMaterial3: true,
-        scaffoldBackgroundColor: bgColor,
+    return BlocProvider<AuthBloc>(
+      create: (context) => sl()..add(CheckUserLoginEvent()),
+      child: MaterialApp(
+        onGenerateRoute: AppRoutes.onGenerateRoute,
+        theme: ThemeData(
+          colorScheme: const ColorScheme.light(primary: primaryColor),
+          // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.cyan),
+          fontFamily: 'AirbnbCereal',
+          useMaterial3: true,
+          scaffoldBackgroundColor: bgColor,
+          appBarTheme: AppBarTheme(
+            // backgroundColor: Colors.transparent,
+            titleTextStyle:
+                Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20),
+          ),
+        ),
+
+        // darkTheme: ThemeData(brightness: Brightness.dark),
+        title: 'Zest Travel',
+        debugShowCheckedModeBanner: false,
       ),
-      // darkTheme: ThemeData(brightness: Brightness.dark),
-      title: 'Zest Travel',
-      debugShowCheckedModeBanner: false,
     );
   }
 }

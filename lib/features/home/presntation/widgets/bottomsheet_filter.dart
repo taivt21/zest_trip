@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zest_trip/config/theme/text_theme.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
 
 class FilterBottomSheet extends StatefulWidget {
   const FilterBottomSheet({super.key});
@@ -145,12 +146,25 @@ class FilterBottomSheetState extends State<FilterBottomSheet> {
 
         const SizedBox(height: 16),
 
-        ElevatedButton(
-          onPressed: () {
-            // Apply filter logic and close the bottom sheet
-            Navigator.pop(context);
-          },
-          child: const Text('Apply Filter', style: AppTextStyles.body),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                // Apply filter logic and close the bottom sheet
+                Navigator.pop(context);
+              },
+              child: const Text('Clear all', style: AppTextStyles.body),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Apply Filter',
+                  style: TextStyle(color: whiteColor)),
+            ),
+          ],
         ),
       ],
     );
