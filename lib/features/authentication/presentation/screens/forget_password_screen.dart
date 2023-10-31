@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/config/utils/constants/dimension_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
-import 'package:zest_trip/config/utils/constants/size_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
@@ -35,16 +36,16 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(),
         body: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.all(tDefaultSize),
+            padding: const EdgeInsets.all(spaceBody),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: tDefaultSize * 4),
-                Image.asset(
-                  logoNoLetter,
-                  width: 150,
+                SvgPicture.asset(
+                  forgotSvg,
+                  height: 250,
                 ),
                 const SizedBox(
                   height: 20,
@@ -58,7 +59,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 Text("Please enter your email address to reset your password!",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: tFormHeight),
+                const SizedBox(height: 32),
                 Form(
                   child: Column(
                     children: [

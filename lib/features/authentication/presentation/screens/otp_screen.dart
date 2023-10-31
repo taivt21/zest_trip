@@ -17,7 +17,7 @@ class OTPScreen extends StatefulWidget {
 }
 
 class OTPScreenState extends State<OTPScreen> {
-  String otp = ''; // Lưu giá trị OTP ở đây
+  String otp = '';
   bool isCountingDown = true;
   bool isOTPVerified = false;
   int countdownSeconds = 180;
@@ -58,9 +58,9 @@ class OTPScreenState extends State<OTPScreen> {
       listener: (context, state) {
         if (state is VerifiedState) {
           _stopCountdown();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('Verify success!')));
-          Navigator.of(context).pushNamed(AppRoutes.login);
+          // ScaffoldMessenger.of(context)
+          //     .showSnackBar(const SnackBar(content: Text('Verify success!')));
+          Navigator.of(context).pushNamed(AppRoutes.home);
         }
         if (state is VerifiedFailState) {
           ScaffoldMessenger.of(context)
@@ -121,7 +121,7 @@ class OTPScreenState extends State<OTPScreen> {
                         text: TextSpan(
                           text: 'Resend OTP in',
                           style: TextStyle(
-                            color: isOTPVerified ? Colors.black38 : Colors.grey,
+                            color: isOTPVerified ? colorBlack : colorBackground,
                             fontWeight: FontWeight.bold,
                           ),
                           children: <TextSpan>[

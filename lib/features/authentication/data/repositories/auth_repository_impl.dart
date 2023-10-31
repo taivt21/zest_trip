@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -61,5 +63,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<DataState<AuthUser>> getUser() async {
     return await _authApiService.getUser();
+  }
+
+  @override
+  Future<DataState<void>> uploadImage(File file) {
+   return _authApiService.uploadImage(file);
   }
 }

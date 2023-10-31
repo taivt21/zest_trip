@@ -24,7 +24,7 @@ class ElevatedButtonCustom extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        minimumSize: Size(double.infinity, buttonHeight),
+        // minimumSize: Size(double.infinity, buttonHeight),
         backgroundColor: backgroundColor,
       ),
       child: Row(

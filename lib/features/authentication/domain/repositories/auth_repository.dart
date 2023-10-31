@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:zest_trip/config/utils/resources/data_state.dart';
 
 import '../entities/auth_user.dart';
@@ -25,6 +27,9 @@ abstract class AuthRepository {
 
   Future<DataState<AuthUser>> signInWithPhoneNumber(String phoneNumber);
   Future<DataState<AuthUser>> getUser();
+
+  Future<DataState<void>> uploadImage(File file);
+
 }
 
 // This is crucial for the Clean Architecture's goal of separation

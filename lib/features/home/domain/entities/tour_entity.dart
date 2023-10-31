@@ -4,6 +4,8 @@ import 'package:zest_trip/features/home/data/models/tour_tag.dart';
 import 'package:zest_trip/features/home/data/models/tour_vehicle.dart';
 import 'package:zest_trip/features/home/domain/entities/provider_entity.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_schedule_entity.dart';
+import 'package:zest_trip/features/payment/domain/entities/pricing_ticket_entity.dart';
+import 'package:zest_trip/features/payment/domain/entities/tour_availability_entity.dart';
 
 class TourEntity extends Equatable {
   final String? id;
@@ -12,7 +14,7 @@ class TourEntity extends Equatable {
   final String? description;
   final String? footnote;
   final List<String>? tourImages;
-  final int? price;
+  final double? price;
   final int? duration;
   final String? status;
   final DateTime? createdAt;
@@ -27,6 +29,11 @@ class TourEntity extends Equatable {
   final List<TourTag>? tags;
   final List<TourVehicle>? vehicles;
   final ProviderEntity? provider;
+  final List<TourAvailabilityEntity>? tourAvailability;
+  // final List<TourReview> tourReviews;
+  final List<PricingTicketEntity>? pricingTicket;
+  final String? avgRating;
+  final Map<String, dynamic>? count;
 
   const TourEntity({
     this.id,
@@ -50,6 +57,10 @@ class TourEntity extends Equatable {
     this.tags,
     this.vehicles,
     this.provider,
+    this.tourAvailability,
+    this.pricingTicket,
+    this.avgRating,
+    this.count,
   });
 
   @override
@@ -75,5 +86,8 @@ class TourEntity extends Equatable {
         tags,
         vehicles,
         provider,
+        pricingTicket,
+        avgRating,
+        count
       ];
 }

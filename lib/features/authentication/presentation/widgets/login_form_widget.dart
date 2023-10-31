@@ -4,7 +4,6 @@ import 'package:logger/logger.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
-import 'package:zest_trip/config/utils/constants/size_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_event.dart';
@@ -37,7 +36,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
     return Form(
         key: _formKey,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
+          padding: const EdgeInsets.symmetric(vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -55,7 +54,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                     _validateEmail, // Assign the email validator function
                 keyboardType: TextInputType.emailAddress,
               ),
-              const SizedBox(height: tFormHeight - 20),
+              const SizedBox(height: 8),
               TextFormField(
                 controller: _passwordController,
                 decoration: InputDecoration(
@@ -75,7 +74,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                 validator:
                     _validatePassword, // Assign the password validator function
               ),
-              const SizedBox(height: tFormHeight - 20),
+              const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(

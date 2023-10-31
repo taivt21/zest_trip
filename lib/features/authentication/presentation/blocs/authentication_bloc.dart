@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';
 import 'package:zest_trip/features/authentication/domain/usecases/authentication_usecase.dart';
+import 'package:zest_trip/features/authentication/domain/usecases/upload_image_usecase.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_event.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
 
@@ -16,7 +17,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LogoutUseCase _logoutUseCase;
   final SignInWithPhoneNumberUseCase _signInWithPhoneNumberUseCase;
   final VerificationEmailUseCase _verificationEmailUseCase;
-  final GetUserUseCase _getuserUseCase;
+  final GetUserUseCase _getUserUseCase;
+  final UploadImageUseCase _uploadImageUseCase;
 
   AuthBloc(
     this._logoutUseCase,
@@ -25,10 +27,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._registerWithEmailAndPasswordUseCase,
     this._signInWithGoogleUseCase,
     this._verificationEmailUseCase,
-    this._getuserUseCase,
+    this._getUserUseCase,
+    this._uploadImageUseCase,
   ) : super(AuthLoading()) {
     on<LoginWithEmailAndPasswordEvent>((event, emit) async {
       emit(AuthLoading());
+
       final result = await _loginWithEmailAndPasswordUseCase.call(
         event.email,
         event.password,
@@ -84,6 +88,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 .user;
         if (firebaseUser != null) {
           String? accessToken = await firebaseUser.getIdToken();
+          const secureStorage = FlutterSecureStorage();
+          await secureStorage.delete(key: 'access_token');
+          print("token gg:======== $accessToken");
           final result = await _signInWithGoogleUseCase.call(accessToken ?? "");
           if (result is DataSuccess<AuthUser>) {
             emit(AuthSuccess(result.data!));
@@ -100,11 +107,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (accessToken == null) {
         emit(AuthLoggedOut());
       } else {
-        final result = await _getuserUseCase.call();
+        final result = await _getUserUseCase.call();
         if (result is DataSuccess<AuthUser>) {
           emit(AuthSuccess(result.data!));
         } else if (result is DataFailed) {
           emit(AuthLoggedOut());
+          await secureStorage.delete(key: 'access_token');
+          await secureStorage.delete(key: 'refresh_token');
         }
       }
     });
@@ -132,6 +141,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthSuccess(result.data!));
       } else if (result is DataFailed) {
         emit(AuthFailure(result.error!.message!));
+      }
+    });
+    
+    on<UploadImageEvent>((event, emit) async {
+      final dataState = await _uploadImageUseCase.call(event.file);
+
+      if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
+        // emit(UserUploadSuccess(dataState.data!));
+      }
+      if (dataState is DataFailed) {
+        // emit(RemoteTourTagError(dataState.error!));
       }
     });
   }

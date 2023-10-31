@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 
 abstract class AuthEvent extends Equatable {
@@ -53,6 +55,10 @@ class VerificationEmailEvent extends AuthEvent {
 
   @override
   List<Object> get props => [email];
+}
+class UploadImageEvent extends AuthEvent {
+  final File file;
+  const UploadImageEvent(this.file);
 }
 
 class CheckUserLoginEvent extends AuthEvent {}

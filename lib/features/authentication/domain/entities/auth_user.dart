@@ -14,8 +14,8 @@ class AuthUser extends Equatable {
   final String? password;
   final String? avatarImageUrl;
   final String? bannerImageUrl;
-  final String? createdAt;
-  final String? updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final String? status;
   // For example, a high-level rule for a User entity might be
   // that a user age cannot be lower than 18.

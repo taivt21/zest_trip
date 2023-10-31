@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:zest_trip/features/authentication/presentation/screens/forget_password_screen.dart';
 import 'package:zest_trip/features/authentication/presentation/screens/login_screen.dart';
 import 'package:zest_trip/features/authentication/presentation/screens/signup_screen.dart';
-import 'package:zest_trip/features/home/presntation/screens/home_screen.dart';
-import 'package:zest_trip/features/home/presntation/screens/main_screen.dart';
-import 'package:zest_trip/features/home/presntation/screens/secondary_screen.dart';
-import 'package:zest_trip/features/home/presntation/screens/wishlist_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/main_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/secondary_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/wishlist_screen.dart';
 
 class AppRoutes {
   static const String login = '/login';

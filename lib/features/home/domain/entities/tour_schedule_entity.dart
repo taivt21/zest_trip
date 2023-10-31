@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:zest_trip/features/home/domain/entities/tour_schedule_detail_entity.dart';
 
 class TourScheduleEntity extends Equatable {
   final int? id;
@@ -7,6 +8,7 @@ class TourScheduleEntity extends Equatable {
   final String? tourId;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final List<TourScheduleDetailEntity>? tourScheduleDetails;
 
   const TourScheduleEntity({
     this.id,
@@ -15,19 +17,18 @@ class TourScheduleEntity extends Equatable {
     this.tourId,
     this.createdAt,
     this.updatedAt,
+    this.tourScheduleDetails,
   });
 
   @override
-  List<Object?> get props =>
-      [id, title, description, tourId, createdAt, updatedAt];
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'tour_id': tourId,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
-    };
-  }
+  List<Object?> get props => [
+        id,
+        title,
+        description,
+        tourId,
+        createdAt,
+        updatedAt,
+        tourScheduleDetails,
+      ];
+
 }

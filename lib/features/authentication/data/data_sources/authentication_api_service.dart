@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:zest_trip/config/network/dio_helper.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
@@ -14,6 +16,7 @@ abstract class AuthApiService {
   Future<DataState<AuthUserModel>> signInWithGoogle(String accessToken);
   Future<DataState<AuthUserModel>> getUser();
   Future<DataState<void>> logout();
+  Future<DataState<bool>> uploadImage(File file);
 }
 
 class AuthApiServiceImpl implements AuthApiService {
@@ -21,23 +24,32 @@ class AuthApiServiceImpl implements AuthApiService {
   @override
   Future<DataState<AuthUserModel>> loginWithEmailAndPassword(
       String email, String password) async {
-    // Đặt accessToken vào header Authorization nếu cần
-    // DioHelper.setAccessToken(accessToken);
     final data = {
       'email': email,
       'password': password,
     };
     try {
-      final response = await DioHelper.post('/auth/signin', data: data);
-      final accessToken = response.data['data']['access_token'];
-      final refreshToken = response.data['data']['refresh_token'];
+      final response =
+          await DioHelper.dio.post('/auth/customer/signin', data: data);
 
-      await secureStorage.write(key: 'access_token', value: accessToken);
-      await secureStorage.write(key: 'refresh_token', value: refreshToken);
+      if (response.statusCode == 201) {
+        final accessToken = response.data['data']['access_token'];
+        final refreshToken = response.data['data']['refresh_token'];
 
-      Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
-      final user = AuthUserModel.fromJson(payload);
-      return DataSuccess(user);
+        await secureStorage.write(key: 'access_token', value: accessToken);
+        await secureStorage.write(key: 'refresh_token', value: refreshToken);
+
+        Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
+        final user = AuthUserModel.fromJson(payload);
+        return DataSuccess(user);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: ' ${response.data["data"]["message"]}.',
+          requestOptions: response.requestOptions,
+          response: response.data["data"]["message"],
+        ));
+      }
     } on DioException catch (e) {
       return DataFailed(e);
     }
@@ -51,11 +63,11 @@ class AuthApiServiceImpl implements AuthApiService {
         'email': email,
         'password': password,
         'otp': otp,
-        'phoneNumber': "123456789",
-        'fullName': "fullname",
       };
 
-      final response = await DioHelper.post('/auth/signup', data: data);
+      final response =
+          await DioHelper.dio.post('/auth/customer/signup', data: data);
+      print(response);
       if (response.statusCode == 201) {
         return DataSuccess(true);
       } else {
@@ -64,7 +76,7 @@ class AuthApiServiceImpl implements AuthApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response,
+          response: response.data["data"]["message"],
         ));
       }
     } on DioException catch (e) {
@@ -77,8 +89,10 @@ class AuthApiServiceImpl implements AuthApiService {
     try {
       final data = {
         'email': email,
+        'type': "REGISTER_USER",
       };
-      final response = await DioHelper.post('/otp/generate', data: data);
+      final response =
+          await DioHelper.dio.post('/otp/generate/customer', data: data);
       print("otp $response");
       if (response.statusCode == 201) {
         return DataSuccess(true);
@@ -102,16 +116,27 @@ class AuthApiServiceImpl implements AuthApiService {
     };
 
     try {
-      final response = await DioHelper.post('/auth/google-login', data: data);
-      final accessToken = response.data['data']['access_token'];
-      final refreshToken = response.data['data']['refresh_token'];
+      final response =
+          await DioHelper.dio.post('/auth/customer/login-google', data: data);
 
-      await secureStorage.write(key: 'access_token', value: accessToken);
-      await secureStorage.write(key: 'refresh_token', value: refreshToken);
-      Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
-      final user = AuthUserModel.fromJson(payload);
-      print("user: $user");
-      return DataSuccess(user);
+      if (response.statusCode == 200) {
+        final accessToken = response.data['data']['access_token'];
+        final refreshToken = response.data['data']['refresh_token'];
+
+        await secureStorage.write(key: 'access_token', value: accessToken);
+        await secureStorage.write(key: 'refresh_token', value: refreshToken);
+        Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
+        final user = AuthUserModel.fromJson(payload);
+        return DataSuccess(user);
+      } else {
+        return DataFailed(DioException(
+          requestOptions: response.requestOptions,
+          message: "mess: ${response.data["message"]}",
+          response: response,
+          error: 'Failed with status code: ${response.data["message"]}',
+          type: DioExceptionType.badResponse,
+        ));
+      }
     } on DioException catch (e) {
       return DataFailed(e);
     }
@@ -120,14 +145,14 @@ class AuthApiServiceImpl implements AuthApiService {
   @override
   Future<DataState<void>> logout() async {
     try {
-      final response = await DioHelper.post('/auth/signout');
+      final response = await DioHelper.dio.post('/auth/customer/signout');
 
       if (response.statusCode == 204) {
         return DataSuccess(null);
       } else {
         return DataFailed(DioException(
           requestOptions: response.requestOptions,
-          response: response,
+          response: response.data,
           error: 'Logout failed with status code: ${response.statusCode}',
           type: DioExceptionType.badResponse,
         ));
@@ -140,13 +165,50 @@ class AuthApiServiceImpl implements AuthApiService {
   @override
   Future<DataState<AuthUserModel>> getUser() async {
     try {
-      final response = await DioHelper.get(
+      final response = await DioHelper.dio.get(
         '/users/me',
       );
+      print("me: ${response.data}");
 
-      final user = AuthUserModel.fromJson(response.data['data']);
-      print("user: $user ");
-      return DataSuccess(user);
+      if (response.statusCode == 200) {
+        final user = AuthUserModel.fromJson(response.data);
+
+        return DataSuccess(user);
+      } else {
+        return DataFailed(DioException(
+          requestOptions: response.requestOptions,
+          response: response.data,
+          message: response.data["message"],
+          error: 'Failed with status code: ${response.statusCode}',
+          type: DioExceptionType.badResponse,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<bool>> uploadImage(File file) async {
+    try {
+      FormData formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file.path),
+      });
+
+      final response =
+          await DioHelper.dio.put('/users/me/avatar', data: formData);
+
+      if (response.statusCode == 200) {
+        return DataSuccess(true);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
     } on DioException catch (e) {
       return DataFailed(e);
     }

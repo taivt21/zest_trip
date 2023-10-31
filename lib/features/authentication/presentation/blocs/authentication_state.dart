@@ -8,11 +8,11 @@ abstract class AuthState extends Equatable {
   List<Object> get props => [];
 }
 
-class AuthInitial extends AuthState {}
+final class AuthInitial extends AuthState {}
 
-class AuthLoading extends AuthState {}
+final class AuthLoading extends AuthState {}
 
-class AuthSuccess extends AuthState {
+final class AuthSuccess extends AuthState {
   final AuthUser user;
 
   const AuthSuccess(this.user);
@@ -21,15 +21,15 @@ class AuthSuccess extends AuthState {
   List<Object> get props => [user];
 }
 
-class RegisterSuccess extends AuthState {}
+final class RegisterSuccess extends AuthState {}
 
-class VerifyInProgressState extends AuthState {}
+final class VerifyInProgressState extends AuthState {}
 
-class VerifiedState extends AuthState {}
+final class VerifiedState extends AuthState {}
 
-class VerifiedFailState extends AuthState {}
+final class VerifiedFailState extends AuthState {}
 
-class AuthFailure extends AuthState {
+final class AuthFailure extends AuthState {
   final String errorMessage;
 
   const AuthFailure(this.errorMessage);
@@ -38,4 +38,15 @@ class AuthFailure extends AuthState {
   List<Object> get props => [errorMessage];
 }
 
-class AuthLoggedOut extends AuthState {}
+final class AuthLoggedOut extends AuthState {}
+
+final class UserUploading extends AuthState {
+  final String image;
+  const UserUploading(this.image);
+  @override
+  List<Object> get props => [image];
+}
+
+final class UserUploadFail extends AuthState {}
+
+final class UserUploadSuccess extends AuthState {}

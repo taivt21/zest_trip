@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
-import 'package:zest_trip/config/utils/constants/size_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/screens/otp_screen.dart';
 
@@ -69,8 +68,7 @@ class SignUpFormWidgetState extends State<SignUpFormWidget> {
     return Form(
       key: _formKey,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: tFormHeight - 10),
-        margin: const EdgeInsets.all(10),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -87,7 +85,7 @@ class SignUpFormWidgetState extends State<SignUpFormWidget> {
               validator: _validateEmail,
               keyboardType: TextInputType.emailAddress,
             ),
-            const SizedBox(height: tFormHeight - 20),
+            const SizedBox(height: 8),
             TextFormField(
               controller: _passwordController,
               decoration: InputDecoration(
@@ -105,9 +103,8 @@ class SignUpFormWidgetState extends State<SignUpFormWidget> {
               obscureText: _obscureText,
               validator: _validatePassword,
             ),
-            const SizedBox(height: tFormHeight - 20),
+            const SizedBox(height: 8),
             SizedBox(
-              width: double.infinity,
               child: ElevatedButtonCustom(
                 text: tSignup,
                 onPressed: () {

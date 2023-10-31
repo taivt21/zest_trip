@@ -8,45 +8,64 @@ class AuthInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    String? accessToken = await getAccessToken();
-    print("access token:  $accessToken");
-
+    final accessToken = await getAccessToken();
+    print(accessToken);
+    if (options.path == '/tour') {
+      return handler.next(options);
+    }
     if (accessToken == null) {
       return handler.next(options);
-    } else if (await isAccessTokenExpired(accessToken)) {
-      try {
-        String? refreshToken = await getRefreshToken();
-        print("refreshToken: $refreshToken");
-        if (refreshToken != null) {
-          final response = await _dio.post(
-            '${Constants.baseUrl}/auth/refresh',
-            options: Options(headers: {
-              'Content-Type': 'application/json',
-              'Authorization': "Bearer $refreshToken"
-            }),
-          );
-          if (response.statusCode == 200) {
-            var newAccessToken = response.data["data"]["access_token"];
-            await saveAccessToken(newAccessToken);
-            options.headers['Authorization'] = "Bearer $newAccessToken";
-          } else {
-            // Xử lý khi lỗi trả về từ API refresh token
-            handleRefreshTokenError();
-          }
-        } else {
-          // Xử lý khi không có refresh_token (người dùng đã đăng xuất hoặc chưa đăng nhập)
-          handleRefreshTokenError();
-        }
-      } on DioException catch (error) {
-        // Xử lý khi gặp lỗi khi gửi yêu cầu refresh token
-        handleRefreshTokenError();
-        return handler.reject(error, true);
-      }
-    } else {
+    }
+
+    if (await isAccessTokenValid(accessToken)) {
       options.headers['Authorization'] = "Bearer $accessToken";
+      return handler.next(options);
+    }
+
+    try {
+      final newAccessToken = await refreshAccessToken();
+      if (newAccessToken != null) {
+        options.headers['Authorization'] = "Bearer $newAccessToken";
+      }
+    } on DioException catch (error) {
+      return handler.reject(error, true);
     }
 
     handler.next(options);
+  }
+
+  Future<bool> isAccessTokenValid(String accessToken) async {
+    final expirationTime = Jwt.getExpiryDate(accessToken);
+    return expirationTime != null && DateTime.now().isBefore(expirationTime);
+  }
+
+  Future<String?> refreshAccessToken() async {
+    final refreshToken = await getRefreshToken();
+    if (refreshToken == null) {
+      return null;
+    }
+
+    try {
+      final response = await _dio.post(
+        '${Constants.baseUrl}/auth/refresh',
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+          'Authorization': "Bearer $refreshToken"
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        final newAccessToken = response.data["data"]["access_token"];
+        final newRefreshToken = response.data["data"]["refresh_token"];
+        await saveAccessToken(newAccessToken);
+        await saveRefreshToken(newRefreshToken);
+        return newAccessToken;
+      }
+    } on DioException catch (error) {
+      return error.message;
+    }
+
+    return null;
   }
 
   Future<bool> isAccessTokenExpired(String accessToken) async {
@@ -58,6 +77,16 @@ class AuthInterceptor extends Interceptor {
       return DateTime.now().isAfter(expirationTime);
     }
     return true;
+  }
+
+  Future<void> deleteAccessToken() async {
+    const secureStorage = FlutterSecureStorage();
+    return await secureStorage.delete(key: 'access_token');
+  }
+
+  Future<void> deteleRefreshToken() async {
+    const secureStorage = FlutterSecureStorage();
+    return await secureStorage.delete(key: 'refresh_token');
   }
 
   Future<String?> getAccessToken() async {
@@ -75,7 +104,8 @@ class AuthInterceptor extends Interceptor {
     await secureStorage.write(key: 'access_token', value: accessToken);
   }
 
-  void handleRefreshTokenError() {
-    // Xử lý khi gặp lỗi refresh token
+  Future<void> saveRefreshToken(String refreshToken) async {
+    const secureStorage = FlutterSecureStorage();
+    await secureStorage.write(key: 'refresh_token', value: refreshToken);
   }
 }

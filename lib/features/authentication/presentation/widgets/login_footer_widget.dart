@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/theme/text_theme.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
-import 'package:zest_trip/config/utils/constants/size_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_event.dart';
@@ -22,7 +22,7 @@ class LoginFooterWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const Text("OR"),
-        const SizedBox(height: tFormHeight - 20),
+        const SizedBox(height: 8),
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
@@ -33,21 +33,28 @@ class LoginFooterWidget extends StatelessWidget {
             label: const Text(tSignInWithGoogle),
           ),
         ),
-        const SizedBox(height: tFormHeight - 20),
+        const SizedBox(height: 8),
         TextButton(
           onPressed: () {
-            // Navigate to the sign-up screen
             Navigator.pushNamed(context, AppRoutes.signup);
           },
           child: const Text.rich(
             TextSpan(
-                text: tDontHaveAnAccount,
-                style: AppTextStyles.body,
-                children: [
-                  TextSpan(text: tSignup, style: TextStyle(color: Colors.blue))
-                ]),
+              children: [
+                TextSpan(
+                  text: tAlreadyHaveAnAccount,
+                  style: AppTextStyles.body,
+                ),
+                TextSpan(
+                    text: tSignup,
+                    style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 16,
+                        decoration: TextDecoration.underline))
+              ],
+            ),
           ),
-        ),
+        )
       ],
     );
   }
