@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
-import 'package:zest_trip/features/home/presentation/bloc/tour_resource/remote/tags/tour_tag_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/tags/tour_tag_bloc.dart';
 import 'package:zest_trip/features/home/presentation/screens/search_location_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/tour_item.dart';
 import 'package:zest_trip/features/home/presentation/widgets/tour_shimmer.dart';
-import '../bloc/tour/remote/tour_bloc_ex.dart';
+import '../blocs/tour/remote/tour_bloc_ex.dart';
 
 import '../widgets/bottomsheet_filter.dart';
 import 'package:logger/logger.dart';
@@ -120,7 +120,7 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                                                 ? primaryColor
                                                 : colorBoldGrey!,
                                             width: filter.contains(tag)
-                                                ? 1.5
+                                                ? 2.5
                                                 : 1.0,
                                           ),
                                           selectedColor: whiteColor,
@@ -171,7 +171,7 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Text("Không có tour nào"),
+                                      const Text("No tour is available"),
                                       IconButton(
                                         icon: const Icon(Icons.refresh),
                                         onPressed: () {
@@ -207,12 +207,14 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                 } else if (tourState is RemoteTourError) {
                   return Center(
                     child: Text(
-                      'Error loading tours.',
+                      '${tourState.error?.response?.data['message']}',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                   );
                 } else {
-                  return const SnackBar(content: Text("Fail"));
+                  return SnackBar(
+                      content: Text(
+                          "${tourState.error?.response?.data['message']}"));
                 }
               },
             ),

@@ -40,6 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (result is DataSuccess<AuthUser>) {
         emit(AuthSuccess(result.data!));
       } else if (result is DataFailed) {
+        print(result.error?.response?.data["message"]);
         emit(AuthFailure(result.error!.message!));
       }
     });
@@ -55,7 +56,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (registrationResult is DataSuccess) {
         emit(VerifiedState());
       } else if (registrationResult is DataFailed) {
-        emit(VerifiedFailState());
+        print(registrationResult.error?.response?.data["message"]);
+        emit(VerifiedFailState(registrationResult.error));
       }
     });
 
@@ -65,7 +67,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (verificationResult is DataSuccess) {
         emit(VerifyInProgressState());
       } else if (verificationResult is DataFailed) {
-        emit(VerifiedFailState());
+        print(verificationResult.error?.response?.data["message"]);
+        emit(VerifiedFailState(verificationResult.error));
       }
     });
 
@@ -143,7 +146,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthFailure(result.error!.message!));
       }
     });
-    
+
     on<UploadImageEvent>((event, emit) async {
       final dataState = await _uploadImageUseCase.call(event.file);
 

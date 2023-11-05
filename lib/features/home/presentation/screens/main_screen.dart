@@ -5,7 +5,6 @@ import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
-import 'package:zest_trip/features/home/presentation/screens/review_of_tour_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_recommend_location.dart';
 import 'package:zest_trip/features/home/presentation/screens/review_screen.dart';
 
@@ -182,20 +181,20 @@ class MainScreen extends StatelessWidget {
                               .titleMedium
                               ?.copyWith(fontSize: 18),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ReviewsOfTour()));
-                          },
-                          child: const Text(
-                            'See all',
-                            style:
-                                TextStyle(decoration: TextDecoration.underline),
-                          ),
-                        ),
+                        // TextButton(
+                        //   onPressed: () {
+                        //     Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (context) =>
+                        //                 const ReviewsOfTour()));
+                        //   },
+                        //   child: const Text(
+                        //     'See all',
+                        //     style:
+                        //         TextStyle(decoration: TextDecoration.underline),
+                        //   ),
+                        // ),
                       ],
                     ),
                     SingleChildScrollView(

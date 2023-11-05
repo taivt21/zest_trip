@@ -10,19 +10,19 @@ abstract class TourVehicleState extends Equatable {
   List<Object?> get props => [tourVehicles, error];
 }
 
-class TourVehicleInitial extends TourVehicleState {
+final class TourVehicleInitial extends TourVehicleState {
   const TourVehicleInitial();
 }
 
-class RemoteTourVehicleLoading extends TourVehicleState {
+final class RemoteTourVehicleLoading extends TourVehicleState {
   const RemoteTourVehicleLoading();
 }
 
-class RemoteTourVehicleDone extends TourVehicleState {
+final class RemoteTourVehicleDone extends TourVehicleState {
   const RemoteTourVehicleDone(List<TourVehicle> tourVehicles)
       : super(tourVehicles: tourVehicles);
 }
 
-class RemoteTourvehicleError extends TourVehicleState {
+final class RemoteTourvehicleError extends TourVehicleState {
   const RemoteTourvehicleError(DioException error) : super(error: error);
 }

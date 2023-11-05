@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
 
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
-import 'package:zest_trip/features/home/domain/usecases/tour_usecases/get_tags.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_tags.dart';
 
 part 'tour_tag_event.dart';
 part 'tour_tag_state.dart';

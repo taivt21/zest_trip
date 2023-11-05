@@ -72,7 +72,7 @@ class TourItemWidget extends StatelessWidget {
                 style: DefaultTextStyle.of(context).style,
                 children: [
                   TextSpan(
-                    text: ' ${_getLastPrice(tour)}₫',
+                    text: ' ${tour.pricingTicket![0].fromPrice}₫',
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge
@@ -86,16 +86,16 @@ class TourItemWidget extends StatelessWidget {
     );
   }
 
-  int _getLastPrice(TourEntity tour) {
-    var lastTicketPricing = tour.pricingTicket?.last;
+  // int _getLastPrice(TourEntity tour) {
+  //   var lastTicketPricing = tour.pricingTicket?.last;
 
-    if (lastTicketPricing != null &&
-        lastTicketPricing.priceRange != null &&
-        lastTicketPricing.priceRange!.isNotEmpty) {
-      var lastPriceRange = lastTicketPricing.priceRange!.last;
-      return lastPriceRange.price ?? 0;
-    }
+  //   if (lastTicketPricing != null &&
+  //       lastTicketPricing.priceRange != null &&
+  //       lastTicketPricing.priceRange!.isNotEmpty) {
+  //     var lastPriceRange = lastTicketPricing.priceRange!.last;
+  //     return lastPriceRange.price ?? 0;
+  //   }
 
-    return 0;
-  }
+  //   return 0;
+  // }
 }

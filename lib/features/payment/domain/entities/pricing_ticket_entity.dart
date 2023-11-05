@@ -9,6 +9,12 @@ class PricingTicketEntity extends Equatable {
   final int? pricingTypeId;
   final int? minimumBookingQuantity;
   final int? maximumBookingQuantity;
+  final int? minimumTicketCount;
+  final int? maximumTicketCount;
+  final String? fromAge;
+  final String? toAge;
+  final String? fromPrice;
+  final String? toPrice;
   final List<PricingTicketRangeEntity>? priceRange;
   final PricingTypeEntity? pricingType;
   final TicketEntity? ticket;
@@ -19,6 +25,12 @@ class PricingTicketEntity extends Equatable {
     this.pricingTypeId,
     this.minimumBookingQuantity,
     this.maximumBookingQuantity,
+    this.minimumTicketCount,
+    this.maximumTicketCount,
+    this.fromAge,
+    this.toAge,
+    this.fromPrice,
+    this.toPrice,
     this.priceRange,
     this.pricingType,
     this.ticket,
@@ -31,6 +43,12 @@ class PricingTicketEntity extends Equatable {
         pricingTypeId,
         minimumBookingQuantity,
         maximumBookingQuantity,
+        minimumTicketCount,
+        maximumTicketCount,
+        fromAge,
+        toAge,
+        fromPrice,
+        toPrice,
         priceRange,
         pricingType,
         ticket

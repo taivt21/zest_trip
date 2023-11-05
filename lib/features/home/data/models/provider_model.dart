@@ -51,8 +51,10 @@ class ProviderModel extends ProviderEntity {
       addressCountry: json['address_country'],
       companyName: json['company_name'],
       socialMedia: List<String>.from(json['social_media']),
-      avatarImageUrl: json['avatar_image_url'],
-      bannerImageUrl: json['banner_image_url'],
+      avatarImageUrl: json['avatar_image_url'] ??
+          "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
+      bannerImageUrl: json['banner_image_url'] ??
+          "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
       businessLicense: json['business_license'],
       status: json['status'],
       createdAt: DateTime.tryParse(json['created_at']),

@@ -7,7 +7,8 @@ import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_event.dart';
-import 'package:zest_trip/features/home/presentation/bloc/tour_resource/remote/vehicles/tour_vehicle_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/vehicles/tour_vehicle_bloc.dart';
+import 'package:zest_trip/features/payment/presentation/bloc/payment/payment_bloc.dart';
 import 'package:zest_trip/firebase_options.dart';
 import 'package:zest_trip/get_it.dart';
 
@@ -37,6 +38,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<TourVehicleBloc>(
           create: (context) => sl()..add(const GetTourVehicles()),
+        ),
+        BlocProvider<PaymentBloc>(
+          create: (context) => sl(),
         ),
         BlocProvider<AuthBloc>(
           create: (context) => sl()..add(CheckUserLoginEvent()),

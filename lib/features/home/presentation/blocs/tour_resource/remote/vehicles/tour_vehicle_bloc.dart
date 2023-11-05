@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/home/data/models/tour_vehicle.dart';
-import 'package:zest_trip/features/home/domain/usecases/tour_usecases/get_vehicles.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_vehicles.dart';
 
 part 'tour_vehicle_event.dart';
 part 'tour_vehicle_state.dart';

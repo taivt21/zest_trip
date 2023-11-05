@@ -9,10 +9,10 @@ class TourScheduleWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TourScheduleWidgetState createState() => _TourScheduleWidgetState();
+  TourScheduleWidgetState createState() => TourScheduleWidgetState();
 }
 
-class _TourScheduleWidgetState extends State<TourScheduleWidget> {
+class TourScheduleWidgetState extends State<TourScheduleWidget> {
   bool showAllDays = false;
 
   @override
@@ -72,6 +72,7 @@ class _TourScheduleWidgetState extends State<TourScheduleWidget> {
     );
   }
 
+// Ở trong _buildViewMoreButton, thay vì truyền một phần tử duy nhất, truyền toàn bộ danh sách tourSchedules
   Widget _buildViewMoreButton(BuildContext context) {
     return TextButton(
       onPressed: () {
@@ -79,13 +80,14 @@ class _TourScheduleWidgetState extends State<TourScheduleWidget> {
       },
       child: const Text(
         'View More',
-        style: TextStyle(color: Colors.blue), // Set a color to test
+        style: TextStyle(color: Colors.blue),
       ),
     );
   }
 
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       context: context,
@@ -109,21 +111,22 @@ class _BottomSheetContent extends StatelessWidget {
     return DefaultTabController(
       length: tourSchedules.length,
       child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Schedules'),
-            bottom: TabBar(
-              tabs: tourSchedules
-                  .map((schedule) => Tab(text: schedule.title))
-                  .toList(),
-            ),
-          ),
-          body: TabBarView(
-            children: tourSchedules
-                .map((schedule) => TourScheduleWidget(
-                      tourSchedules: [schedule],
-                    ))
+        appBar: AppBar(
+          title: const Text('Schedules'),
+          bottom: TabBar(
+            tabs: tourSchedules
+                .map((schedule) => Tab(text: schedule.title))
                 .toList(),
-          )),
+          ),
+        ),
+        body: TabBarView(
+          children: tourSchedules
+              .map((schedule) => TourScheduleWidget(
+                    tourSchedules: [schedule],
+                  ))
+              .toList(),
+        ),
+      ),
     );
   }
 }

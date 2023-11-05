@@ -26,7 +26,6 @@ class CustomScrollTabBarState extends State<CustomScrollTabBar> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 

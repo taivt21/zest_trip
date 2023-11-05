@@ -1,16 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
-import 'package:zest_trip/features/home/presentation/bloc/user/user_bloc.dart';
 import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/policy_webview.dart';
 import '../../../../config/utils/constants/color_constant.dart';
 import '../../../authentication/presentation/blocs/auth_bloc_ex.dart';
 import '../widgets/card_profile.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -74,31 +72,31 @@ class ProfileScreen extends StatelessWidget {
                                 color: primaryColor),
                             child: IconButton(
                               onPressed: () async {
-                                final picker = ImagePicker();
+                                // final picker = ImagePicker();
 
-                                try {
-                                  // Chọn ảnh từ thư viện
-                                  final pickedFile = await picker.pickImage(
-                                      source: ImageSource.gallery);
+                                // try {
+                                //   // Chọn ảnh từ thư viện
+                                //   final pickedFile = await picker.pickImage(
+                                //       source: ImageSource.gallery);
 
-                                  if (pickedFile != null) {
-                                    File imageFile = File(pickedFile.path);
+                                //   if (pickedFile != null) {
+                                //     File imageFile = File(pickedFile.path);
 
-                                    // context
-                                    //     .read<UserBloc>()
-                                    //     .add(UploadImageEvent(imageFile));
-                                  } else {
-                                    // Hiển thị thông báo nếu người dùng không chọn ảnh
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content:
-                                            Text('Please choose an image.'),
-                                      ),
-                                    );
-                                  }
-                                } catch (e) {
-                                  print('Error picking image: $e');
-                                }
+                                //     context
+                                //         .read<AuthBloc>()
+                                //         .add(UploadImageEvent(imageFile));
+                                //   } else {
+                                //     // Hiển thị thông báo nếu người dùng không chọn ảnh
+                                //     ScaffoldMessenger.of(context).showSnackBar(
+                                //       const SnackBar(
+                                //         content:
+                                //             Text('Please choose an image.'),
+                                //       ),
+                                //     );
+                                //   }
+                                // } catch (e) {
+                                //   debugPrint('Error picking image: $e');
+                                // }
                               },
                               icon: const Icon(
                                 Icons.edit,
@@ -160,7 +158,15 @@ class ProfileScreen extends StatelessWidget {
                       title: "Help center",
                     ),
                     CardProfile(
-                      ontap: null,
+                      ontap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MyWebView(
+                                  urlWeb:
+                                      "https://www.travelperk.com/guides/corporate-travel-policy/"),
+                            ));
+                      },
                       icon: Icons.policy,
                       title: "Policy",
                     ),

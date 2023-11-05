@@ -4,11 +4,10 @@ import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/home/presentation/screens/main_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/profile_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/trips_screen.dart';
-import './wishlist_screen.dart';
 
 const List<Widget> bottomNavScreen = <Widget>[
   MainScreen(),
-  WishlistScreen(),
+  // WishlistScreen(),
   TripsScreen(),
   // ChatScreen(),
   ProfileScreen(),
@@ -51,14 +50,14 @@ class _HomeScreen extends State<HomeScreen> {
               ),
               label: 'Home',
             ),
-            NavigationDestination(
-              icon: SvgPicture.asset(
-                heartSvg,
-                height: 24,
-                width: 24,
-              ),
-              label: 'Wishlist',
-            ),
+            // NavigationDestination(
+            //   icon: SvgPicture.asset(
+            //     heartSvg,
+            //     height: 24,
+            //     width: 24,
+            //   ),
+            //   label: 'Wishlist',
+            // ),
             NavigationDestination(
               icon: SvgPicture.asset(
                 tripSvg,

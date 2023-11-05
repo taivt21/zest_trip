@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
-import 'package:zest_trip/features/home/presentation/bloc/tour/remote/remote_tour_bloc.dart';
-import 'package:zest_trip/features/home/presentation/bloc/tour/remote/remote_tour_event.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/reviews/tour_reviews_bloc.dart';
 import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour.dart';
 
@@ -11,10 +10,10 @@ class ReviewScreen extends StatefulWidget {
   const ReviewScreen({super.key});
 
   @override
-  _ReviewScreenState createState() => _ReviewScreenState();
+  ReviewScreenState createState() => ReviewScreenState();
 }
 
-class _ReviewScreenState extends State<ReviewScreen> {
+class ReviewScreenState extends State<ReviewScreen> {
   int userRating = 0;
   TextEditingController commentController = TextEditingController();
 
@@ -132,18 +131,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
       ),
       onEditingComplete: () {
         if (commentController.text.length < 20) {
-          print('Please enter at least 20 characters.');
+          debugPrint('Please enter at least 20 characters.');
         } else {
-          print('Comment submitted: ${commentController.text}');
+          debugPrint('Comment submitted: ${commentController.text}');
         }
       },
     );
   }
 
   void submitReview() {
-    print('Rating: $userRating');
-    print('Comment: ${commentController.text}');
-    context.read<RemoteTourBloc>().add(PostReview(commentController.text,
+    debugPrint('Rating: $userRating');
+    debugPrint('Comment: ${commentController.text}');
+    context.read<TourReviewsBloc>().add(PostReview(commentController.text,
         userRating, "1a5607a8-9a70-4731-be02-30df4c1c1676"));
   }
 }

@@ -6,10 +6,16 @@ abstract class RemoteTourState extends Equatable {
   final List<TourEntity>? tours;
   final DioException? error;
 
-  const RemoteTourState({this.tours, this.error});
+  const RemoteTourState({
+    this.tours,
+    this.error,
+  });
 
   @override
-  List<Object?> get props => [tours, error];
+  List<Object?> get props => [
+        tours,
+        error,
+      ];
 }
 
 final class RemoteTourLoading extends RemoteTourState {
@@ -33,11 +39,4 @@ final class AddToWishlistError extends RemoteTourState {
   const AddToWishlistError(DioException error) : super(error: error);
 }
 
-//Review
-final class ReviewSuccess extends RemoteTourState {
-  const ReviewSuccess();
-}
 
-final class ReviewFail extends RemoteTourState {
-  const ReviewFail(DioException error) : super(error: error);
-}

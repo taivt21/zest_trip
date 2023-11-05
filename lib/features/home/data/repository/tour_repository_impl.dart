@@ -3,6 +3,7 @@ import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
 import 'package:zest_trip/features/home/data/models/tour_vehicle.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
+import 'package:zest_trip/features/home/domain/entities/tour_review_entity.dart';
 import 'package:zest_trip/features/home/domain/repositories/tour_repository.dart';
 
 class TourRepositoryImpl implements TourRepository {
@@ -49,5 +50,10 @@ class TourRepositoryImpl implements TourRepository {
   Future<DataState<bool>> postReview(
       String content, int rating, String tourId) async {
     return await _tourApiService.postReview(content, rating, tourId);
+  }
+
+  @override
+  Future<DataState<List<TourReviewEntity>>> getReviews(String tourId) async {
+    return await _tourApiService.getReviews(tourId);
   }
 }

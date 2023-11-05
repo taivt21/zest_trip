@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour.dart';
-import 'package:flutter_map/flutter_map.dart';
 
 class TripsScreen extends StatelessWidget {
   const TripsScreen({super.key});

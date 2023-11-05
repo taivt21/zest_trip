@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/dimension_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
@@ -19,8 +20,14 @@ class LoginScreen extends StatelessWidget {
           Navigator.of(context).pushReplacementNamed(AppRoutes.home);
         }
         if (state is AuthFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Login fail! Try again')));
+          Fluttertoast.showToast(
+              msg: "Oops, login failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
         }
       },
       builder: (context, state) {
@@ -47,6 +54,7 @@ class LoginScreen extends StatelessWidget {
         }
 
         return Scaffold(
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             title: const Text("Login"),
             centerTitle: true,

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';
 
@@ -27,7 +28,10 @@ final class VerifyInProgressState extends AuthState {}
 
 final class VerifiedState extends AuthState {}
 
-final class VerifiedFailState extends AuthState {}
+final class VerifiedFailState extends AuthState {
+  final DioException? error;
+  const VerifiedFailState(this.error);
+}
 
 final class AuthFailure extends AuthState {
   final String errorMessage;

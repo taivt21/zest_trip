@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:zest_trip/features/home/data/models/tour_review_model.dart';
 import '../../../../../../config/network/dio_helper.dart';
 import '../../../../../../config/utils/resources/data_state.dart';
 import '../../../../../../features/home/data/models/tour_model.dart';
@@ -10,6 +11,8 @@ import '../../../../../../features/home/data/models/tour_vehicle.dart';
 abstract class TourApiService {
   Future<DataState<List<TourModel>>> getAllTours(
       {String? search, int? page, int? limit, String? orderBy});
+
+  Future<DataState<List<TourReviewModel>>> getReviews(String tourId);
   Future<DataState<List<TourTag>>> getAllTags();
   Future<DataState<List<TourVehicle>>> getAllVehicles();
 
@@ -156,6 +159,30 @@ class TourApiServiceImpl implements TourApiService {
           requestOptions: response.requestOptions,
           response: response.data["data"]["message"],
         ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<TourReviewModel>>> getReviews(String tourId) async {
+    try {
+      final response = await DioHelper.dio.get('/review/tour/$tourId');
+      final reviews = (response.data['data'] as List)
+          .map((e) => TourReviewModel.fromJson(e))
+          .toList();
+      print("call api reviews: $reviews");
+      if (response.statusCode == 200) {
+        return DataSuccess(reviews);
+      } else {
+        return DataFailed(DioException(
+            type: DioExceptionType.badResponse,
+            message: 'The request returned an '
+                'invalid status code of ${response.statusCode}.',
+            requestOptions: response.requestOptions,
+            response: response.data,
+            error: reviews));
       }
     } on DioException catch (e) {
       return DataFailed(e);

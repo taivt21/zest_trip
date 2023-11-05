@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
@@ -42,7 +43,7 @@ class OTPScreenState extends State<OTPScreen> {
   void _onSignUpPressed(String code) {
     final email = widget.email;
     final password = widget.password;
-    print("email, $password, $otp");
+    debugPrint("email, $password, $otp");
     context.read<AuthBloc>().add(
           RegisterWithEmailAndPasswordEvent(
             email: email,
@@ -58,13 +59,25 @@ class OTPScreenState extends State<OTPScreen> {
       listener: (context, state) {
         if (state is VerifiedState) {
           _stopCountdown();
-          // ScaffoldMessenger.of(context)
-          //     .showSnackBar(const SnackBar(content: Text('Verify success!')));
-          Navigator.of(context).pushNamed(AppRoutes.home);
+          Fluttertoast.showToast(
+              msg: "Sign up success! Login now ",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          Navigator.of(context).pushNamed(AppRoutes.login);
         }
         if (state is VerifiedFailState) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('OTP not valid!')));
+          Fluttertoast.showToast(
+              msg: "${state.error?.response?.data['message']}",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
         }
       },
       child: SafeArea(
