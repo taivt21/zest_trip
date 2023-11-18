@@ -28,3 +28,9 @@ final class BookTourSuccess extends PaymentState {
   final String url;
   const BookTourSuccess(this.url);
 }
+
+final class RequestRefund extends PaymentState {}
+
+final class RefundSuccess extends PaymentState {}
+
+final class RefundFail extends PaymentState {}

@@ -16,6 +16,8 @@ class TourEntity extends Equatable {
   final List<String>? tourImages;
   final double? price;
   final int? duration;
+  final int? bookBefore;
+  final int? refundBefore;
   final String? status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -44,6 +46,8 @@ class TourEntity extends Equatable {
     this.tourImages,
     this.price,
     this.duration,
+    this.bookBefore,
+    this.refundBefore,
     this.status,
     this.createdAt,
     this.updatedAt,
@@ -73,6 +77,8 @@ class TourEntity extends Equatable {
         tourImages,
         price,
         duration,
+        bookBefore,
+        refundBefore,
         status,
         createdAt,
         updatedAt,

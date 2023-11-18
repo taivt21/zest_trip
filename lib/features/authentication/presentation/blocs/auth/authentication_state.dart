@@ -34,12 +34,12 @@ final class VerifiedFailState extends AuthState {
 }
 
 final class AuthFailure extends AuthState {
-  final String errorMessage;
+  final DioException error;
 
-  const AuthFailure(this.errorMessage);
+  const AuthFailure(this.error);
 
   @override
-  List<Object> get props => [errorMessage];
+  List<Object> get props => [error];
 }
 
 final class AuthLoggedOut extends AuthState {}

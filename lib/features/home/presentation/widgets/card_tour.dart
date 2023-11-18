@@ -4,12 +4,14 @@ class TourCard extends StatelessWidget {
   final String tourName;
   final String imageUrl;
   final String price;
+  final String location;
 
   const TourCard({
     super.key,
     required this.tourName,
     required this.imageUrl,
     required this.price,
+    required this.location,
   });
 
   @override
@@ -46,19 +48,20 @@ class TourCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  price,
+                  "$price ₫",
                   style: const TextStyle(
                     fontSize: 14,
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   child: Row(
                     children: [
-                      Icon(Icons.location_on, color: Colors.grey, size: 16),
-                      SizedBox(width: 4),
+                      const Icon(Icons.location_on,
+                          color: Colors.grey, size: 16),
+                      const SizedBox(width: 4),
                       Text(
-                        'Ben tre',
-                        style: TextStyle(
+                        location,
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
                         ),

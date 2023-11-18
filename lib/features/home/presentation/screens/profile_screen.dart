@@ -1,13 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/policy_webview.dart';
 import '../../../../config/utils/constants/color_constant.dart';
-import '../../../authentication/presentation/blocs/auth_bloc_ex.dart';
+import '../../../authentication/presentation/blocs/auth/auth_bloc_ex.dart';
 import '../widgets/card_profile.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -18,10 +21,14 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'My Profile',
-          style:
-              Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 18),
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(0.1),
+          child: Divider(
+            color: Colors.black,
+          ),
         ),
         // centerTitle: true,
       ),
@@ -72,31 +79,31 @@ class ProfileScreen extends StatelessWidget {
                                 color: primaryColor),
                             child: IconButton(
                               onPressed: () async {
-                                // final picker = ImagePicker();
+                                final picker = ImagePicker();
 
-                                // try {
-                                //   // Chọn ảnh từ thư viện
-                                //   final pickedFile = await picker.pickImage(
-                                //       source: ImageSource.gallery);
+                                try {
+                                  // Chọn ảnh từ thư viện
+                                  final pickedFile = await picker.pickImage(
+                                      source: ImageSource.gallery);
 
-                                //   if (pickedFile != null) {
-                                //     File imageFile = File(pickedFile.path);
+                                  if (pickedFile != null) {
+                                    File imageFile = File(pickedFile.path);
 
-                                //     context
-                                //         .read<AuthBloc>()
-                                //         .add(UploadImageEvent(imageFile));
-                                //   } else {
-                                //     // Hiển thị thông báo nếu người dùng không chọn ảnh
-                                //     ScaffoldMessenger.of(context).showSnackBar(
-                                //       const SnackBar(
-                                //         content:
-                                //             Text('Please choose an image.'),
-                                //       ),
-                                //     );
-                                //   }
-                                // } catch (e) {
-                                //   debugPrint('Error picking image: $e');
-                                // }
+                                    context
+                                        .read<AuthBloc>()
+                                        .add(UploadImageEvent(imageFile));
+                                  } else {
+                                    // Hiển thị thông báo nếu người dùng không chọn ảnh
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text('Please choose an image.'),
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  debugPrint('Error picking image: $e');
+                                }
                               },
                               icon: const Icon(
                                 Icons.edit,

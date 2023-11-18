@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/reviews/tour_reviews_bloc.dart';
-import 'package:zest_trip/features/home/presentation/widgets/reply_of_provider.dart';
 import 'package:zest_trip/features/home/presentation/widgets/review_of_user.dart';
 import 'package:zest_trip/get_it.dart';
 
 class ReviewsOfTour extends StatelessWidget {
   final String tourId;
+  final String ratingTour;
+  final int ratingCount;
   const ReviewsOfTour({
     super.key,
     required this.tourId,
+    required this.ratingTour,
+    required this.ratingCount,
   });
 
   @override
@@ -19,6 +22,12 @@ class ReviewsOfTour extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("All reviews"),
+          bottom: const PreferredSize(
+            preferredSize: Size.fromHeight(0.1),
+            child: Divider(
+              color: Colors.black,
+            ),
+          ),
         ),
         body: BlocBuilder<TourReviewsBloc, TourReviewsState>(
           builder: (context, state) {
@@ -30,33 +39,66 @@ class ReviewsOfTour extends StatelessWidget {
               // Build the UI based on the state of the bloc
               return SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
+                      Row(
+                        children: [
+                          Text(num.parse(ratingTour).toStringAsFixed(1),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineLarge
+                                  ?.copyWith(fontWeight: FontWeight.w700)),
+                          Text(" /5",
+                              style: Theme.of(context).textTheme.bodyMedium),
+
+                          const SizedBox(width: 8.0),
+
+                          Row(
+                            children: List.generate(
+                              5,
+                              (index) {
+                                num starValue = num.parse(ratingTour);
+                                num remainder = starValue - index;
+
+                                if (remainder >= 1) {
+                                  return const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                    size: 32.0,
+                                  );
+                                } else if (remainder > 0.5) {
+                                  return const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                    size: 32.0,
+                                  );
+                                } else if (remainder > 0) {
+                                  return const Icon(
+                                    Icons.star_half,
+                                    color: Colors.amber,
+                                    size: 32.0,
+                                  );
+                                } else {
+                                  return const Icon(
+                                    Icons.star_border,
+                                    color: Colors.amber,
+                                    size: 32.0,
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+
+                          const SizedBox(width: 8.0),
+
+                          // Reviews count text
+                          Text("$ratingCount Reviews",
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ],
+                      ),
                       for (var review in state.reviews!)
-                        UserReview(
-                          avatarUrl: review.user?.avatarImageUrl ?? "",
-                          userName: review.user?.fullName ?? "anonymous",
-                          starRating: review.rating ?? 0,
-                          description: review.description ?? "description",
-                          reviewDateTime: review.createdAt ?? DateTime.now(),
-                          replies: (review.replies != null &&
-                                  review.replies!.isNotEmpty)
-                              ? [
-                                  for (var reply
-                                      in review.replies!["description"])
-                                    ReplyOfProvider(
-                                      avatarUrl:
-                                          reply.user?.avatarImageUrl ?? "",
-                                      userName:
-                                          reply.user?.fullName ?? "anonymous",
-                                      replyText: reply.text ?? "No reply text",
-                                      replyDateTime:
-                                          reply.createdAt ?? DateTime.now(),
-                                    ),
-                                ]
-                              : [],
-                        ),
+                        UserReview(tourReview: review),
                     ],
                   ),
                 ),

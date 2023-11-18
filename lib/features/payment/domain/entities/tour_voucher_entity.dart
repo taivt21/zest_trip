@@ -1,77 +1,46 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:zest_trip/features/home/data/models/tour_tag.dart';
-import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
-
-class TourVoucher extends Equatable {
+class TourVoucherEntity extends Equatable {
   final String? id;
-
-  final String? providerId;
-
-  final String? label;
-
-  final String? description;
-
-  final int? type;
-
-  final String? discountAmount;
-
-  final double? minimumPrice;
-
-  final String? totalVoucherCount;
-
-  final int? usedVoucherCount;
-
-  final List<TourTag>? allowedTags;
-
-  final List<TourEntity>? allowedTours;
-
-  final String? createBy;
-
+  final String? name;
+  final double? discount;
+  final String? discountType;
+  final int? quantity;
+  final int? quantityUsed;
+  final String? tourId;
   final DateTime? createdAt;
-
-  final DateTime? expireDate;
-
+  final DateTime? expiredDate;
   final DateTime? updatedAt;
-
   final String? status;
+  final Map<String, dynamic>? applyConditions;
 
-  const TourVoucher({
-    this.id,
-    required this.providerId,
-    this.label,
-    this.description,
-    this.type,
-    this.discountAmount,
-    this.minimumPrice,
-    this.totalVoucherCount,
-    this.usedVoucherCount,
-    this.allowedTags,
-    this.allowedTours,
-    this.createBy,
-    this.createdAt,
-    this.expireDate,
-    this.updatedAt,
-    this.status,
-  });
+  const TourVoucherEntity(
+      {this.id,
+      this.name,
+      this.discount,
+      this.discountType,
+      this.quantity,
+      this.quantityUsed,
+      this.tourId,
+      this.createdAt,
+      this.expiredDate,
+      this.updatedAt,
+      this.status,
+      this.applyConditions});
 
   @override
   List<Object?> get props => [
         id,
-        providerId,
-        label,
-        description,
-        type,
-        discountAmount,
-        minimumPrice,
-        totalVoucherCount,
-        usedVoucherCount,
-        allowedTags,
-        allowedTours,
-        createBy,
+        name,
+        discount,
+        discountType,
+        quantity,
+        quantityUsed,
+        tourId,
         createdAt,
-        expireDate,
+        expiredDate,
         updatedAt,
         status,
+        applyConditions
       ];
 }

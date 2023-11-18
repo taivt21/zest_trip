@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/dimension_constant.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
 import 'package:zest_trip/features/authentication/presentation/widgets/form_header_login.dart';
 import 'package:zest_trip/features/authentication/presentation/widgets/login_footer_widget.dart';
 import 'package:zest_trip/features/authentication/presentation/widgets/login_form_widget.dart';
@@ -21,11 +21,10 @@ class LoginScreen extends StatelessWidget {
         }
         if (state is AuthFailure) {
           Fluttertoast.showToast(
-              msg: "Oops, login failed",
+              msg: state.error.response?.data["message"],
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.CENTER,
               timeInSecForIosWeb: 1,
-              backgroundColor: Colors.red,
               textColor: Colors.white,
               fontSize: 16.0);
         }

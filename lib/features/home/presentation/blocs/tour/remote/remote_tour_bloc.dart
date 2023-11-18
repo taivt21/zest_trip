@@ -14,11 +14,20 @@ class RemoteTourBloc extends Bloc<RemoteTourEvent, RemoteTourState> {
     this._addWishlistUseCase,
   ) : super(const RemoteTourLoading()) {
     on<GetTours>((event, emit) async {
-      final dataState = await _getTourUseCase.call();
+      final dataState =
+          await _getTourUseCase.call(page: event.page, limit: event.limit);
 
       if (dataState is DataSuccess) {
-        emit(RemoteTourDone(dataState.data!));
+        final currentState = state;
+
+        if (currentState is RemoteTourDone) {
+          final updatedState = currentState.withMoreTours(dataState.data!);
+          emit(updatedState);
+        } else {
+          emit(RemoteTourDone(tours: dataState.data!, hasMore: true));
+        }
       }
+
       if (dataState is DataFailed) {
         print(dataState.error?.response?.data["message"]);
         emit(RemoteTourError(dataState.error!));

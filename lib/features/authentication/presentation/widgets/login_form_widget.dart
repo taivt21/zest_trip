@@ -5,8 +5,8 @@ import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_bloc.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_event.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_event.dart';
 
 class LoginFormWidget extends StatefulWidget {
   const LoginFormWidget({Key? key}) : super(key: key);

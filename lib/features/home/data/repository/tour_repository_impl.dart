@@ -22,8 +22,10 @@ class TourRepositoryImpl implements TourRepository {
   }
 
   @override
-  Future<DataState<List<TourEntity>>> getAllTours() async {
-    return await _tourApiService.getAllTours();
+  Future<DataState<List<TourEntity>>> getAllTours(
+      {String? search, int? page, int? limit, String? orderBy, Set<int>? tagIds}) async {
+    return await _tourApiService.getAllTours(
+        page: page, limit: limit, search: search, orderBy: orderBy,tagIds: tagIds);
   }
 
   @override
@@ -44,12 +46,6 @@ class TourRepositoryImpl implements TourRepository {
   @override
   Future<DataState<bool>> removeFromWishlist(String tourId) {
     throw UnimplementedError();
-  }
-
-  @override
-  Future<DataState<bool>> postReview(
-      String content, int rating, String tourId) async {
-    return await _tourApiService.postReview(content, rating, tourId);
   }
 
   @override

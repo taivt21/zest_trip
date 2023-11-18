@@ -1,75 +1,65 @@
-import 'package:zest_trip/features/home/data/models/tour_model.dart';
-import 'package:zest_trip/features/home/data/models/tour_tag.dart';
-import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/payment/domain/entities/tour_voucher_entity.dart';
 
-class TourVoucherModel extends TourVoucher {
+class TourVoucherModel extends TourVoucherEntity {
   const TourVoucherModel({
     String? id,
-    String? providerId,
-    String? label,
-    String? description,
-    int? type,
-    String? discountAmount,
-    double? minimumPrice,
-    String? totalVoucherCount,
-    int? usedVoucherCount,
-    List<TourTag>? allowedTags,
-    List<TourEntity>? allowedTours,
-    String? createBy,
+    String? name,
+    double? discount,
+    String? discountType,
+    int? quantity,
+    int? quantityUsed,
+    String? tourId,
     DateTime? createdAt,
-    DateTime? expireDate,
+    DateTime? expiredDate,
     DateTime? updatedAt,
     String? status,
+    Map<String, dynamic>? applyCondition,
   }) : super(
-          id: id,
-          providerId: providerId,
-          label: label,
-          description: description,
-          type: type,
-          discountAmount: discountAmount,
-          minimumPrice: minimumPrice,
-          totalVoucherCount: totalVoucherCount,
-          usedVoucherCount: usedVoucherCount,
-          allowedTags: allowedTags,
-          allowedTours: allowedTours,
-          createBy: createBy,
-          createdAt: createdAt,
-          expireDate: expireDate,
-          updatedAt: updatedAt,
-          status: status,
-        );
+            id: id,
+            name: name,
+            discount: discount,
+            discountType: discountType,
+            quantity: quantity,
+            quantityUsed: quantityUsed,
+            tourId: tourId,
+            createdAt: createdAt,
+            expiredDate: expiredDate,
+            updatedAt: updatedAt,
+            status: status,
+            applyConditions: applyCondition);
+  // factory TourVoucherModel.fromJson(Map<String, dynamic> json) {
+  //   // final voucherList = json['data']['voucher'] as List<dynamic>;
+  //   final voucherList = json['data'] as List<dynamic>;
+
+  //   final vouchers = voucherList
+  //       .map((voucherJson) =>
+  //           TourVoucherModel._fromJson(voucherJson as Map<String, dynamic>))
+  //       .toList();
+
+  //   return vouchers.isNotEmpty
+  //       ? vouchers.first
+  //       : const TourVoucherModel(); // Return the first voucher for simplicity
+  // }
 
   factory TourVoucherModel.fromJson(Map<String, dynamic> json) {
     return TourVoucherModel(
       id: json['id'],
-      providerId: json['provider_id'],
-      label: json['label'],
-      description: json['description'],
-      type: json['type'],
-      discountAmount: json['discount_amount'],
-      minimumPrice: json['minimum_price'],
-      totalVoucherCount: json['total_voucher_count'],
-      usedVoucherCount: json['used_voucher_count'],
-      createBy: json['createBy'],
-      createdAt: DateTime.parse(json['createdAt']),
-      expireDate: DateTime.parse(json['expireDate']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      status: json['status'],
-      allowedTags: json['allowed_tags'] != null
-          ? List<TourTag>.from(
-              json['tag_id'].map(
-                (component) => TourTag.fromJson(component),
-              ),
+      name: json['name'],
+      discount: json['discount'],
+      discountType: json['discount_type'],
+      quantity: json['quantity'],
+      quantityUsed: json['quantity_used'],
+      tourId: json['tour_id'],
+      expiredDate: DateTime.parse(json['expired_date']),
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+      applyCondition: json['apply_condition'] != null
+          ? (json['apply_condition'] as Map<String, dynamic>).map(
+              (key, value) {
+                return MapEntry(key, value);
+              },
             )
-          : [],
-      allowedTours: json['allowed_tours'] != null
-          ? List<TourModel>.from(
-              json['tag_id'].map(
-                (component) => TourModel.fromJson(component),
-              ),
-            )
-          : [],
+          : {},
     );
   }
 }

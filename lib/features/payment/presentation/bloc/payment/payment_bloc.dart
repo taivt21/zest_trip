@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
+import 'package:zest_trip/features/payment/domain/entities/booking_entity.dart';
 
 import 'package:zest_trip/features/payment/domain/usecases/check_available_usecase.dart';
 import 'package:zest_trip/features/payment/domain/usecases/create_booking.dart';
@@ -32,14 +33,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     });
     on<CreateBooking>((event, emit) async {
       final dataState = await _createBookingUseCase.call(
-          event.name,
-          event.phone,
-          event.email,
-          event.adult,
-          event.children,
-          event.selectDate,
-          event.tourId,
-          event.redirectUrl ?? "");
+          event.bookingEntity, event.redirectUrl ?? "");
       print("datastate: $dataState");
       if (dataState is DataSuccess) {
         emit(BookTourSuccess(dataState.data));

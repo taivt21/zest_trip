@@ -6,8 +6,8 @@ import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';
 import 'package:zest_trip/features/authentication/domain/usecases/authentication_usecase.dart';
 import 'package:zest_trip/features/authentication/domain/usecases/upload_image_usecase.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_event.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/authentication_state.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_event.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginWithEmailAndPasswordUseCase _loginWithEmailAndPasswordUseCase;
@@ -41,7 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthSuccess(result.data!));
       } else if (result is DataFailed) {
         print(result.error?.response?.data["message"]);
-        emit(AuthFailure(result.error!.message!));
+        emit(AuthFailure(result.error!));
       }
     });
 
@@ -98,7 +98,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           if (result is DataSuccess<AuthUser>) {
             emit(AuthSuccess(result.data!));
           } else if (result is DataFailed) {
-            emit(AuthFailure(result.error!.message!));
+            emit(AuthFailure(result.error!));
           }
         }
       }
@@ -130,7 +130,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (result is DataSuccess) {
         emit(AuthLoggedOut());
       } else if (result is DataFailed) {
-        emit(AuthFailure(result.error!.message!));
+        emit(AuthFailure(result.error!));
       }
     });
 
@@ -143,7 +143,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (result is DataSuccess<AuthUser>) {
         emit(AuthSuccess(result.data!));
       } else if (result is DataFailed) {
-        emit(AuthFailure(result.error!.message!));
+        emit(AuthFailure(result.error!));
       }
     });
 

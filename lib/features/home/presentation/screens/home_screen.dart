@@ -5,7 +5,7 @@ import 'package:zest_trip/features/home/presentation/screens/main_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/profile_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/trips_screen.dart';
 
-const List<Widget> bottomNavScreen = <Widget>[
+const List<Widget> bottomNavScreen = [
   MainScreen(),
   // WishlistScreen(),
   TripsScreen(),
@@ -21,69 +21,72 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        bottomNavigationBar: NavigationBar(
-          onDestinationSelected: (int index) {
-            setState(() {
-              currentPageIndex = index;
-            });
-          },
-          indicatorColor: Colors.blue[100],
-          selectedIndex: currentPageIndex,
-          animationDuration: const Duration(microseconds: 1000),
-          destinations: <Widget>[
-            NavigationDestination(
-              selectedIcon: SvgPicture.asset(
-                homeSvg,
-                height: 24,
-                width: 24,
-              ),
-              icon: SvgPicture.asset(
-                homeSvg,
-                height: 24,
-                width: 24,
-              ),
-              label: 'Home',
+    return Scaffold(
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        indicatorColor: Colors.blue[100],
+        selectedIndex: currentPageIndex,
+        animationDuration: const Duration(microseconds: 1000),
+        destinations: [
+          NavigationDestination(
+            selectedIcon: SvgPicture.asset(
+              homeSvg,
+              height: 24,
+              width: 24,
             ),
-            // NavigationDestination(
-            //   icon: SvgPicture.asset(
-            //     heartSvg,
-            //     height: 24,
-            //     width: 24,
-            //   ),
-            //   label: 'Wishlist',
-            // ),
-            NavigationDestination(
-              icon: SvgPicture.asset(
-                tripSvg,
-                height: 24,
-                width: 24,
-              ),
-              label: 'Trips',
+            icon: SvgPicture.asset(
+              homeSvg,
+              height: 24,
+              width: 24,
             ),
-            // NavigationDestination(
-            //   icon: Icon(Icons.chat_outlined),
-            //   label: 'Chat',
-            // ),
-            NavigationDestination(
-              icon: SvgPicture.asset(
-                profileSvg,
-                height: 24,
-                width: 24,
-              ),
-              label: 'Profile',
+            label: 'Home',
+          ),
+          // NavigationDestination(
+          //   icon: SvgPicture.asset(
+          //     heartSvg,
+          //     height: 24,
+          //     width: 24,
+          //   ),
+          //   label: 'Wishlist',
+          // ),
+          NavigationDestination(
+            icon: SvgPicture.asset(
+              tripSvg,
+              height: 24,
+              width: 24,
             ),
-          ],
-        ),
-        body: IndexedStack(
-          index: currentPageIndex,
-          children: bottomNavScreen,
-        ),
+            label: 'Bookings',
+          ),
+          // NavigationDestination(
+          //   icon: Icon(Icons.chat_outlined),
+          //   label: 'Chat',
+          // ),
+          NavigationDestination(
+            icon: SvgPicture.asset(
+              profileSvg,
+              height: 24,
+              width: 24,
+            ),
+            label: 'Profile',
+          ),
+        ],
+      ),
+      body: IndexedStack(
+        index: currentPageIndex,
+        children: bottomNavScreen,
       ),
     );
   }

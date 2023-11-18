@@ -10,7 +10,9 @@ const String tripSvg = "assets/icons/app/travel.svg";
 const String profileSvg = "assets/icons/app/profile.svg";
 
 const String shareSvg = "assets/images/share.svg";
+const String couponSvg = "assets/images/coupon.svg";
 const String loginSvg = "assets/images/login.svg";
+const String reviewSvg = "assets/images/review.svg";
 const String registerSvg = "assets/images/register.svg";
 const String forgotSvg = "assets/images/forgot.svg";
 

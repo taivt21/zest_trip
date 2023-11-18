@@ -6,18 +6,25 @@ import 'package:intl/intl.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/dimension_constant.dart';
+import 'package:zest_trip/config/utils/resources/formatter.dart';
 import 'package:zest_trip/features/home/presentation/screens/policy_webview.dart';
 import 'package:zest_trip/features/home/presentation/widgets/titles_common.dart';
-import 'package:zest_trip/features/payment/domain/entities/order_entity.dart';
+import 'package:zest_trip/features/payment/domain/entities/booking_entity.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/payment/payment_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/screens/voucher_screen.dart';
 import 'package:zest_trip/features/payment/presentation/widgets/bottomsheet_participant.dart';
 
 class CompleteBookingScreen extends StatefulWidget {
-  final OrderEntity orderEntity;
+  final BookingEntity orderEntity;
+  final int refundBefore;
+  final int totalAdult;
+  final int totalChildren;
   const CompleteBookingScreen({
     Key? key,
     required this.orderEntity,
+    required this.refundBefore,
+    required this.totalAdult,
+    required this.totalChildren,
   }) : super(key: key);
 
   @override
@@ -67,7 +74,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.orderEntity.tourName,
+                        widget.orderEntity.tourName!,
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium!
@@ -77,7 +84,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                         height: 8,
                       ),
                       Text(
-                        "Date: ${DateFormat('dd-MM-yyyy').format(widget.orderEntity.selectedDate)}",
+                        "Date: ${DateFormat('dd-MM-yyyy').format(widget.orderEntity.selectedDate!)}",
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       Text(
@@ -92,12 +99,14 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                         "Children x${widget.orderEntity.children}",
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      Text("${widget.orderEntity.totalPrice}₫",
+                      Text(
+                          "${NumberFormatter.format(widget.orderEntity.totalPrice!)} ₫",
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge
                               ?.copyWith(fontWeight: FontWeight.bold)),
-                      Text("Free cancellation (24-hours notice)",
+                      Text(
+                          "Free cancellation before ${widget.refundBefore} days",
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge!
@@ -110,6 +119,65 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                   color: colorLightGrey,
                 ),
                 // Start Participant details
+                Container(
+                  padding: const EdgeInsets.all(spaceBody / 2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Titles(title: "Details payment"),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("x${widget.orderEntity.adult} Adult"),
+                          Text(
+                              "${NumberFormatter.format(widget.totalAdult)} ₫"),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("x${widget.orderEntity.children} Children"),
+                          Text(
+                              "${NumberFormatter.format(widget.totalChildren)} ₫"),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("DISCOUNT voucher"),
+                          Text("- 0 đ"),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Total amount:"),
+                          Text(
+                              "${NumberFormatter.format(widget.orderEntity.totalPrice!)} ₫"),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 8,
+                  color: colorLightGrey,
+                ),
                 Container(
                   padding: const EdgeInsets.all(spaceBody / 2),
                   child: Column(
@@ -130,7 +198,6 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                               return const ParticipantBottomSheet();
                             },
                           );
-
                           // Gọi hàm hiển thị thông tin người tham gia lên UI
                           _displayParticipantInfo(result);
                         },
@@ -202,7 +269,9 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                                     style: const TextStyle(color: colorHint),
                                   ),
                                   const SizedBox(height: 8.0),
-                                  const Text("Any special request?"),
+                                  Text(note.isEmpty
+                                      ? "Any special request?"
+                                      : note),
                                 ],
                               ),
                             ),
@@ -230,7 +299,9 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const VoucherScreen()));
+                                  builder: (context) => VoucherScreen(
+                                        tourId: widget.orderEntity.tourId!,
+                                      )));
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(vertical: 8),
@@ -267,7 +338,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                   child: const Text(
                     'Please enter your info carefully. Once submitted it cannot be changed.',
                     style: TextStyle(
-                      color: Colors.black, // Màu chữ đen
+                      color: Colors.black,
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),
@@ -281,22 +352,33 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${widget.orderEntity.totalPrice} ₫",
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                  Row(
+                    children: [
+                      Text(
+                        "Paid:",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(
+                        " ${NumberFormatter.format(widget.orderEntity.totalPrice!)} ₫",
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                    ],
                   ),
                   ElevatedButtonCustom(
                     onPressed: () {
                       context.read<PaymentBloc>().add(CreateBooking(
-                          name: fullname,
-                          phone: phone,
-                          email: email,
-                          adult: widget.orderEntity.adult,
-                          children: widget.orderEntity.children ?? 0,
-                          selectDate: widget.orderEntity.selectedDate,
-                          tourId: widget.orderEntity.tourId));
+                            bookingEntity: BookingEntity(
+                                bookerName: fullname,
+                                bookerPhone: phone,
+                                bookerEmail: email,
+                                adult: widget.orderEntity.adult,
+                                children: widget.orderEntity.children ?? 0,
+                                selectedDate: widget.orderEntity.selectedDate,
+                                tourId: widget.orderEntity.tourId),
+                          ));
                       // Navigator.push(
                       //     context,
                       //     MaterialPageRoute(

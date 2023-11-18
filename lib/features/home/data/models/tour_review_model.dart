@@ -1,4 +1,5 @@
 import 'package:zest_trip/features/authentication/data/models/auth_user_model.dart';
+import 'package:zest_trip/features/home/data/models/provider_reply_model.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_review_entity.dart';
 
 class TourReviewModel extends TourReviewEntity {
@@ -11,6 +12,7 @@ class TourReviewModel extends TourReviewEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
     AuthUserModel? user,
+    ProviderReplyModel? reply,
     String? status,
   }) : super(
             id: id,
@@ -21,6 +23,7 @@ class TourReviewModel extends TourReviewEntity {
             user: user,
             createdAt: createdAt,
             updatedAt: updatedAt,
+            reply: reply,
             status: status);
 
   factory TourReviewModel.fromJson(Map<String, dynamic> json) {
@@ -30,7 +33,16 @@ class TourReviewModel extends TourReviewEntity {
       userId: json["user_id"],
       rating: json["rating"],
       description: json["content"],
-      user: AuthUserModel.fromJson(json['user']),
+      user: json['user'] != null ? AuthUserModel.fromJson(json['user']) : null,
+      reply: json['ReviewReplies'] != null
+          ? ProviderReplyModel.fromJson(json['ReviewReplies'])
+          : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
     );
   }
 }

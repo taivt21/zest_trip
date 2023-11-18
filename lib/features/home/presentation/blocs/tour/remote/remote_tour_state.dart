@@ -22,12 +22,26 @@ final class RemoteTourLoading extends RemoteTourState {
   const RemoteTourLoading();
 }
 
-final class RemoteTourDone extends RemoteTourState {
-  const RemoteTourDone(List<TourEntity> tour) : super(tours: tour);
+class RemoteTourDone extends RemoteTourState {
+  @override
+  final List<TourEntity> tours;
+  final bool hasMore;
+  const RemoteTourDone({required this.tours, required this.hasMore});
+
+  RemoteTourDone withMoreTours(List<TourEntity> moreTours) {
+    return RemoteTourDone(
+      tours: [...tours, ...moreTours],
+      hasMore: moreTours.isNotEmpty,
+    );
+  }
 }
 
 final class RemoteTourError extends RemoteTourState {
   const RemoteTourError(DioException error) : super(error: error);
+}
+
+final class NoMoreToLoad extends RemoteTourState {
+  const NoMoreToLoad();
 }
 
 //wishlist
@@ -38,5 +52,3 @@ final class AddedToWishlist extends RemoteTourState {
 final class AddToWishlistError extends RemoteTourState {
   const AddToWishlistError(DioException error) : super(error: error);
 }
-
-

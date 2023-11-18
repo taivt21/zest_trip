@@ -12,8 +12,9 @@ class GetTourUseCase {
     String? search,
     int? page,
     int? limit,
-    String? orderBy,
+    String? orderBy, Set<int>? tagIds
   }) {
-    return _tourRepository.getAllTours();
+    return _tourRepository.getAllTours(
+        limit: limit, search: search, page: page, orderBy: orderBy, tagIds: tagIds);
   }
 }

@@ -45,7 +45,7 @@ class MyWebViewState extends State<MyWebView> {
           onNavigationRequest: (NavigationRequest request) {
             if (request.url.startsWith('https://google.com')) {
               debugPrint('blocking navigation to ${request.url}');
-              Navigator.pushNamed(context, AppRoutes.landingScreen);
+              Navigator.pushNamed(context, AppRoutes.thanksBooking);
               return NavigationDecision.prevent;
             }
             return NavigationDecision.navigate;
@@ -55,10 +55,10 @@ class MyWebViewState extends State<MyWebView> {
       ..loadRequest(Uri.parse(widget.urlWeb));
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        // appBar: AppBar(
-        //   title: const Text('Policy'),
-        //   actions: const [],
-        // ),
+        appBar: AppBar(
+          title: const Text('Web'),
+          actions: const [],
+        ),
         body: WebViewWidget(controller: controller));
   }
 }

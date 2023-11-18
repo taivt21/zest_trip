@@ -21,10 +21,3 @@ final class GetReviewsFail extends TourReviewsState {
   const GetReviewsFail(DioException e) : super(error: e);
 }
 //Review
-final class ReviewSuccess extends TourReviewsState {
-  const ReviewSuccess();
-}
-
-final class ReviewFail extends TourReviewsState {
-  const ReviewFail(DioException error) : super(error: error);
-}

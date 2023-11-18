@@ -19,7 +19,7 @@ class _ParticipantBottomSheetState extends State<ParticipantBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -84,6 +84,9 @@ class _ParticipantBottomSheetState extends State<ParticipantBottomSheet> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(
+                height: 32,
               ),
               ElevatedButtonCustom(
                 onPressed: () {

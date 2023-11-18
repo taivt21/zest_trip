@@ -8,15 +8,18 @@ import 'package:zest_trip/config/theme/text_theme.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
+import 'package:zest_trip/config/utils/resources/formatter.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_review_entity.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/reviews/tour_reviews_bloc.dart';
+import 'package:zest_trip/features/home/presentation/screens/map_tour_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/review_of_tour_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/review_detail.dart';
 import 'package:zest_trip/features/home/presentation/widgets/tour_schedule_detail_widget.dart';
 import 'package:zest_trip/features/payment/presentation/widgets/bottomsheet_booking.dart';
 import 'package:zest_trip/features/home/presentation/widgets/titles_common.dart';
 import 'package:zest_trip/get_it.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TourDetailScreen extends StatefulWidget {
   final TourEntity tour;
@@ -33,14 +36,29 @@ class TourDetailScreenState extends State<TourDetailScreen> {
   bool showReadMore = false;
   TourReviewEntity? tourRevies;
 
-  // @override
-  // void dispose() {
-  //   _pageController.dispose();
-  //   super.dispose();
-  // }
+  GoogleMapController? mapController;
+  Set<Marker> markers = {};
+  double lat = 10.9051594;
+  double long = 106.8503913;
+  LatLng showLocation = const LatLng(10.9051594, 106.8503913);
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
+    markers.add(Marker(
+      markerId: MarkerId(showLocation.toString()),
+      position: showLocation,
+      infoWindow: const InfoWindow(
+        title: 'Hello',
+        snippet: 'Hi there',
+      ),
+      icon: BitmapDescriptor.defaultMarker,
+    ));
     super.initState();
   }
 
@@ -98,9 +116,16 @@ class TourDetailScreenState extends State<TourDetailScreen> {
       const SizedBox(height: 8),
       const Titles(title: "About"),
       const SizedBox(height: 8),
-      Text(
-        widget.tour.description!,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+      Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: colorHyperlinkSecondary,
+        ),
+        child: Text(
+          widget.tour.description!,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+        ),
       ),
       const SizedBox(height: 16),
 
@@ -119,9 +144,52 @@ class TourDetailScreenState extends State<TourDetailScreen> {
       ),
       const SizedBox(height: 8),
       const Titles(
+        title: "Location",
+      ),
+      InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const Maps(),
+            ),
+          );
+        },
+        child: Container(
+          margin: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(style: BorderStyle.none)),
+          width: double.infinity,
+          height: 150,
+          child: GoogleMap(
+            zoomGesturesEnabled: false,
+            initialCameraPosition: CameraPosition(
+              target: showLocation,
+              zoom: 14.0,
+            ),
+            markers: markers,
+            mapType: MapType.normal,
+            onMapCreated: (controller) {
+              setState(() {
+                mapController = controller;
+              });
+            },
+          ),
+        ),
+      ),
+
+      const SizedBox(height: 8),
+      const Titles(
         title: "Schedules",
       ),
-      TourScheduleWidget(tourSchedules: widget.tour.tourSchedule!),
+      const SizedBox(height: 8),
+      Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: fourthColor,
+          ),
+          child: TourScheduleWidget(tourSchedules: widget.tour.tourSchedule!)),
 
       const SizedBox(height: 8),
 
@@ -143,6 +211,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                     children: [
                       CircleAvatar(
                           radius: 40,
+                          backgroundColor: whiteColor,
                           backgroundImage:
                               widget.tour.provider?.avatarImageUrl != null
                                   ? CachedNetworkImageProvider(
@@ -182,10 +251,16 @@ class TourDetailScreenState extends State<TourDetailScreen> {
           ),
         ),
       ),
+
       // Display user reviews
-      const Titles(
-        title: "What do people think?",
+      GestureDetector(
+        onTap: () => Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Maps())),
+        child: const Titles(
+          title: "What do people think?",
+        ),
       ),
+
       const SizedBox(
         height: 12,
       ),
@@ -208,6 +283,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                         for (int i = 0; i < reviewState.reviews!.length; i++)
                           ReviewWidget(
                             tourReviews: TourReviewEntity(
+                              user: reviewState.reviews?[i].user,
                               userId: reviewState.reviews?[i].user?.fullName ??
                                   "Anonymous",
                               rating: reviewState.reviews?[i].rating,
@@ -217,6 +293,10 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                       ],
                     ),
                   );
+                } else if (reviewState is TourReviewsInitial) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 } else {
                   return Text("Something wrong ${reviewState.error}");
                 }
@@ -225,19 +305,35 @@ class TourDetailScreenState extends State<TourDetailScreen> {
           ),
         ],
       ),
-      TextButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => ReviewsOfTour(tourId: widget.tour.id!)));
-        },
-        child: const Text(
-          'See all',
-          style: TextStyle(
-            color: Colors.blue,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      const SizedBox(
+        height: 8,
       ),
+      BlocBuilder<TourReviewsBloc, TourReviewsState>(
+        builder: (context, reviewState) {
+          bool hasReviews = reviewState is GetReviewsSuccess &&
+              reviewState.reviews != null &&
+              reviewState.reviews!.isNotEmpty;
+
+          return SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                if (hasReviews) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ReviewsOfTour(
+                            tourId: widget.tour.id!,
+                            ratingCount: widget.tour.count?["TourReview"] ?? 0,
+                            ratingTour: widget.tour.avgRating ?? "0",
+                          )));
+                }
+              },
+              icon: const Icon(Icons.more_horiz_rounded),
+              label: const Text("See all reviews"),
+            ),
+          );
+        },
+      ),
+
       const SizedBox(
         height: 100,
       )
@@ -363,7 +459,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                     children: [
                       const Text("From"),
                       Text(
-                        '${widget.tour.pricingTicket?[0].fromPrice}₫',
+                        '${NumberFormatter.format(num.parse(widget.tour.pricingTicket![0].fromPrice!))}₫',
                         style: Theme.of(context)
                             .textTheme
                             .bodyLarge

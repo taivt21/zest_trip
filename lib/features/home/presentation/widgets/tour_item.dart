@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/dimension_constant.dart';
+import 'package:zest_trip/config/utils/resources/formatter.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -72,7 +73,8 @@ class TourItemWidget extends StatelessWidget {
                 style: DefaultTextStyle.of(context).style,
                 children: [
                   TextSpan(
-                    text: ' ${tour.pricingTicket![0].fromPrice}₫',
+                    text:
+                        ' ${NumberFormatter.format(num.parse(tour.pricingTicket![0].fromPrice!))}₫',
                     style: Theme.of(context)
                         .textTheme
                         .bodyLarge

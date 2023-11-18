@@ -1,6 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:zest_trip/config/utils/resources/data_state.dart';
+import 'package:zest_trip/features/home/domain/entities/provider_entity.dart';
+import 'package:zest_trip/features/home/domain/entities/tour_review_entity.dart';
 import 'package:zest_trip/features/payment/data/datasources/payment_api_service.dart';
+import 'package:zest_trip/features/payment/domain/entities/booking_entity.dart';
+import 'package:zest_trip/features/payment/domain/entities/invoice_entity.dart';
+import 'package:zest_trip/features/payment/domain/entities/tour_voucher_entity.dart';
 import 'package:zest_trip/features/payment/domain/repositories/payment_repository.dart';
 
 class PaymentRepositoryImpl extends PaymentRepository {
@@ -17,15 +22,39 @@ class PaymentRepositoryImpl extends PaymentRepository {
 
   @override
   Future<DataState> createBooking(
-      String name,
-      String phone,
-      String email,
-      int adult,
-      int children,
-      DateTime date,
-      String tourId,
-      String redirectUrl) async {
-    return await _paymentApiService.creatBooking(
-        name, phone, email, adult, children, date, tourId, redirectUrl);
+      BookingEntity bookingEntity, String redirectUrl) async {
+    return await _paymentApiService.creatBooking(bookingEntity, redirectUrl);
+  }
+
+  @override
+  Future<DataState<List<InvoiceEntity>>> getOwnBooking() async {
+    return await _paymentApiService.getOwnBooking();
+  }
+
+  @override
+  Future<DataState<ProviderEntity>> getInfoProvider(String providerId) async {
+    return await _paymentApiService.getInfoProvider(providerId);
+  }
+
+  @override
+  Future<DataState<bool>> postReview(
+      String content, int rating, String tourId) async {
+    return await _paymentApiService.postReview(content, rating, tourId);
+  }
+
+  @override
+  Future<DataState<List<TourReviewEntity>>> getOwnReview() async {
+    return await _paymentApiService.getOwnReview();
+  }
+
+  @override
+  Future<DataState<dynamic>> requestRefund(
+      String bookingId, String reason) async {
+    return await _paymentApiService.requestRefund(bookingId, reason);
+  }
+
+  @override
+  Future<DataState<List<TourVoucherEntity>>> getVoucher(String tourId)async {
+   return await _paymentApiService.getVoucher(tourId);
   }
 }

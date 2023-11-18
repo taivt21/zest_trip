@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
-import 'package:zest_trip/features/authentication/presentation/blocs/auth_bloc_ex.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/auth_bloc_ex.dart';
 
 class OTPScreen extends StatefulWidget {
   final String email;

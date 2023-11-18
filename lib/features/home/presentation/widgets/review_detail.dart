@@ -27,6 +27,7 @@ class ReviewWidget extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
+                  backgroundColor: whiteColor,
                   backgroundImage: CachedNetworkImageProvider(
                       "${tourReviews?.user?.avatarImageUrl}"),
                   radius: 16,

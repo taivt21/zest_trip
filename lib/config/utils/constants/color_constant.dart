@@ -16,7 +16,8 @@ const cardBgColor = Color(0xFFF7F6F1);
 const colorBlack = Color(0xff565656);
 const colorHint = Color(0xff727272);
 const colorPlaceHolder = Color(0xffb9b9b9);
-const colorBackground = Color(0xfff9f9f9);
+// const colorBackground = Color(0xfff9f9f9);
+const colorBackground = Color(0xfff5f5f5);
 
 const colorError = Color(0xfff5222d);
 const colorErrorSecondary = Color(0xffffccc7);

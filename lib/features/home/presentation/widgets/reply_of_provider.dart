@@ -1,18 +1,14 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/features/home/domain/entities/provider_reply_entity.dart';
 
 class ReplyOfProvider extends StatelessWidget {
-  final String avatarUrl;
-  final String userName;
-  final String replyText;
-  final DateTime replyDateTime;
+  final ProviderReplyEntity providerReplyEntity;
 
   const ReplyOfProvider({
     Key? key,
-    required this.avatarUrl,
-    required this.userName,
-    required this.replyText,
-    required this.replyDateTime,
+    required this.providerReplyEntity,
   }) : super(key: key);
 
   @override
@@ -24,29 +20,13 @@ class ReplyOfProvider extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Row(
-          //   children: [
-          //     CircleAvatar(
-          //       backgroundImage: NetworkImage(avatarUrl),
-          //       radius: 16.0,
-          //     ),
-          //     const SizedBox(width: 8.0),
-          //     Text(
-          //       userName,
-          //       style: const TextStyle(
-          //         fontWeight: FontWeight.bold,
-          //         fontSize: 14.0,
-          //       ),
-          //     ),
-          //   ],
-          // ),
           Text(
             "Reply of Provider",
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const SizedBox(height: 4.0),
           Text(
-            replyText,
+            providerReplyEntity.content!,
             style: const TextStyle(fontSize: 14.0),
           ),
           const SizedBox(height: 4.0),
@@ -63,6 +43,6 @@ class ReplyOfProvider extends StatelessWidget {
   }
 
   String _getFormattedDate() {
-    return "${replyDateTime.day}/${replyDateTime.month}/${replyDateTime.year}";
+    return "${providerReplyEntity.createdAt!.day}/${providerReplyEntity.createdAt!.month}/${providerReplyEntity.createdAt!.year}";
   }
 }

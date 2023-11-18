@@ -6,6 +6,7 @@ import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/main_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/secondary_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/wishlist_screen.dart';
+import 'package:zest_trip/features/payment/presentation/screens/thanks_booking.dart';
 
 class AppRoutes {
   static const String login = '/login';
@@ -20,7 +21,7 @@ class AppRoutes {
   static const String otp = '/otp';
   static const String forgetPassword = '/forget_password';
   static const String landingScreen = '/landing';
-
+  static const String thanksBooking = '/thanks';
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case login:
@@ -36,6 +37,10 @@ class AppRoutes {
       case landingScreen:
         return _materialRoute(
           const SecondaryScreen(),
+        );
+      case thanksBooking:
+        return _materialRoute(
+          const ThankYouPage(title: "Thanks for booking"),
         );
       // case conversation:
       //   return _materialRoute(const ConversationScreen());

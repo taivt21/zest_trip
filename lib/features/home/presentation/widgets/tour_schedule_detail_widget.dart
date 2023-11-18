@@ -4,9 +4,13 @@ import 'package:zest_trip/features/home/domain/entities/tour_schedule_entity.dar
 
 class TourScheduleWidget extends StatefulWidget {
   final List<TourScheduleEntity> tourSchedules;
+  final bool showDescriptionBlur;
 
-  const TourScheduleWidget({Key? key, required this.tourSchedules})
-      : super(key: key);
+  const TourScheduleWidget({
+    Key? key,
+    required this.tourSchedules,
+    this.showDescriptionBlur = true,
+  }) : super(key: key);
 
   @override
   TourScheduleWidgetState createState() => TourScheduleWidgetState();
@@ -45,7 +49,7 @@ class TourScheduleWidgetState extends State<TourScheduleWidget> {
           Text(schedule.description ?? 'No Description'),
           const SizedBox(height: 8.0),
           if (schedule.tourScheduleDetails != null)
-            for (var detail in schedule.tourScheduleDetails ?? [])
+            for (var detail in schedule.tourScheduleDetails ?? []) ...[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -64,15 +68,30 @@ class TourScheduleWidgetState extends State<TourScheduleWidget> {
                       ),
                     ],
                   ),
-                  Text("${detail.description}")
+                  if (widget.showDescriptionBlur &&
+                      detail == schedule.tourScheduleDetails!.last)
+                    _buildBlurredDescription(detail.description),
+                  if (!widget.showDescriptionBlur ||
+                      detail != schedule.tourScheduleDetails!.last)
+                    Text("${detail.description}")
                 ],
-              )
+              ),
+            ],
         ],
       ),
     );
   }
 
-// Ở trong _buildViewMoreButton, thay vì truyền một phần tử duy nhất, truyền toàn bộ danh sách tourSchedules
+  Widget _buildBlurredDescription(String description) {
+    return Opacity(
+      opacity: 0.5,
+      child: Text(
+        description,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
   Widget _buildViewMoreButton(BuildContext context) {
     return TextButton(
       onPressed: () {
@@ -94,6 +113,7 @@ class TourScheduleWidgetState extends State<TourScheduleWidget> {
       builder: (BuildContext context) {
         return _BottomSheetContent(
           tourSchedules: widget.tourSchedules,
+          showDescriptionBlur: false,
         );
       },
     );
@@ -102,9 +122,13 @@ class TourScheduleWidgetState extends State<TourScheduleWidget> {
 
 class _BottomSheetContent extends StatelessWidget {
   final List<TourScheduleEntity> tourSchedules;
+  final bool showDescriptionBlur;
 
-  const _BottomSheetContent({Key? key, required this.tourSchedules})
-      : super(key: key);
+  const _BottomSheetContent({
+    Key? key,
+    required this.tourSchedules,
+    required this.showDescriptionBlur,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -114,17 +138,19 @@ class _BottomSheetContent extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Schedules'),
           bottom: TabBar(
+            isScrollable: true,
             tabs: tourSchedules
                 .map((schedule) => Tab(text: schedule.title))
                 .toList(),
           ),
         ),
         body: TabBarView(
-          children: tourSchedules
-              .map((schedule) => TourScheduleWidget(
-                    tourSchedules: [schedule],
-                  ))
-              .toList(),
+          children: tourSchedules.map((schedule) {
+            return TourScheduleWidget(
+              tourSchedules: [schedule],
+              showDescriptionBlur: showDescriptionBlur,
+            );
+          }).toList(),
         ),
       ),
     );

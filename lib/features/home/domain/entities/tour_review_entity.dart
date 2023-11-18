@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';
+import 'package:zest_trip/features/home/domain/entities/provider_reply_entity.dart';
 
 class TourReviewEntity extends Equatable {
   final String? id;
@@ -11,7 +12,7 @@ class TourReviewEntity extends Equatable {
   final DateTime? updatedAt;
   final AuthUser? user;
   final String? status;
-  final Map<String, dynamic>? replies;
+  final ProviderReplyEntity? reply;
 
   const TourReviewEntity({
     this.id,
@@ -23,7 +24,7 @@ class TourReviewEntity extends Equatable {
     this.createdAt,
     this.updatedAt,
     this.status,
-    this.replies,
+    this.reply,
   });
 
   @override
@@ -37,6 +38,6 @@ class TourReviewEntity extends Equatable {
         createdAt,
         updatedAt,
         status,
-        replies
+        reply
       ];
 }

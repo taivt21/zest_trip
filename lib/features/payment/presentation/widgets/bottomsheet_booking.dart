@@ -4,9 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
+import 'package:zest_trip/config/utils/resources/formatter.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
-import 'package:zest_trip/features/payment/domain/entities/order_entity.dart';
+import 'package:zest_trip/features/payment/domain/entities/booking_entity.dart';
 import 'package:zest_trip/features/payment/domain/entities/pricing_ticket_entity.dart';
+import 'package:zest_trip/features/payment/domain/entities/pricing_ticket_range_entity.dart';
 import 'package:zest_trip/features/payment/domain/entities/tour_availability_entity.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/payment/payment_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/screens/complete_booking_screen.dart';
@@ -28,6 +30,8 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
   int _children = 0;
   int _totalPrice = 0;
   String timeSlot = '';
+  late int _totalAdults;
+  late int _totalChildren;
 
   @override
   void dispose() {
@@ -62,15 +66,19 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
               context,
               MaterialPageRoute(
                   builder: (context) => CompleteBookingScreen(
-                        orderEntity: OrderEntity(
-                            tourId: widget.tour.id!,
-                            tourName: widget.tour.name!,
-                            adult: _adult,
-                            children: _children,
-                            totalPrice: _totalPrice,
-                            selectedDate: selectedDate,
-                            returnDate: returnDate,
-                            timeSlot: timeSlot),
+                        totalAdult: _totalAdults,
+                        totalChildren: _totalChildren,
+                        refundBefore: widget.tour.refundBefore!,
+                        orderEntity: BookingEntity(
+                          tourId: widget.tour.id!,
+                          tourName: widget.tour.name!,
+                          adult: _adult,
+                          children: _children,
+                          totalPrice: _totalPrice,
+                          selectedDate: selectedDate,
+                          returnDate: returnDate,
+                          timeSlot: timeSlot,
+                        ),
                       )));
         } else if (state is CheckFail) {
           Fluttertoast.showToast(
@@ -83,248 +91,356 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
               fontSize: 16.0);
         }
       },
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        height: MediaQuery.of(context).size.height * 0.8,
-        child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.85,
+        child: Stack(
           children: [
-            Center(
-              child: Text(
-                'Booking Options',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge
-                    ?.copyWith(fontWeight: FontWeight.w600, fontSize: 18),
-              ),
-            ),
-            const Divider(
-              color: colorPlaceHolder,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    "${widget.tour.name}",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontSize: 20),
-                  ),
-                ),
-              ],
-            ),
-            Wrap(
-              spacing: 8,
-              children: [
-                Chip(
-                  label: Text(
-                    "Free cancellation (24-hours notice)",
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: primaryColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  backgroundColor: fourthColor,
-                ),
-                Chip(
-                  label: Text(
-                    "Best choice",
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: primaryColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  backgroundColor: fourthColor,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Date Picker
             Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: colorPlaceHolder,
-                ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.all(16.0),
+              child: ListView(
+                // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.info_outline,
-                        color: colorBlack,
-                        size: 16,
-                      ),
-                      Text(' Please select a tour date',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ],
+                  Center(
+                    child: Text(
+                      'Booking Options',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontWeight: FontWeight.w600, fontSize: 18),
+                    ),
                   ),
                   const Divider(
                     color: colorPlaceHolder,
-                    indent: 5,
-                    endIndent: 5,
-                  ),
-                  const Text(
-                    "Check availability",
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: ListTile(
-                          title: Text(
-                            DateFormat('dd-MM-yyyy').format(selectedDate),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          leading: const Icon(
-                            Icons.calendar_month,
-                            color: Colors.black,
-                          ),
-                          onTap: () {
-                            _selectDate();
-                          },
-                        ),
-                      ),
-                      const Text(
-                        " - ",
-                      ),
-                      Expanded(
-                        child: ListTile(
-                          title: Text(
-                            DateFormat('dd-MM-yyyy').format(returnDate),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
+                        child: Text(
+                          "${widget.tour.name}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontSize: 20),
                         ),
                       ),
                     ],
                   ),
-                  // Hiển thị timeslot
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      Chip(
+                        label: Text(
+                          "Free cancellation before ${widget.tour.refundBefore} days",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(
+                                  color: primaryColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),
+                        ),
+                        backgroundColor: fourthColor,
+                      ),
+                      Chip(
+                        label: Text(
+                          "Best choice",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(
+                                  color: primaryColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),
+                        ),
+                        backgroundColor: fourthColor,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
 
-                  Chip(
-                    label: Text(
-                      '${DateFormat('EEEE').format(selectedDate)}, ${DateFormat('dd MMMM').format(selectedDate)} ,Time of departure: ${getSelectedTimeSlot(selectedDate)}',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: primaryColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold),
+                  // Date Picker
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: colorPlaceHolder,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    backgroundColor: fourthColor,
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.info_outline,
+                              color: colorBlack,
+                              size: 16,
+                            ),
+                            Text(' Please select a tour date',
+                                style: Theme.of(context).textTheme.bodyMedium),
+                          ],
+                        ),
+                        const Divider(
+                          color: colorPlaceHolder,
+                          indent: 5,
+                          endIndent: 5,
+                        ),
+                        const Text(
+                          "Check availability",
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  DateFormat('dd-MM-yyyy').format(selectedDate),
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                leading: const Icon(
+                                  Icons.calendar_month,
+                                  color: Colors.black,
+                                ),
+                                onTap: () {
+                                  _selectDate();
+                                },
+                              ),
+                            ),
+                            const Text(
+                              " - ",
+                            ),
+                            Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  DateFormat('dd-MM-yyyy').format(returnDate),
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // Hiển thị timeslot
+
+                        Chip(
+                          label: Text(
+                            '${DateFormat('EEEE').format(selectedDate)}, ${DateFormat('dd MMMM').format(selectedDate)} ,Time of departure: ${getSelectedTimeSlot(selectedDate)}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(
+                                    color: primaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                          backgroundColor: fourthColor,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: colorPlaceHolder,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 6,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.info_outline,
+                                      color: colorBoldGrey,
+                                      size: 16,
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Text(
+                                        ' Please select a ticket',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 4,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showPricingInfoDialog(
+                                        widget.tour.pricingTicket!);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 4,
+                                        child: Chip(
+                                          side: BorderSide.none,
+                                          labelPadding: const EdgeInsets.all(0),
+                                          label: Text(
+                                            "Buy for discount",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                    color: secondaryColor,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                          ),
+                                          backgroundColor: fourthColor,
+                                        ),
+                                      ),
+                                      const Expanded(
+                                        flex: 2,
+                                        child: Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: secondaryColor,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Divider(
+                            color: colorPlaceHolder,
+                            indent: 5,
+                            endIndent: 5,
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: widget.tour.pricingTicket!.length,
+                            itemBuilder: (context, index) {
+                              PricingTicketEntity ticketPricing =
+                                  widget.tour.pricingTicket![index];
+                              int totalPrice = (ticketPricing.ticketTypeId == 1)
+                                  ? _totalAdults
+                                  : _totalChildren;
+                              return ListTile(
+                                title: Row(
+                                  children: [
+                                    Text(
+                                      "${ticketPricing.ticket?.name?.toLowerCase().replaceAllMapped(RegExp(r'\b\w'), (match) => match.group(0)!.toUpperCase())}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                    Text(
+                                      " (${ticketPricing.fromAge} - ${ticketPricing.toAge})",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.w400),
+                                    )
+                                  ],
+                                ),
+                                subtitle: (totalPrice > 0)
+                                    ? Text(
+                                        "${NumberFormatter.format(totalPrice)}₫",
+                                      )
+                                    : Text(
+                                        "From ${NumberFormatter.format(num.parse(ticketPricing.fromPrice!))}₫",
+                                      ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.remove,
+                                        size: 16,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _decreaseAmount(ticketPricing);
+                                        });
+                                      },
+                                    ),
+                                    Text(
+                                      ticketPricing.ticketTypeId == 1
+                                          ? _adult.toString()
+                                          : _children.toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.add, size: 16),
+                                      onPressed: () {
+                                        setState(() {
+                                          _increaseAmount(ticketPricing);
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
                   ),
                 ],
               ),
             ),
-
-            const SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: colorPlaceHolder,
-                ),
-                borderRadius: BorderRadius.circular(16),
-              ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Divider(
+                      color: colorPlaceHolder,
+                    ),
                     Row(
                       children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: colorBoldGrey,
-                          size: 16,
-                        ),
+                        const Text("Total: "),
                         Text(
-                          ' Please select a ticket type',
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          "${NumberFormatter.format(calculateTotalPrice())}₫ ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                       ],
                     ),
-                    const Divider(
-                      color: colorPlaceHolder,
-                      indent: 5,
-                      endIndent: 5,
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: widget.tour.pricingTicket!.length,
-                      itemBuilder: (context, index) {
-                        PricingTicketEntity ticketPricing =
-                            widget.tour.pricingTicket![index];
-                        return ListTile(
-                          title: Text(
-                            "${ticketPricing.ticket?.name?.toLowerCase().replaceAllMapped(RegExp(r'\b\w'), (match) => match.group(0)!.toUpperCase())} ",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          subtitle: Text(
-                              "(${ticketPricing.fromAge} - ${ticketPricing.toAge})"),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.remove,
-                                  size: 16,
-                                  color: 1 > 0 ? colorBlack : colorPlaceHolder,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _decreaseAmount(ticketPricing);
-                                  });
-                                },
-                              ),
-                              Text(
-                                ticketPricing.ticketTypeId == 1
-                                    ? _adult.toString()
-                                    : _children.toString(),
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.add, size: 16),
-                                onPressed: () {
-                                  setState(() {
-                                    _increaseAmount(ticketPricing);
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        );
+                    ElevatedButtonCustom(
+                      onPressed: () {
+                        debugPrint(
+                            "tourId: ${widget.tour.id}, adult: $_adult, child: $_children, date: $selectedDate");
+                        context.read<PaymentBloc>().add(CheckAvailable(
+                            widget.tour.id!, _adult, _children, selectedDate));
                       },
+                      text: tBookTour,
                     ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-
-            const Divider(
-              color: colorPlaceHolder,
-            ),
-            Text(
-              "${calculateTotalPrice().toString()}₫ ",
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-
-            ElevatedButtonCustom(
-              onPressed: () {
-                debugPrint(
-                    "tourId: ${widget.tour.id}, adult: $_adult, child: $_children, date: ${selectedDate.toUtc().millisecondsSinceEpoch.toString()}");
-                context.read<PaymentBloc>().add(CheckAvailable(
-                    widget.tour.id!, _adult, _children, selectedDate));
-              },
-              text: tBookTour,
             ),
           ],
         ),
@@ -352,57 +468,46 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     }
   }
 
+  int calculatePriceForTicket(
+      int quantity, List<PricingTicketRangeEntity> priceRanges) {
+    int totalPrice = 0;
+    int remainingQuantity = quantity;
+
+    for (var priceRange in priceRanges) {
+      int fromAmount = priceRange.fromAmount ?? 0;
+      int toAmount = priceRange.toAmount ?? 0;
+      int price = priceRange.price ?? 0;
+
+      int rangeQuantity = (toAmount - fromAmount).clamp(0, remainingQuantity);
+      totalPrice += price * rangeQuantity;
+
+      remainingQuantity -= rangeQuantity;
+
+      if (remainingQuantity == 0) {
+        break;
+      }
+    }
+
+    if (remainingQuantity > 0 && priceRanges.isNotEmpty) {
+      var lastPriceRange = priceRanges.last;
+      int lastRangePrice = lastPriceRange.price ?? 0;
+      totalPrice += lastRangePrice * remainingQuantity;
+    }
+
+    return totalPrice;
+  }
+
   int calculateTotalPrice() {
     int totalAdultPrice = 0;
     int totalChildrenPrice = 0;
 
     for (var ticketPricing in widget.tour.pricingTicket!) {
-      int quantity;
-
-      if (ticketPricing.ticketTypeId == 1) {
-        quantity = _adult;
-      } else {
-        quantity = _children;
-      }
+      int quantity = (ticketPricing.ticketTypeId == 1) ? _adult : _children;
 
       if (quantity > 0) {
-        int totalPrice = 0;
+        int totalPrice =
+            calculatePriceForTicket(quantity, ticketPricing.priceRange!);
 
-        // Số lượng vé còn lại cần mua
-        int remainingQuantity = quantity;
-
-        for (var priceRange in ticketPricing.priceRange!) {
-          int fromAmount = priceRange.fromAmount ?? 0;
-          int toAmount = priceRange.toAmount ?? 0;
-          int price = priceRange.price ?? 0;
-
-          // Số lượng vé trong khoảng giá hiện tại
-          int rangeQuantity =
-              (toAmount - fromAmount).clamp(0, remainingQuantity);
-
-          // Cộng thêm giá của khoảng giá hiện tại vào tổng giá vé
-          totalPrice += price * rangeQuantity;
-
-          // Giảm số lượng vé còn lại dựa trên khoảng giá hiện tại
-          remainingQuantity -= rangeQuantity;
-
-          // Nếu đã đủ số lượng vé cần mua, thoát khỏi vòng lặp
-          if (remainingQuantity == 0) {
-            break;
-          }
-        }
-
-        // Nếu vẫn còn vé cần mua và còn thêm khoảng giá
-        if (remainingQuantity > 0 && ticketPricing.priceRange!.isNotEmpty) {
-          // Sử dụng khoảng giá cuối cùng để tính giá còn lại
-          var lastPriceRange = ticketPricing.priceRange!.last;
-          int lastRangePrice = lastPriceRange.price ?? 0;
-
-          // Cộng giá của khoảng giá cuối cùng vào tổng giá vé
-          totalPrice += lastRangePrice * remainingQuantity;
-        }
-
-        // Thêm giá vé vào tổng giá tương ứng
         if (ticketPricing.ticketTypeId == 1) {
           totalAdultPrice += totalPrice;
         } else {
@@ -411,9 +516,10 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
       }
     }
 
-    // Gọi setState để cập nhật giá trị total
     setState(() {
-      _totalPrice = totalAdultPrice + totalChildrenPrice;
+      _totalAdults = totalAdultPrice;
+      _totalChildren = totalChildrenPrice;
+      _totalPrice = _totalAdults + _totalChildren;
     });
 
     return _totalPrice;
@@ -435,21 +541,16 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
       for (var availability in tourAvailability) {
         DateTime startDate = availability.validityDateRangeFrom!;
         DateTime endDate = availability.validityDateRangeTo!;
-
-        if (currentDate.isAfter(startDate) &&
-            currentDate.isBefore(endDate.add(const Duration(days: 1)))) {
-          // Include all valid dates in the range
-          for (var date = startDate;
-              date.isBefore(endDate.add(const Duration(days: 1)));
-              date = date.add(const Duration(days: 1))) {
-            // Check if the date is a valid weekday and is after or at the same moment as the current date
-            if (availability.weekdays!.any((weekday) =>
-                    date.weekday ==
-                    convertApiWeekdayToFlutterWeekday(weekday.day!)) &&
-                (date.isAfter(currentDate) ||
-                    date.isAtSameMomentAs(currentDate))) {
-              validDates.add(date);
-            }
+        for (var date = startDate;
+            date.isBefore(endDate.add(const Duration(days: 1)));
+            date = date.add(const Duration(days: 1))) {
+          // Check if the date is a valid weekday and is after or at the same moment as the current date
+          if (availability.weekdays!.any((weekday) =>
+                  date.weekday ==
+                  convertApiWeekdayToFlutterWeekday(weekday.day!)) &&
+              (date.isAfter(currentDate) ||
+                  date.isAtSameMomentAs(currentDate))) {
+            validDates.add(date);
           }
         }
       }
@@ -477,7 +578,6 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
       }
@@ -519,13 +619,71 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
       }
       // Kiểm tra ngày trong weekdays
       for (var weekday in availability.weekdays!) {
-        if (weekday.day == selectedDate.weekday) {
+        if (convertApiWeekdayToFlutterWeekday(weekday.day!) ==
+            selectedDate.weekday) {
           return weekday.timeSlot!;
         }
       }
     }
 
     return '';
+  }
+
+  void showPricingInfoDialog(List<PricingTicketEntity> pricingTickets) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Buy more for discount"),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: pricingTickets.length,
+              itemBuilder: (context, index) {
+                PricingTicketEntity ticketPricing = pricingTickets[index];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ListTile(
+                      title: Text("Ticket: ${ticketPricing.ticket?.name}"),
+                      subtitle: Text(
+                        "Age: ${ticketPricing.fromAge} - ${ticketPricing.toAge}",
+                      ),
+                    ),
+                    // Display pricing information for the ticket
+                    for (var range in ticketPricing.priceRange!)
+                      Row(
+                        children: [
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: primaryColor,
+                            ),
+                          ),
+                          Text(
+                              ' Buy ${range.fromAmount} -  ${range.toAmount} : ${NumberFormat("#,###").format(range.price)} ₫'),
+                        ],
+                      ),
+                    const Divider(),
+                  ],
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Close"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   int convertApiWeekdayToFlutterWeekday(int apiWeekday) {

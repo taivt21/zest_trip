@@ -18,22 +18,12 @@ class CheckAvailable extends PaymentEvent {
 }
 
 class CreateBooking extends PaymentEvent {
-  final String name;
-  final String phone;
-  final String email;
-  final int adult;
-  final int children;
-  final DateTime selectDate;
-  final String tourId;
+  final BookingEntity bookingEntity;
+
   final String? redirectUrl;
+
   const CreateBooking({
-    required this.name,
-    required this.phone,
-    required this.email,
-    required this.adult,
-    required this.children,
-    required this.selectDate,
-    required this.tourId,
+    required this.bookingEntity,
     this.redirectUrl,
   });
 }
