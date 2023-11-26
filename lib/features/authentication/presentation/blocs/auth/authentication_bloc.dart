@@ -57,7 +57,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(VerifiedState());
       } else if (registrationResult is DataFailed) {
         print(registrationResult.error?.response?.data["message"]);
-        emit(VerifiedFailState(registrationResult.error));
+        emit(VerifiedFailState(registrationResult.error!));
       }
     });
 
@@ -68,7 +68,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(VerifyInProgressState());
       } else if (verificationResult is DataFailed) {
         print(verificationResult.error?.response?.data["message"]);
-        emit(VerifiedFailState(verificationResult.error));
+        emit(VerifiedFailState(verificationResult.error!));
       }
     });
 

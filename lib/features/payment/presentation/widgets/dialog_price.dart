@@ -10,7 +10,7 @@ class TicketPricingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Ticket Pricing Information'),
+      title: const Text('Ticket pricing information'),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

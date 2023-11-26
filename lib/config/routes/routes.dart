@@ -5,6 +5,7 @@ import 'package:zest_trip/features/authentication/presentation/screens/signup_sc
 import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/main_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/secondary_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/select_hobby_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/wishlist_screen.dart';
 import 'package:zest_trip/features/payment/presentation/screens/thanks_booking.dart';
 
@@ -13,6 +14,7 @@ class AppRoutes {
   static const String signup = '/signup';
   static const String main = '/main';
   static const String home = '/home';
+  static const String hobby = '/hobby';
 
   static const String logout = '/logout';
   static const String wishlist = '/wishlist';
@@ -33,6 +35,10 @@ class AppRoutes {
       case home:
         return _materialRoute(
           const HomeScreen(),
+        );
+      case hobby:
+        return _materialRoute(
+          const SelectHobbyScreen(),
         );
       case landingScreen:
         return _materialRoute(

@@ -15,6 +15,8 @@ const String loginSvg = "assets/images/login.svg";
 const String reviewSvg = "assets/images/review.svg";
 const String registerSvg = "assets/images/register.svg";
 const String forgotSvg = "assets/images/forgot.svg";
+const String locationSvg = "assets/images/location.svg";
+const String travelSvg = "assets/images/travel.svg";
 
 const String loginPng = "assets/images/login-png.png";
 const String registerPng = "assets/images/register-png.png";

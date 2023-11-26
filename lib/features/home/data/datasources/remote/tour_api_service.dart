@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:zest_trip/features/home/data/models/province_model.dart';
 import 'package:zest_trip/features/home/data/models/tour_review_model.dart';
 import '../../../../../../config/network/dio_helper.dart';
 import '../../../../../../config/utils/resources/data_state.dart';
@@ -15,10 +16,33 @@ abstract class TourApiService {
       int? limit,
       String? orderBy,
       Set<int>? tagIds});
+  Future<DataState<List<TourModel>>> getAllToursRcmTag(
+      {String? search,
+      int? page,
+      int? limit,
+      String? orderBy,
+      Set<int>? tagIds});
+  Future<DataState<List<TourModel>>> getAllToursRcmLocation(
+      {String? search,
+      int? page,
+      int? limit,
+      String? orderBy,
+      Set<int>? tagIds});
+  Future<DataState<List<TourModel>>> getAllToursRcmSearch(
+      {String? search,
+      int? page,
+      int? limit,
+      String? orderBy,
+      Set<int>? tagIds});
+
+  Future<DataState<dynamic>> analyticTag(Set<int> tags);
+  Future<DataState<dynamic>> analyticLocation(Set<String> locations);
+  Future<DataState<List<dynamic>>> getPopularLocation();
 
   Future<DataState<List<TourReviewModel>>> getReviews(String tourId);
   Future<DataState<List<TourTag>>> getAllTags();
   Future<DataState<List<TourVehicle>>> getAllVehicles();
+  Future<DataState<List<ProvinceModel>>> getAllProvinces();
 
   Future<DataState<bool>> addToWishlist(String tourId);
   Future<DataState<bool>> removeFromWishlist(String tourId);
@@ -34,10 +58,17 @@ class TourApiServiceImpl implements TourApiService {
       int? limit,
       String? orderBy,
       Set<int>? tagIds}) async {
-    final params = {"page": page, "limit": limit};
+    List<int> tags = tagIds?.toList() ?? [];
+    final params = {
+      "page": page,
+      "limit": 10,
+      "tag": tags,
+      "search": search ?? ""
+    };
+    print("data search tour: $params");
     try {
       final response =
-          await DioHelper.dio.get('/tour', queryParameters: params);
+          await DioHelper.dio.get('/tour/v2', queryParameters: params);
       List<TourModel> tours = [];
 
       if (response.data['data'] != null &&
@@ -46,6 +77,7 @@ class TourApiServiceImpl implements TourApiService {
             .map((e) => TourModel.fromJson(e))
             .toList();
       }
+      print("count tours : ${tours.length}");
       if (response.statusCode == 200) {
         return DataSuccess(tours);
       } else {
@@ -164,6 +196,200 @@ class TourApiServiceImpl implements TourApiService {
             requestOptions: response.requestOptions,
             response: response.data,
             error: reviews));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<ProvinceModel>>> getAllProvinces() async {
+    try {
+      final response = await DioHelper.dio.get('/resource/province/all');
+      final provinces = (response.data['data'] as List)
+          .map((e) => ProvinceModel.fromJson(e))
+          .toList();
+      print("call api provinces: $provinces");
+      if (response.statusCode == 200) {
+        return DataSuccess(provinces);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<TourModel>>> getAllToursRcmTag(
+      {String? search,
+      int? page,
+      int? limit,
+      String? orderBy,
+      Set<int>? tagIds}) async {
+    try {
+      final response = await DioHelper.dio.get('/analytic/user/tag');
+      List<TourModel> tours = [];
+
+      if (response.data['data'] != null &&
+          (response.data['data'] as List).isNotEmpty) {
+        tours = (response.data['data'] as List)
+            .map((e) => TourModel.fromJson(e))
+            .toList();
+      }
+      if (response.statusCode == 200) {
+        return DataSuccess(tours);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<TourModel>>> getAllToursRcmLocation(
+      {String? search,
+      int? page,
+      int? limit,
+      String? orderBy,
+      Set<int>? tagIds}) async {
+    try {
+      final response = await DioHelper.dio.get('/analytic/user/location');
+      List<TourModel> tours = [];
+
+      if (response.data['data'] != null &&
+          (response.data['data'] as List).isNotEmpty) {
+        tours = (response.data['data'] as List)
+            .map((e) => TourModel.fromJson(e))
+            .toList();
+      }
+      print("getAllToursRcmLocation: $tours");
+      if (response.statusCode == 200) {
+        return DataSuccess(tours);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<TourModel>>> getAllToursRcmSearch(
+      {String? search,
+      int? page,
+      int? limit,
+      String? orderBy,
+      Set<int>? tagIds}) async {
+    try {
+      final response = await DioHelper.dio.get('/analytic/search');
+      List<TourModel> tours = [];
+
+      if (response.data['data'] != null &&
+          (response.data['data'] as List).isNotEmpty) {
+        tours = (response.data['data'] as List)
+            .map((e) => TourModel.fromJson(e))
+            .toList();
+      }
+      print("getAllToursRcmSearch: $tours");
+      if (response.statusCode == 200) {
+        return DataSuccess(tours);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState> analyticLocation(Set<String> locations) async {
+    try {
+      final Map<String, dynamic> data = {"locations": locations.toList()};
+      final response =
+          await DioHelper.dio.post('/analytic/user/location', data: data);
+      print("response post location: $response , data: $data");
+      if (response.statusCode == 200) {
+        return DataSuccess(true);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState> analyticTag(Set<int> tags) async {
+    try {
+      final Map<String, dynamic> data = {"tags": tags.toList()};
+
+      final response =
+          await DioHelper.dio.post('/analytic/user/tag', data: data);
+
+      print("response post tag: $response , data: $data");
+      if (response.statusCode == 200) {
+        return DataSuccess(true);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<dynamic>>> getPopularLocation() async {
+    try {
+      final response = await DioHelper.dio.get('/analytic/popular/location');
+
+      if (response.statusCode == 200) {
+        return DataSuccess(response.data['data']);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
       }
     } on DioException catch (e) {
       return DataFailed(e);

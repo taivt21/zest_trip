@@ -2,9 +2,9 @@ import 'package:zest_trip/features/payment/domain/entities/tour_voucher_entity.d
 
 class TourVoucherModel extends TourVoucherEntity {
   const TourVoucherModel({
-    String? id,
+    int? id,
     String? name,
-    double? discount,
+    String? discount,
     String? discountType,
     int? quantity,
     int? quantityUsed,

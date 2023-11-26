@@ -1,16 +1,17 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-// coupon_widget.dart
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/config/utils/resources/formatter.dart';
 import 'package:zest_trip/features/payment/domain/entities/tour_voucher_entity.dart';
 
 class CouponWidget extends StatefulWidget {
   final TourVoucherEntity voucher;
+  final int paid;
   const CouponWidget({
     Key? key,
     required this.voucher,
+    required this.paid,
   }) : super(key: key);
 
   @override
@@ -28,52 +29,75 @@ class _CouponWidgetState extends State<CouponWidget> {
       margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
       child: ClipPath(
         clipper: DolDurmaClipper(
-            holeRadius:
-                20), // Sử dụng custom clipper DolDurmaClipper với bán kính lỗ là 20
+          holeRadius: 20,
+        ),
         child: Container(
           decoration: BoxDecoration(
             color: fourthColor,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "50% discount",
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.voucher.discountType == "PERCENT"
+                              ? "Discount ${widget.voucher.discount}%"
+                              : "Discount ${NumberFormatter.format(num.parse(widget.voucher.discount!))}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(fontSize: 20),
+                        ),
+                        TextButton(
+                          onPressed: widget.voucher.quantityUsed! >=
+                                      widget.voucher.quantity! ||
+                                  DateTime.now()
+                                      .isAfter(widget.voucher.expiredDate!) ||
+                                  widget.paid <
+                                      widget.voucher
+                                          .applyConditions?["minimum_price"]
+                              ? null
+                              : () {
+                                  Navigator.pop(
+                                    context,
+                                    {
+                                      'discountType':
+                                          widget.voucher.discountType,
+                                      'discount': widget.voucher.discount,
+                                      'voucherId': widget.voucher.id
+                                    },
+                                  );
+                                },
+                          child: Text(
+                            "Apply",
                             style: Theme.of(context)
                                 .textTheme
-                                .titleLarge
-                                ?.copyWith(fontSize: 20),
+                                .titleMedium
+                                ?.copyWith(
+                                  fontSize: 16,
+                                  color: _getApplyButtonColor(),
+                                ),
                           ),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "Apply",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(
-                                      fontSize: 16, color: secondaryColor),
-                            ),
-                          )
-                        ],
-                      ),
-                      Text(
-                        // "${widget.voucher.discount} ",
-                        "Save 50% for this booking",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ]),
+                        )
+                      ],
+                    ),
+                    Text(
+                      "Minimum price: ${widget.voucher.applyConditions?["minimum_price"] ?? 0}",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: _getMinimumPriceTextStyle(),
+                    ),
+                  ],
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
@@ -82,14 +106,24 @@ class _CouponWidgetState extends State<CouponWidget> {
                   height: 2,
                 ),
               ),
-              const Expanded(
+              Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(20, 8, 20, 8),
-                    child: Text(
-                      "[30% OFF] discount for Podcast Day; Discounted price: 104.30; Get Now UI PRO Flutter 30% discount OFF now. [30% OFF] discount for Podcast Day; Discounted price: 104.30; Get Now UI PRO Flutter 30% discount OFF now.",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${widget.voucher.name}",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          "Used ${_calculatePercentageUsed()}%, Date expired: ${_formatDate(widget.voucher.expiredDate)}",
+                          style: _getExpirationTextStyle(),
+                        ),
+                        _buildVoucherStatus(),
+                      ],
                     ),
                   ),
                 ),
@@ -100,49 +134,126 @@ class _CouponWidgetState extends State<CouponWidget> {
       ),
     );
   }
+
+  Widget _buildVoucherStatus() {
+    if (widget.voucher.quantityUsed! >= widget.voucher.quantity!) {
+      return Text(
+        "Voucher sold out",
+        style: Theme.of(context)
+            .textTheme
+            .titleSmall
+            ?.copyWith(color: Colors.grey),
+      );
+    } else if (DateTime.now().isAfter(widget.voucher.expiredDate!)) {
+      return Text(
+        "Out of date",
+        style: Theme.of(context)
+            .textTheme
+            .titleSmall
+            ?.copyWith(color: Colors.grey),
+      );
+    } else if (widget.paid < widget.voucher.applyConditions?["minimum_price"]) {
+      return Text(
+        "The minimum booking value is not enough",
+        style: Theme.of(context)
+            .textTheme
+            .titleSmall
+            ?.copyWith(color: Colors.grey),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  TextStyle _getExpirationTextStyle() {
+    if (widget.voucher.quantityUsed! >= widget.voucher.quantity! ||
+        DateTime.now().isAfter(widget.voucher.expiredDate!) ||
+        widget.paid < widget.voucher.applyConditions?["minimum_price"]) {
+      return Theme.of(context)
+              .textTheme
+              .titleSmall
+              ?.copyWith(color: Colors.grey) ??
+          const TextStyle();
+    } else {
+      return Theme.of(context)
+              .textTheme
+              .titleSmall
+              ?.copyWith(color: colorWarning) ??
+          const TextStyle();
+    }
+  }
+
+  TextStyle _getMinimumPriceTextStyle() {
+    if (widget.paid < widget.voucher.applyConditions?["minimum_price"]) {
+      return Theme.of(context)
+              .textTheme
+              .titleSmall
+              ?.copyWith(color: Colors.grey) ??
+          const TextStyle();
+    } else {
+      return Theme.of(context).textTheme.titleSmall ?? const TextStyle();
+    }
+  }
+
+  Color _getApplyButtonColor() {
+    if (widget.voucher.quantityUsed! >= widget.voucher.quantity! ||
+        DateTime.now().isAfter(widget.voucher.expiredDate!) ||
+        widget.paid < widget.voucher.applyConditions?["minimum_price"]) {
+      return Colors.grey;
+    } else {
+      return colorWarning;
+    }
+  }
+
+  String _calculatePercentageUsed() {
+    final num quantityUsed = widget.voucher.quantityUsed ?? 0;
+    final num quantity = widget.voucher.quantity ?? 1;
+
+    final num percentage = (quantityUsed / quantity) * 100;
+
+    return NumberFormatter.format(num.parse(percentage.toString()));
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date != null) {
+      final DateFormat formatter = DateFormat('yyyy-MM-dd');
+      return formatter.format(date);
+    }
+    return '';
+  }
 }
 
-// DolDurmaClipper - CustomClipper để tạo hình dạng đặc biệt cho widget couponWidget
 class DolDurmaClipper extends CustomClipper<Path> {
-  final double holeRadius; // Bán kính của lỗ tròn giữa widget
+  final double holeRadius;
 
   DolDurmaClipper({required this.holeRadius});
 
   @override
   Path getClip(Size size) {
-    var bottom = size.height / 2; // Tính toán độ cao của phần dưới widget
+    var bottom = size.height / 2;
     final path = Path()
-      ..moveTo(0, 0) // Di chuyển tới điểm (0, 0)
-      ..lineTo(
-          0.0,
-          size.height -
-              bottom -
-              holeRadius) // Vẽ đoạn thẳng đến điểm trước lỗ tròn
+      ..moveTo(0, 0)
+      ..lineTo(0.0, size.height - bottom - holeRadius)
       ..arcToPoint(
         Offset(0, size.height - bottom),
         clockwise: true,
         radius: const Radius.circular(1),
       )
-      ..lineTo(0.0, size.height) // Vẽ đoạn thẳng dọc theo cạnh dưới của widget
-      ..lineTo(size.width,
-          size.height) // Vẽ đoạn thẳng dọc theo cạnh phải của widget
-      ..lineTo(
-          size.width,
-          size.height -
-              bottom) // Vẽ đoạn thẳng dọc theo cạnh trên của phần dưới widget
+      ..lineTo(0.0, size.height)
+      ..lineTo(size.width, size.height)
+      ..lineTo(size.width, size.height - bottom)
       ..arcToPoint(
         Offset(size.width, size.height - bottom - holeRadius),
         clockwise: true,
         radius: const Radius.circular(1),
       );
 
-    path.lineTo(size.width, 0.0); // Vẽ đoạn thẳng đến điểm cuối cùng
+    path.lineTo(size.width, 0.0);
 
-    path.close(); // Kết thúc đường vẽ và đóng hình
+    path.close();
     return path;
   }
 
   @override
-  bool shouldReclip(DolDurmaClipper oldClipper) =>
-      true; // Luôn tái tạo clipper khi cần thiết
+  bool shouldReclip(DolDurmaClipper oldClipper) => true;
 }

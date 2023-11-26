@@ -5,7 +5,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
-import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/my_review/my_review_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/refund/refund_bloc.dart';
@@ -65,14 +64,9 @@ class RefundScreenState extends State<RefundScreen> {
                 timeInSecForIosWeb: 1,
                 textColor: Colors.white,
                 fontSize: 16.0);
-            context.read<MyReviewBloc>().add(GetMyReview());
+            BlocProvider.of<MyReviewBloc>(context).add(GetMyReview());
 
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ManageReviewScreen(),
-                ),
-                (route) => false);
+            Navigator.pop(context, (route) => false);
           }
         },
         child: SingleChildScrollView(
@@ -93,7 +87,8 @@ class RefundScreenState extends State<RefundScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Refund amount:"),
-                    Text("${widget.refundAmount} ₫")
+                    Text(
+                        "${NumberFormatter.format(num.parse(widget.refundAmount))} ₫")
                   ],
                 ),
                 const Text(

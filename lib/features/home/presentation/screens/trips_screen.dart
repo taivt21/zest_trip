@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour_manage.dart';
 import 'package:zest_trip/features/payment/domain/entities/invoice_entity.dart';
@@ -22,6 +23,7 @@ class TripsScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: const Text("My Bookings"),
+            automaticallyImplyLeading: false,
             bottom: const TabBar(
               isScrollable: true,
               tabs: [
@@ -77,7 +79,9 @@ class TripsScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.landingScreen);
+                  },
                   child: const Text("Search for your trip now"),
                 ),
               ],

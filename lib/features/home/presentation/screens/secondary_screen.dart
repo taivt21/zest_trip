@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
-import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/tags/tour_tag_bloc.dart';
 import 'package:zest_trip/features/home/presentation/screens/search_location_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.dart';
@@ -28,55 +27,28 @@ class SecondaryScreen extends StatefulWidget {
 class _SecondaryScreenState extends State<SecondaryScreen> {
   final ScrollController _scrollController = ScrollController();
   late int currentPage;
-  bool isLoadingMore = false;
-  // final _controller = TextEditingController();
-  // var uuid = const Uuid();
-  // final String _sessionToken = '1234567890';
-  // List<dynamic> _placeList = [];
-
-  // void getSuggestion(String input) async {
-  //   String kplacesApiKey = "AIzaSyDRohqsJ3uY_bpfD9VGClxbXHp73_dhgq0";
-  //   String type = '(regions)';
-
-  //   try {
-  //     String baseURL =
-  //         'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-  //     String request =
-  //         '$baseURL?input=$input&key=$kplacesApiKey&sessiontoken=$_sessionToken';
-
-  //     Response response = await Dio().get(request);
-
-  //     var data = response.data;
-  //     print('mydata');
-  //     print(data);
-
-  //     if (response.statusCode == 200) {
-  //       setState(() {
-  //         _placeList = response.data['predictions'];
-  //       });
-  //     } else {
-  //       throw Exception('Failed to load predictions');
-  //     }
-  //   } catch (e) {
-  //     // Xử lý ngoại lệ
-  //     // toastMessage('success');
-  //   }
-  // }
-
+  bool _isLoading = true;
+  String search = "";
   @override
   void initState() {
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
     currentPage = 1;
     super.initState();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
+    _scrollController.dispose();
   }
 
-  Set<TourTag> filter = <TourTag>{};
-  List<TourEntity> allTours = [];
+  Set<int> tagIds = <int>{};
 
   @override
   Widget build(context) {
@@ -84,22 +56,102 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<TourTagBloc>(
-          create: (context) => sl()..add(const GetTourTags()),
-        ),
         BlocProvider<RemoteTourBloc>(
-          create: (context) => sl()..add(const GetTours(page: 1, limit: 5)),
+          create: (context) => sl()
+            ..add(GetTours(page: 1, limit: 5, tags: tagIds, search: search)),
         ),
       ],
       child: Scaffold(
-        appBar: _buildAppbar(context),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          flexibleSpace: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SearchAnchor(
+                    builder:
+                        (BuildContext context, SearchController controller) {
+                      return SearchBar(
+                          elevation: const MaterialStatePropertyAll(0.6),
+                          hintText: "Search...",
+                          controller: controller,
+                          // padding: const MaterialStatePropertyAll<EdgeInsets>(
+                          //   EdgeInsets.symmetric(horizontal: 8.0),
+                          // ),
+                          onTap: () {
+                            controller.openView();
+                          },
+                          onChanged: (_) {
+                            controller.openView();
+                          },
+                          leading: GestureDetector(
+                            onTap: () async {
+                              final selectedLocation = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SearchLocationScreen(),
+                                ),
+                              );
+
+                              if (selectedLocation != null) {
+                                setState(() {
+                                  search = selectedLocation;
+                                });
+                                final remoteTourBloc =
+                                    BlocProvider.of<RemoteTourBloc>(context);
+                                remoteTourBloc.add(const ClearTour());
+                                remoteTourBloc.add(GetTours(
+                                  page: currentPage,
+                                  limit: 5,
+                                  tags: tagIds,
+                                  search: search,
+                                ));
+                              }
+                            },
+                            child: Chip(
+                              padding: const EdgeInsets.all(4),
+                              shape: const StadiumBorder(),
+                              deleteIcon: const Icon(Icons.arrow_drop_down),
+                              label: Text(search == "" ? "Location" : search),
+                            ),
+                          ));
+                    },
+                    suggestionsBuilder:
+                        (BuildContext context, SearchController controller) {
+                      return List<ListTile>.generate(5, (int index) {
+                        final String item = 'item $index';
+                        return ListTile(
+                          title: Text(item),
+                          onTap: () {
+                            setState(() {
+                              controller.closeView(item);
+                            });
+                          },
+                        );
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
         body: BlocBuilder<RemoteTourBloc, RemoteTourState>(
+          buildWhen: (previous, current) => previous.tours != current.tours,
           builder: (context, tourState) {
             if (tourState is RemoteTourLoading) {
               return const TourShimmer();
             }
             if (tourState is RemoteTourDone) {
-              logger.i('tour state: $tourState');
+              logger.i('tour state-------------: ${tourState.tours?.length}');
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -107,12 +159,20 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {
+                        final remoteTourBloc =
+                            BlocProvider.of<RemoteTourBloc>(context);
+                        remoteTourBloc.add(const ClearTour());
                         setState(() {
                           currentPage = 1;
+                          tagIds = {};
+                          _isLoading = true;
                         });
-                        // dispose();
-                        BlocProvider.of<RemoteTourBloc>(context).add(
-                          GetTours(page: currentPage, limit: 5),
+                        remoteTourBloc.add(
+                          GetTours(
+                              page: currentPage,
+                              limit: 5,
+                              tags: tagIds,
+                              search: search),
                         );
                       },
                       child: NotificationListener<ScrollNotification>(
@@ -120,34 +180,35 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                           if (scrollInfo is ScrollEndNotification &&
                               _scrollController.position.extentAfter == 0) {
                             setState(() {
-                              isLoadingMore = true;
                               currentPage++;
                               debugPrint("current page: $currentPage");
                             });
 
                             BlocProvider.of<RemoteTourBloc>(context).add(
-                              GetTours(page: currentPage, limit: 5),
+                              GetTours(
+                                  page: currentPage, limit: 5, tags: tagIds),
                             );
                           }
                           return false;
                         },
                         child: ListView.builder(
                           controller: _scrollController,
-                          itemCount: tourState.tours.isEmpty
-                              ? 1 // Nếu danh sách rỗng, hiển thị một lần cho EmptyWidget
-                              : tourState.tours.length + 1,
+                          itemCount: tourState.tours!.isEmpty
+                              ? 1
+                              : tourState.tours!.length +
+                                  (tourState.hasMore! ? 1 : 0),
                           itemBuilder: (context, index) {
-                            if (tourState.tours.isEmpty) {
-                              // Hiển thị EmptyWidget nếu danh sách rỗng
+                            if (tourState.tours!.isEmpty) {
                               return const Center(
                                 child: EmptyWidget(
                                   imageSvg: logoNoLetter,
                                   title: "Don't have any tour",
                                   subtitle: "",
                                 ),
+                                // child: CircularProgressIndicator(),
                               );
-                            } else if (index < tourState.tours.length) {
-                              final tour = tourState.tours[index];
+                            } else if (index < tourState.tours!.length) {
+                              final tour = tourState.tours![index];
                               return InkWell(
                                 onTap: () {
                                   Navigator.of(context).push(
@@ -161,9 +222,12 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                               );
                             } else {
                               return Center(
-                                child: isLoadingMore
+                                child: _isLoading
                                     ? const CircularProgressIndicator()
-                                    : const SizedBox.shrink(),
+                                    : Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 16),
+                                        child: const Text("No more to load")),
                               );
                             }
                           },
@@ -235,7 +299,7 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                   itemCount: tourTagState.tourTags?.length ?? 0,
                   itemBuilder: (context, index) {
                     final TourTag tag = tourTagState.tourTags![index];
-
+                    final int tagId = tag.id!;
                     String iconName = tag.name ?? 'default_icon';
 
                     String iconAssetPath = 'assets/icons/tags/$iconName.svg';
@@ -245,10 +309,10 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                       child: FilterChip(
                         backgroundColor: whiteColor,
                         side: BorderSide(
-                          color: filter.contains(tag)
+                          color: tagIds.contains(tagId)
                               ? primaryColor
                               : colorBoldGrey!,
-                          width: filter.contains(tag) ? 2.5 : 1.0,
+                          width: tagIds.contains(tagId) ? 2.5 : 1.0,
                         ),
                         selectedColor: whiteColor,
                         showCheckmark: false,
@@ -266,13 +330,37 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                           color: colorPlaceHolder,
                         )),
                         label: Text(tag.name ?? ""),
-                        selected: filter.contains(tag),
+                        selected: tagIds.contains(tagId),
                         onSelected: (bool selected) {
+                          final remoteTourBloc =
+                              BlocProvider.of<RemoteTourBloc>(context);
                           setState(() {
                             if (selected) {
-                              filter.add(tag);
+                              tagIds.add(tagId);
+                              remoteTourBloc.add(
+                                const ClearTour(),
+                              );
+                              remoteTourBloc.add(
+                                GetTours(
+                                    page: 1,
+                                    limit: 5,
+                                    tags: tagIds,
+                                    search: search),
+                              );
+
+                              print("tagId : $tagIds");
                             } else {
-                              filter.remove(tag);
+                              tagIds.remove(tagId);
+                              remoteTourBloc.add(
+                                const ClearTour(),
+                              );
+                              remoteTourBloc.add(
+                                GetTours(
+                                    page: 1,
+                                    limit: 5,
+                                    tags: tagIds,
+                                    search: search),
+                              );
                             }
                           });
                         },
@@ -284,78 +372,6 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
             );
           },
         ),
-      ),
-    );
-  }
-
-  // ),
-  // CustomScrollTabBar(
-  //   categories: tourTagBloc.state.tourTags ?? [],
-  //   onTabChanged: (index) {
-  //     // Do something when tab is changed
-  //   },
-  // ),
-  AppBar _buildAppbar(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      flexibleSpace: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SearchAnchor(
-                builder: (BuildContext context, SearchController controller) {
-                  return SearchBar(
-                      elevation: const MaterialStatePropertyAll(0.6),
-                      hintText: "Search...",
-                      controller: controller,
-                      // padding: const MaterialStatePropertyAll<EdgeInsets>(
-                      //   EdgeInsets.symmetric(horizontal: 8.0),
-                      // ),
-                      onTap: () {
-                        controller.openView();
-                      },
-                      onChanged: (_) {
-                        controller.openView();
-                      },
-                      leading: Chip(
-                        padding: const EdgeInsets.all(4),
-                        shape: const StadiumBorder(),
-                        onDeleted: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SearchLocationScreen()));
-                        },
-                        deleteIcon: const Icon(Icons.arrow_drop_down),
-                        label: const Text('Location'),
-                      ));
-                },
-                suggestionsBuilder:
-                    (BuildContext context, SearchController controller) {
-                  return List<ListTile>.generate(5, (int index) {
-                    final String item = 'item $index';
-                    return ListTile(
-                      title: Text(item),
-                      onTap: () {
-                        setState(() {
-                          controller.closeView(item);
-                        });
-                      },
-                    );
-                  });
-                },
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -17,11 +17,13 @@ class LoginScreen extends StatelessWidget {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+          state.user!.isRecommendRracked!
+              ? Navigator.of(context).pushReplacementNamed(AppRoutes.home)
+              : Navigator.of(context).pushReplacementNamed(AppRoutes.hobby);
         }
         if (state is AuthFailure) {
           Fluttertoast.showToast(
-              msg: state.error.response?.data["message"],
+              msg: state.error?.response?.data["message"],
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.CENTER,
               timeInSecForIosWeb: 1,

@@ -134,7 +134,7 @@ class OTPScreenState extends State<OTPScreen> {
                         text: TextSpan(
                           text: 'Resend OTP in',
                           style: TextStyle(
-                            color: isOTPVerified ? colorBlack : colorBackground,
+                            color: isOTPVerified ? colorBlack : colorLightGrey,
                             fontWeight: FontWeight.bold,
                           ),
                           children: <TextSpan>[

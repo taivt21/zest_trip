@@ -22,8 +22,9 @@ class PaymentRepositoryImpl extends PaymentRepository {
 
   @override
   Future<DataState> createBooking(
-      BookingEntity bookingEntity, String redirectUrl) async {
-    return await _paymentApiService.creatBooking(bookingEntity, redirectUrl);
+      BookingEntity bookingEntity, String redirectUrl, int voucherId) async {
+    return await _paymentApiService.creatBooking(
+        bookingEntity, redirectUrl, voucherId);
   }
 
   @override
@@ -54,7 +55,7 @@ class PaymentRepositoryImpl extends PaymentRepository {
   }
 
   @override
-  Future<DataState<List<TourVoucherEntity>>> getVoucher(String tourId)async {
-   return await _paymentApiService.getVoucher(tourId);
+  Future<DataState<List<TourVoucherEntity>>> getVoucher(String tourId) async {
+    return await _paymentApiService.getVoucher(tourId);
   }
 }

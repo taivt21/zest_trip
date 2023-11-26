@@ -10,7 +10,9 @@ import 'package:zest_trip/get_it.dart';
 
 class VoucherScreen extends StatelessWidget {
   final String tourId;
-  const VoucherScreen({Key? key, required this.tourId}) : super(key: key);
+  final int paid;
+  const VoucherScreen({Key? key, required this.tourId, required this.paid})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +24,6 @@ class VoucherScreen extends StatelessWidget {
         ),
         body: BlocBuilder<VoucherBloc, VoucherState>(
           builder: (context, state) {
-            if (state is GetVoucherFail || state is VoucherInitial) {
-              const Center(
-                child: EmptyWidget(
-                    imageSvg: homeSvg, title: "No voucher available "),
-              );
-            }
             if (state is GetVoucherSuccess) {
               return Container(
                 color: colorBackground,
@@ -77,22 +73,30 @@ class VoucherScreen extends StatelessWidget {
                           ? const Center(
                               child: EmptyWidget(
                                   imageSvg: couponSvg,
-                                  title: "No voucher available "),
+                                  title: "No voucher available"),
                             )
                           : ListView.builder(
                               itemCount: state.vouchers!.length,
                               itemBuilder: (context, index) {
                                 final voucher = state.vouchers![index];
-                                return CouponWidget(voucher: voucher);
+                                return CouponWidget(
+                                  voucher: voucher,
+                                  paid: paid,
+                                );
                               },
                             ),
                     ),
                   ],
                 ),
               );
-            } else {
+            } else if (state is VoucherInitial) {
               return const Center(
                 child: CircularProgressIndicator(),
+              );
+            } else {
+              return const Center(
+                child: EmptyWidget(
+                    imageSvg: homeSvg, title: "No voucher available "),
               );
             }
           },

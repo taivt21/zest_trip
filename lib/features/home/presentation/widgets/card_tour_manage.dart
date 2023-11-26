@@ -39,7 +39,7 @@ class CardTourManage extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    "${invoice.tour?['Provider']['company_name']}",
+                    "${invoice.tour?.provider?.companyName} ",
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ],
@@ -61,7 +61,7 @@ class CardTourManage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${invoice.tour?['name']} ",
+                      "${invoice.tour?.name} ",
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
@@ -97,7 +97,7 @@ class CardTourManage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage("${invoice.tour!["tour_images"][0]}"),
+                      image: NetworkImage("${invoice.tour?.tourImages?.first}"),
                     ),
                   ),
                 ),
@@ -145,24 +145,31 @@ class CardTourManage extends StatelessWidget {
                           ),
                         )
                       : TextButton(
-                          onPressed: canRefund(invoice)
-                              ? () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => RefundScreen(
-                                        refundAmount: invoice.refundAmount!,
-                                        bookingId: invoice.id!,
-                                        image: invoice.tour!["tour_images"][0],
-                                        location:
-                                            invoice.tour!["address_province"],
-                                        paid: invoice.paidPrice!,
-                                        tourName: invoice.tour!["name"],
-                                      ),
-                                    ),
-                                  );
-                                }
-                              : null,
+                          onPressed: () {
+                            if (canRefund(invoice)) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RefundScreen(
+                                    refundAmount:
+                                        invoice.refundAmount ?? "refundAmount",
+                                    bookingId: invoice.id!,
+                                    image: invoice.tour!.tourImages!.first,
+                                    location: invoice.tour!.addressProvince!,
+                                    paid: invoice.paidPrice!,
+                                    tourName: invoice.tour!.name ?? "tour name",
+                                  ),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      "Need to refund before ${invoice.tour?.refundBefore} days"),
+                                ),
+                              );
+                            }
+                          },
                           child: Text(
                             "Refund",
                             style: TextStyle(
@@ -191,11 +198,13 @@ class CardTourManage extends StatelessWidget {
                                     MaterialPageRoute(
                                       builder: (context) => ReviewScreen(
                                         tourId: invoice.tourId!,
-                                        image: invoice.tour!["tour_images"][0],
+                                        image: invoice.tour!.tourImages!.first,
                                         location:
-                                            invoice.tour!["address_province"],
+                                            invoice.tour!.addressProvince ??
+                                                "addressProvince",
                                         paid: invoice.paidPrice!,
-                                        tourName: invoice.tour!["name"],
+                                        tourName:
+                                            invoice.tour!.name ?? "tourName",
                                       ),
                                     ),
                                   );
@@ -219,7 +228,7 @@ class CardTourManage extends StatelessWidget {
 bool canRefund(InvoiceEntity invoice) {
   DateTime bookDate = invoice.bookedDate ?? DateTime.now();
   DateTime refundDate =
-      bookDate.subtract(Duration(days: invoice.tour?["refund_before"] ?? 0));
+      bookDate.subtract(Duration(days: invoice.tour?.refundBefore ?? 0));
   return DateTime.now().isBefore(refundDate) &&
       invoice.status?.toLowerCase() == "accepted";
 }

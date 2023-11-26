@@ -21,9 +21,11 @@ class CreateBooking extends PaymentEvent {
   final BookingEntity bookingEntity;
 
   final String? redirectUrl;
+  final int? voucherId;
 
   const CreateBooking({
     required this.bookingEntity,
     this.redirectUrl,
+    this.voucherId,
   });
 }

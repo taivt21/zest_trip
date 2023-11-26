@@ -10,7 +10,7 @@ abstract class PaymentRepository {
       String tourId, int adult, int children, DateTime date);
   Future<DataState<bool>> postReview(String content, int rating, String tourId);
   Future<DataState<dynamic>> createBooking(
-      BookingEntity bookingEntity, String redirectUrl);
+      BookingEntity bookingEntity, String redirectUrl, int voucherId);
   Future<DataState<dynamic>> requestRefund(String bookingId, String reason);
   Future<DataState<List<InvoiceEntity>>> getOwnBooking();
   Future<DataState<List<TourReviewEntity>>> getOwnReview();

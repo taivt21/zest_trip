@@ -14,7 +14,7 @@ abstract class PaymentApiService {
   Future<DataState<dynamic>> checkAvailable(
       String tourId, int adult, int children, DateTime date);
   Future<DataState<dynamic>> creatBooking(
-      BookingEntity bookingModel, String redirectUrl);
+      BookingEntity bookingModel, String redirectUrl, int voucherId);
   Future<DataState<dynamic>> requestRefund(String bookingId, String reason);
   Future<DataState<bool>> postReview(String content, int rating, String tourId);
 
@@ -56,9 +56,9 @@ class PaymentApiServiceImpl implements PaymentApiService {
 
   @override
   Future<DataState<dynamic>> creatBooking(
-      BookingEntity bookingModel, String redirectUrl) async {
+      BookingEntity bookingModel, String redirectUrl, voucherId) async {
     try {
-      final data = {
+      final Map<String, dynamic> data = {
         "booker_name": bookingModel.bookerName,
         "booker_phone": bookingModel.bookerPhone,
         "booker_email": bookingModel.bookerEmail,
@@ -68,8 +68,12 @@ class PaymentApiServiceImpl implements PaymentApiService {
         },
         "selected_date": bookingModel.selectedDate.toString(),
         "tour_id": bookingModel.tourId,
-        "redirectUrl": "https://google.com"
+        "redirectUrl": "https://google.com",
       };
+
+      if (voucherId != -1) {
+        data["voucher_id"] = voucherId;
+      }
       print("data create: $data");
       final response =
           await DioHelper.dio.post('/booking/bookTour', data: data);
@@ -127,11 +131,8 @@ class PaymentApiServiceImpl implements PaymentApiService {
     Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
     final String userId = payload['id'] as String;
     try {
-      final params = {
-        "user_id": userId,
-      };
-      final response =
-          await DioHelper.dio.post('/booking/owned', queryParameters: params);
+      final data = {"user_id": userId, "select": "399"};
+      final response = await DioHelper.dio.post('/booking/owned', data: data);
       List<InvoiceModel> bookings = [];
 
       if (response.data['data'] != null &&

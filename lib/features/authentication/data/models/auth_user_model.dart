@@ -15,6 +15,7 @@ class AuthUserModel extends AuthUser {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? status,
+    bool? isRecommendRracked,
   }) : super(
           id: id,
           roleId: roleId,
@@ -27,6 +28,7 @@ class AuthUserModel extends AuthUser {
           createdAt: createdAt,
           updatedAt: updatedAt,
           status: status,
+          isRecommendRracked: isRecommendRracked,
         );
 
   factory AuthUserModel.fromJson(Map<String, dynamic> json) {
@@ -43,8 +45,9 @@ class AuthUserModel extends AuthUser {
           "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
       bannerImageUrl: json['banner_image_url'] ??
           "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
-      // createdAt: DateTime.tryParse(json['created_at']),
-      // updatedAt: DateTime.tryParse(json['updated_at']),
+      isRecommendRracked: json['is_recommend_tracked'],
+      createdAt: DateTime.tryParse(json['created_at']),
+      updatedAt: DateTime.tryParse(json['updated_at']),
       // status: json['status'] ?? "",
     );
   }

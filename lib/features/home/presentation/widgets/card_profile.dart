@@ -7,13 +7,15 @@ class CardProfile extends StatelessWidget {
   VoidCallback? ontap;
   IconData icon;
   String title;
+  Color? colorText;
 
-  CardProfile({
-    Key? key,
-    required this.ontap,
-    required this.icon,
-    required this.title,
-  }) : super(key: key);
+  CardProfile(
+      {Key? key,
+      required this.ontap,
+      required this.icon,
+      required this.title,
+      this.colorText = colorBlack})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,9 @@ class CardProfile extends StatelessWidget {
                   color: primaryColor,
                 ),
               ),
-              title: Text(title, style: Theme.of(context).textTheme.bodyLarge),
+              title: Text(title,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: colorText, fontWeight: FontWeight.w500)),
               trailing: const Icon(Icons.arrow_forward_ios, size: 20.0)),
         ));
   }

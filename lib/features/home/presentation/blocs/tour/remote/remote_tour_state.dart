@@ -1,21 +1,22 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 
 abstract class RemoteTourState extends Equatable {
   final List<TourEntity>? tours;
   final DioException? error;
+  final bool? hasMore;
 
   const RemoteTourState({
     this.tours,
     this.error,
+    this.hasMore = false,
   });
 
   @override
-  List<Object?> get props => [
-        tours,
-        error,
-      ];
+  List<Object?> get props => [tours, error, hasMore];
 }
 
 final class RemoteTourLoading extends RemoteTourState {
@@ -23,17 +24,17 @@ final class RemoteTourLoading extends RemoteTourState {
 }
 
 class RemoteTourDone extends RemoteTourState {
-  @override
-  final List<TourEntity> tours;
-  final bool hasMore;
-  const RemoteTourDone({required this.tours, required this.hasMore});
+  const RemoteTourDone({
+    List<TourEntity>? tours,
+    bool hasMore = false,
+  }) : super(tours: tours, hasMore: hasMore);
 
-  RemoteTourDone withMoreTours(List<TourEntity> moreTours) {
-    return RemoteTourDone(
-      tours: [...tours, ...moreTours],
-      hasMore: moreTours.isNotEmpty,
-    );
-  }
+  // RemoteTourDone withMoreTours(List<TourEntity> moreTours) {
+  //   return RemoteTourDone(
+  //     tours: [...tours!, ...moreTours],
+  //     hasMore: hasMore!,
+  //   );
+  // }
 }
 
 final class RemoteTourError extends RemoteTourState {

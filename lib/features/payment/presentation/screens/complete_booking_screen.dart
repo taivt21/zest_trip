@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
@@ -36,6 +37,16 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
   String phone = "";
   String email = "";
   String note = "";
+  int totalDiscount = 0;
+  int discountedAmount = 0;
+  int? appliedVoucherId;
+
+  @override
+  void initState() {
+    discountedAmount = widget.orderEntity.totalPrice!;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<PaymentBloc, PaymentState>(
@@ -47,6 +58,17 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                   builder: (context) => MyWebView(
                         urlWeb: state.url,
                       )));
+        }
+        if (state is BookTourFail) {
+          Fluttertoast.showToast(
+              msg:
+                  "${state.error?.response?.data["message"] ?? "Book tour failed"}",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
         }
       },
       child: Scaffold(
@@ -150,11 +172,11 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                       const SizedBox(
                         height: 4,
                       ),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("DISCOUNT voucher"),
-                          Text("- 0 đ"),
+                          const Text("DISCOUNT voucher"),
+                          Text("- ${NumberFormatter.format(totalDiscount)} đ"),
                         ],
                       ),
                       const SizedBox(
@@ -164,8 +186,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text("Total amount:"),
-                          Text(
-                              "${NumberFormatter.format(widget.orderEntity.totalPrice!)} ₫"),
+                          Text("${NumberFormatter.format(discountedAmount)} ₫"),
                         ],
                       ),
                       const SizedBox(
@@ -198,7 +219,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                               return const ParticipantBottomSheet();
                             },
                           );
-                          // Gọi hàm hiển thị thông tin người tham gia lên UI
+
                           _displayParticipantInfo(result);
                         },
                         child: Chip(
@@ -295,13 +316,15 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                     children: [
                       const Titles(title: "Discounts"),
                       InkWell(
-                        onTap: () {
-                          Navigator.push(
+                        onTap: () async {
+                          final result = await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => VoucherScreen(
                                         tourId: widget.orderEntity.tourId!,
+                                        paid: widget.orderEntity.totalPrice!,
                                       )));
+                          _handleVoucherResult(result);
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(vertical: 8),
@@ -359,7 +382,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Text(
-                        " ${NumberFormatter.format(widget.orderEntity.totalPrice!)} ₫",
+                        " ${NumberFormatter.format(discountedAmount)} ₫",
                         style:
                             Theme.of(context).textTheme.headlineSmall!.copyWith(
                                   fontWeight: FontWeight.bold,
@@ -369,20 +392,20 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                   ),
                   ElevatedButtonCustom(
                     onPressed: () {
+                      BookingEntity bookingEntity = BookingEntity(
+                        bookerName: fullname,
+                        bookerPhone: phone,
+                        bookerEmail: email,
+                        adult: widget.orderEntity.adult,
+                        children: widget.orderEntity.children ?? 0,
+                        selectedDate: widget.orderEntity.selectedDate,
+                        tourId: widget.orderEntity.tourId,
+                      );
+
                       context.read<PaymentBloc>().add(CreateBooking(
-                            bookingEntity: BookingEntity(
-                                bookerName: fullname,
-                                bookerPhone: phone,
-                                bookerEmail: email,
-                                adult: widget.orderEntity.adult,
-                                children: widget.orderEntity.children ?? 0,
-                                selectedDate: widget.orderEntity.selectedDate,
-                                tourId: widget.orderEntity.tourId),
+                            bookingEntity: bookingEntity,
+                            voucherId: appliedVoucherId,
                           ));
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => const PaymentScreen()));
                     },
                     text: "Go to payment",
                   ),
@@ -398,6 +421,48 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
         phone = result['phoneNumber'] ?? "";
         email = result['email'] ?? "";
         note = result['note'] ?? "";
+      });
+    }
+  }
+
+  int calculateDiscountedPrice(
+      int totalPrice, String discountType, int discount) {
+    int voucherPrice;
+
+    if (discountType == "PERCENT") {
+      voucherPrice = totalPrice * discount ~/ 100;
+      voucherPrice = voucherPrice > totalPrice ? totalPrice : voucherPrice;
+
+      setState(() {
+        totalDiscount = voucherPrice;
+      });
+
+      return totalPrice - voucherPrice < 0 ? 0 : totalPrice - voucherPrice;
+    } else {
+      discount = discount > totalPrice ? totalPrice : discount;
+
+      setState(() {
+        totalDiscount = discount;
+      });
+      return totalPrice - discount < 0 ? 0 : totalPrice - discount;
+    }
+  }
+
+  void _handleVoucherResult(Map<String, dynamic>? result) {
+    if (result != null) {
+      final discountType = result['discountType'];
+      final discount = result['discount'];
+      final voucherId = result['voucherId'];
+
+      final newDiscountedAmount = calculateDiscountedPrice(
+        widget.orderEntity.totalPrice!,
+        discountType,
+        int.parse(discount),
+      );
+
+      setState(() {
+        discountedAmount = newDiscountedAmount;
+        appliedVoucherId = voucherId;
       });
     }
   }

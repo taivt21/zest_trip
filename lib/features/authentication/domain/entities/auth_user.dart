@@ -17,26 +17,27 @@ class AuthUser extends Equatable {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final String? status;
+  final bool? isRecommendRracked;
   // For example, a high-level rule for a User entity might be
   // that a user age cannot be lower than 18.
   // final int age;
 
-  const AuthUser({
-    this.id,
-    this.roleId,
-    this.countryCode,
-    this.fullName,
-    this.dob,
-    this.email,
-    this.phoneNumber,
-    this.gender,
-    this.password,
-    this.avatarImageUrl,
-    this.bannerImageUrl,
-    this.createdAt,
-    this.updatedAt,
-    this.status,
-  });
+  const AuthUser(
+      {this.id,
+      this.roleId,
+      this.countryCode,
+      this.fullName,
+      this.dob,
+      this.email,
+      this.phoneNumber,
+      this.gender,
+      this.password,
+      this.avatarImageUrl,
+      this.bannerImageUrl,
+      this.createdAt,
+      this.updatedAt,
+      this.status,
+      this.isRecommendRracked});
 
   // static const AuthUser empty = AuthUser(
   //   id: '',
@@ -65,6 +66,7 @@ class AuthUser extends Equatable {
         createdAt,
         updatedAt,
         status,
+        isRecommendRracked,
       ];
 
   // DO NOT ADD THIS CONSTRUCTOR:

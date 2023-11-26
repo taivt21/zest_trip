@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
+import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/payment/domain/entities/ticket_on_booking_enitity.dart';
 
 class InvoiceEntity extends Equatable {
@@ -21,7 +22,7 @@ class InvoiceEntity extends Equatable {
   final String? refundAmount;
 
   final List<TicketOnBookingEntity>? ticketOnBooking;
-  final Map<String, dynamic>? tour;
+  final TourEntity? tour;
   final Map<String, dynamic>? provider;
   // final BookingOnTourEntity? bookingOnTour;
 

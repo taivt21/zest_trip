@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 class TourVoucherEntity extends Equatable {
-  final String? id;
+  final int? id;
   final String? name;
-  final double? discount;
+  final String? discount;
   final String? discountType;
   final int? quantity;
   final int? quantityUsed;

@@ -1,3 +1,4 @@
+import 'package:zest_trip/features/home/data/models/tour_model.dart';
 import 'package:zest_trip/features/payment/data/models/ticket_on_booking_model.dart';
 import 'package:zest_trip/features/payment/domain/entities/invoice_entity.dart';
 
@@ -20,7 +21,7 @@ class InvoiceModel extends InvoiceEntity {
     String? refundReason,
     String? refundAmount,
     List<TicketOnBookingModel>? ticketOnBooking,
-    Map<String, dynamic>? tour,
+    TourModel? tour,
     // Map<String, dynamic>? provider,
   }) : super(
           id: id,
@@ -61,18 +62,15 @@ class InvoiceModel extends InvoiceEntity {
       status: json['status'],
       timeSlot: json['time_slot'] ?? "time_slot",
       refundReason: json['refund_reason'] ?? "refund_reason",
-      refundAmount: json['refund_amount'] ?? "refund_amount",
+      refundAmount: json['refund_ammount'] ?? "refund_amount",
       ticketOnBooking: json['TicketOnBooking'] != null
           ? List<TicketOnBookingModel>.from(json['TicketOnBooking']
               .map((component) => TicketOnBookingModel.fromJson(component)))
           : [],
-      tour: json['BookingOnTour'] != null
-          ? (json['BookingOnTour'] as Map<String, dynamic>).map(
-              (key, value) {
-                return MapEntry(key, value);
-              },
-            )
-          : {},
+      tour: json.containsKey('BookingOnTour')
+          ? TourModel.fromJson(json['BookingOnTour'])
+          : null,
+
       // provider: json['Provider'] != null
       //     ? (json['Provider'] as Map<String, dynamic>).map(
       //         (key, value) {

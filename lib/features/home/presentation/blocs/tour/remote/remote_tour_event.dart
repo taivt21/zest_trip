@@ -15,6 +15,10 @@ class GetToursWithTag extends RemoteTourEvent {
   const GetToursWithTag();
 }
 
+class ClearTour extends RemoteTourEvent {
+  const ClearTour();
+}
+
 class AddToWishlist extends RemoteTourEvent {
   final String tourId;
 

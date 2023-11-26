@@ -4,11 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
-import 'package:zest_trip/config/theme/text_theme.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_review_entity.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/reviews/tour_reviews_bloc.dart';
@@ -38,9 +39,10 @@ class TourDetailScreenState extends State<TourDetailScreen> {
 
   GoogleMapController? mapController;
   Set<Marker> markers = {};
-  double lat = 10.9051594;
-  double long = 106.8503913;
-  LatLng showLocation = const LatLng(10.9051594, 106.8503913);
+  late String lat;
+  late String long;
+  late String zoom;
+  late LatLng showLocation;
 
   @override
   void dispose() {
@@ -50,12 +52,19 @@ class TourDetailScreenState extends State<TourDetailScreen> {
 
   @override
   void initState() {
+    lat = widget.tour.departureLocation?["lat"] ?? "10.8161456";
+    long = widget.tour.departureLocation?["long"] ?? "106.6615997";
+    zoom = widget.tour.departureLocation?["zoom"]
+            .replaceAll(RegExp('[a-zA-Z]'), '') ??
+        "18";
+
+    showLocation = LatLng(double.parse(lat), double.parse(long));
     markers.add(Marker(
       markerId: MarkerId(showLocation.toString()),
       position: showLocation,
-      infoWindow: const InfoWindow(
-        title: 'Hello',
-        snippet: 'Hi there',
+      infoWindow: InfoWindow(
+        title: '${widget.tour.name}',
+        snippet: "${widget.tour.addressProvince}",
       ),
       icon: BitmapDescriptor.defaultMarker,
     ));
@@ -112,7 +121,23 @@ class TourDetailScreenState extends State<TourDetailScreen> {
       ),
 
       const SizedBox(height: 4),
-      Text('${widget.tour.duration} days', style: AppTextStyles.body),
+      widget.tour.durationDay == 0
+          ? Text(
+              widget.tour.duration! > 1
+                  ? 'Duration: ${widget.tour.duration} days'
+                  : 'Duration: ${widget.tour.duration} day',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w400),
+            )
+          : Text(
+              "Duration: ${widget.tour.durationDay}D ${widget.tour.durationNight}N",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w400),
+            ),
       const SizedBox(height: 8),
       const Titles(title: "About"),
       const SizedBox(height: 8),
@@ -151,7 +176,11 @@ class TourDetailScreenState extends State<TourDetailScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const Maps(),
+              builder: (context) => Maps(
+                lat: widget.tour.departureLocation?["lat"],
+                long: widget.tour.departureLocation?["long"],
+                zoom: widget.tour.departureLocation?["zoom"],
+              ),
             ),
           );
         },
@@ -241,8 +270,10 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                       Text('123 Reviews',
                           style: Theme.of(context).textTheme.bodyMedium),
                       const SizedBox(height: 4),
-                      Text(joinedAgo(widget.tour.provider!.createdAt!),
-                          style: Theme.of(context).textTheme.bodyMedium),
+                      widget.tour.provider != null
+                          ? Text(joinedAgo(widget.tour.provider!.createdAt!),
+                              style: Theme.of(context).textTheme.bodyMedium)
+                          : const Text(""),
                     ],
                   ),
                 ),
@@ -253,12 +284,8 @@ class TourDetailScreenState extends State<TourDetailScreen> {
       ),
 
       // Display user reviews
-      GestureDetector(
-        onTap: () => Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Maps())),
-        child: const Titles(
-          title: "What do people think?",
-        ),
+      const Titles(
+        title: "What do people think?",
       ),
 
       const SizedBox(
@@ -468,23 +495,34 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                     ],
                   ),
                 ),
-                Expanded(
-                  flex: 6,
-                  child: ElevatedButtonCustom(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(16))),
-                        context: context,
-                        builder: (context) {
-                          return BookingBottomSheet(tour: widget.tour);
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return Expanded(
+                      flex: 6,
+                      child: ElevatedButtonCustom(
+                        onPressed: () {
+                          (state is AuthSuccess)
+                              ? showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(16))),
+                                  context: context,
+                                  builder: (context) {
+                                    return BookingBottomSheet(
+                                        tour: widget.tour);
+                                  },
+                                )
+                              : ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please login to booking!'),
+                                  ),
+                                );
                         },
-                      );
-                    },
-                    text: tCheckAvailable,
-                  ),
+                        text: tCheckAvailable,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

@@ -37,12 +37,6 @@ class ReviewScreenState extends State<ReviewScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('User Review'),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(0.1),
-          child: Divider(
-            color: Colors.black,
-          ),
-        ),
       ),
       body: BlocListener<MyReviewBloc, MyReviewState>(
         listener: (context, state) {
@@ -220,6 +214,6 @@ class ReviewScreenState extends State<ReviewScreen> {
         .read<MyReviewBloc>()
         .add(PostReview(commentController.text, userRating, widget.tourId));
 
-    context.read<MyReviewBloc>().add(GetMyReview());
+    BlocProvider.of<MyReviewBloc>(context).add(GetMyReview());
   }
 }

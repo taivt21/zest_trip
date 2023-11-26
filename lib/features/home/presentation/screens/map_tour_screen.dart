@@ -1,9 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Maps extends StatefulWidget {
-  const Maps({Key? key}) : super(key: key);
+  final String lat;
+  final String long;
+  final String zoom;
+  const Maps({
+    Key? key,
+    required this.lat,
+    required this.long,
+    required this.zoom,
+  }) : super(key: key);
 
   @override
   _MapsState createState() => _MapsState();
@@ -12,17 +21,19 @@ class Maps extends StatefulWidget {
 class _MapsState extends State<Maps> {
   GoogleMapController? mapController;
   Set<Marker> markers = {};
-  double lat = 10.9051594;
-  double long = 106.8503913;
+  late double lat;
+  late double long;
+  late double zoom;
   late LatLng showLocation;
 
   @override
   void initState() {
+    zoom = double.parse(widget.zoom.replaceAll(RegExp('[a-zA-Z]'), ''));
     _getCurrentLocation().then((value) {
       lat = value.latitude;
       long = value.longitude;
     });
-    showLocation = LatLng(lat, long);
+    showLocation = LatLng(double.parse(widget.lat), double.parse(widget.long));
     markers.add(Marker(
       markerId: MarkerId(showLocation.toString()),
       position: showLocation,
@@ -36,7 +47,6 @@ class _MapsState extends State<Maps> {
     super.initState();
   }
 
-  // Function to get current location using Geolocator
   Future<Position> _getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -63,7 +73,7 @@ class _MapsState extends State<Maps> {
         zoomGesturesEnabled: true,
         initialCameraPosition: CameraPosition(
           target: showLocation,
-          zoom: 10.0,
+          zoom: zoom,
         ),
         markers: markers,
         mapType: MapType.normal,

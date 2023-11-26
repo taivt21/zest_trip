@@ -9,10 +9,22 @@ import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service
 import 'package:zest_trip/features/home/data/repository/tour_repository_impl.dart';
 import 'package:zest_trip/features/home/domain/repositories/tour_repository.dart';
 import 'package:zest_trip/features/home/domain/usecases/add_wishlist.dart';
+import 'package:zest_trip/features/home/domain/usecases/analytic_location.dart';
+import 'package:zest_trip/features/home/domain/usecases/analytic_tag.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_popular_location.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_province.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_reviews_tour.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tags.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_tour_rcm_location.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_tour_rcm_search.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_tour_rcm_tag.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tours.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_vehicles.dart';
+import 'package:zest_trip/features/home/presentation/blocs/location_popular/location_popular_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_search/tour_recommend_search_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/province/province_bloc.dart';
 import 'package:zest_trip/features/payment/domain/usecases/get_own_review_usecase.dart';
 import 'package:zest_trip/features/payment/domain/usecases/get_voucher_of_tour.dart';
 import 'package:zest_trip/features/payment/domain/usecases/post_review.dart';
@@ -109,12 +121,41 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<RequestRefundUseCase>(
     () => RequestRefundUseCase(sl()),
   );
+  sl.registerLazySingleton<GetProvinceUseCase>(
+    () => GetProvinceUseCase(sl()),
+  );
+  sl.registerLazySingleton<AnaLyticLocationUseCase>(
+    () => AnaLyticLocationUseCase(sl()),
+  );
+  sl.registerLazySingleton<AnaLyticTagUseCase>(
+    () => AnaLyticTagUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetTourRcmTagUseCase>(
+    () => GetTourRcmTagUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetTourRcmLocationUseCase>(
+    () => GetTourRcmLocationUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetTourRcmSearchUseCase>(
+    () => GetTourRcmSearchUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetPopularLocationUseCase>(
+    () => GetPopularLocationUseCase(sl()),
+  );
 
   //Blocs
   sl.registerFactory(
       () => AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   sl.registerFactory(() => RemoteTourBloc(sl(), sl()));
+
+  sl.registerFactory(() => TourRecommendTagBloc(sl(), sl()));
+
+  sl.registerFactory(() => TourRecommendLocationBloc(sl(), sl()));
+
+  sl.registerFactory(() => TourRecommendSearchBloc(sl()));
+
+  sl.registerFactory(() => LocationPopularBloc(sl()));
 
   sl.registerFactory(() => TourTagBloc(sl()));
 
@@ -133,4 +174,6 @@ Future<void> initializeDependencies() async {
   sl.registerFactory(() => RefundBloc(sl()));
 
   sl.registerFactory(() => VoucherBloc(sl()));
+
+  sl.registerFactory(() => ProvinceBloc(sl()));
 }

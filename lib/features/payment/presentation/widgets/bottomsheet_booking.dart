@@ -585,7 +585,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
       if (picked != null && picked != selectedDate) {
         setState(() {
           selectedDate = picked!;
-          returnDate = picked.add(Duration(days: widget.tour.duration!));
+          returnDate = picked.add(Duration(days: widget.tour.duration! - 1));
           timeSlot = getSelectedTimeSlot(picked);
         });
       }

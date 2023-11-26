@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
+import 'package:zest_trip/features/home/presentation/screens/edit_profile_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/policy_webview.dart';
 import '../../../../config/utils/constants/color_constant.dart';
@@ -24,13 +25,6 @@ class ProfileScreen extends StatelessWidget {
         title: const Text(
           'My Profile',
         ),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(0.1),
-          child: Divider(
-            color: Colors.black,
-          ),
-        ),
-        // centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -48,10 +42,11 @@ class ProfileScreen extends StatelessWidget {
                           width: 80,
                           height: 80,
                           child: ClipRRect(
+                            
                             borderRadius: BorderRadius.circular(100),
-                            child: state.user.avatarImageUrl != null
+                            child: state.user?.avatarImageUrl != null
                                 ? CachedNetworkImage(
-                                    imageUrl: state.user.avatarImageUrl!,
+                                    imageUrl: state.user!.avatarImageUrl!,
                                     progressIndicatorBuilder:
                                         (context, url, downloadProgress) =>
                                             Center(
@@ -93,7 +88,6 @@ class ProfileScreen extends StatelessWidget {
                                         .read<AuthBloc>()
                                         .add(UploadImageEvent(imageFile));
                                   } else {
-                                    // Hiển thị thông báo nếu người dùng không chọn ảnh
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content:
@@ -116,9 +110,9 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Text(state.user.fullName ?? state.user.email!,
+                    Text(state.user?.fullName ?? state.user!.email!,
                         style: Theme.of(context).textTheme.headlineSmall),
-                    Text(state.user.email ?? "email",
+                    Text(state.user?.email ?? "email",
                         style: Theme.of(context).textTheme.bodyMedium),
                     const SizedBox(height: 16),
 
@@ -126,7 +120,13 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(
                       width: 160,
                       child: ElevatedButton(
-                        onPressed: () => {},
+                        onPressed: () => {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EditProfileScreen()))
+                        },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
                             side: BorderSide.none,
@@ -181,6 +181,7 @@ class ProfileScreen extends StatelessWidget {
                       ontap: () => context.read<AuthBloc>().add(LogoutEvent()),
                       icon: Icons.logout,
                       title: "Logout",
+                      colorText: Colors.red,
                     ),
                   ],
                 );

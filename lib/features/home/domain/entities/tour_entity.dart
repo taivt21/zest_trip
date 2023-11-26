@@ -16,6 +16,8 @@ class TourEntity extends Equatable {
   final List<String>? tourImages;
   final double? price;
   final int? duration;
+  final int? durationDay;
+  final int? durationNight;
   final int? bookBefore;
   final int? refundBefore;
   final String? status;
@@ -36,6 +38,7 @@ class TourEntity extends Equatable {
   final List<PricingTicketEntity>? pricingTicket;
   final String? avgRating;
   final Map<String, dynamic>? count;
+  final Map<String, dynamic>? departureLocation;
 
   const TourEntity({
     this.id,
@@ -65,6 +68,9 @@ class TourEntity extends Equatable {
     this.pricingTicket,
     this.avgRating,
     this.count,
+    this.durationDay,
+    this.durationNight,
+    this.departureLocation,
   });
 
   @override
@@ -77,6 +83,8 @@ class TourEntity extends Equatable {
         tourImages,
         price,
         duration,
+        durationDay,
+        durationNight,
         bookBefore,
         refundBefore,
         status,
@@ -94,6 +102,7 @@ class TourEntity extends Equatable {
         provider,
         pricingTicket,
         avgRating,
-        count
+        count,
+        departureLocation
       ];
 }
