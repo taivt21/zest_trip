@@ -14,6 +14,7 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     on<ProviderEvent>((event, emit) {});
     on<GetProviderEvent>(
       (event, emit) async {
+        
         final dataState = await _getInfoProviderUseCase.call(event.providerId);
         if (dataState is DataSuccess) {
           emit(GetInfoProviderSuccess(dataState.data!));

@@ -7,8 +7,8 @@ import 'package:zest_trip/features/home/data/models/tour_tag.dart';
 import 'package:zest_trip/features/home/domain/entities/province_entity.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
-import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/province/province_bloc.dart';
-import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/tags/tour_tag_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/province/province_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/tags/tour_tag_bloc.dart';
 
 class SelectHobbyScreen extends StatefulWidget {
   const SelectHobbyScreen({Key? key}) : super(key: key);

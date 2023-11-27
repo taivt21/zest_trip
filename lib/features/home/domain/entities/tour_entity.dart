@@ -9,7 +9,7 @@ import 'package:zest_trip/features/payment/domain/entities/tour_availability_ent
 
 class TourEntity extends Equatable {
   final String? id;
-  final String? providerUserId;
+  final String? providerId;
   final String? name;
   final String? description;
   final String? footnote;
@@ -42,7 +42,7 @@ class TourEntity extends Equatable {
 
   const TourEntity({
     this.id,
-    this.providerUserId,
+    this.providerId,
     this.name,
     this.description,
     this.footnote,
@@ -76,7 +76,7 @@ class TourEntity extends Equatable {
   @override
   List<Object?> get props => [
         id,
-        providerUserId,
+        providerId,
         name,
         description,
         footnote,

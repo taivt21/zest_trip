@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
@@ -74,7 +75,7 @@ class ManageReviewScreen extends StatelessWidget {
                                                   BorderRadius.circular(12),
                                               image: DecorationImage(
                                                 fit: BoxFit.cover,
-                                                image: NetworkImage(
+                                                image: CachedNetworkImageProvider(
                                                     "${state.reviews[index].tour?.tourImages?.first}"),
                                               ),
                                             ),
@@ -97,10 +98,10 @@ class ManageReviewScreen extends StatelessWidget {
                           },
                         ),
                   // Tab for "Not Reviewed Yet"
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    child: const Text("Page not reviewed yet"),
-                  ),
+                  const EmptyWidget(
+                      imageSvg: reviewSvg,
+                      title: "Your feelings are very important",
+                      subtitle: "Please leave your review for future bookings")
                 ],
               );
             } else if (state is GetReviewFail) {

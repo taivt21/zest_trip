@@ -18,26 +18,27 @@ class ProviderEntity extends Equatable {
   final String? status;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String? avgRating;
 
-  const ProviderEntity({
-    this.id,
-    this.description,
-    this.phone,
-    this.email,
-    this.addressName,
-    this.addressDistrict,
-    this.addressCity,
-    this.addressProvince,
-    this.addressCountry,
-    this.companyName,
-    this.socialMedia,
-    this.avatarImageUrl,
-    this.bannerImageUrl,
-    this.businessLicense,
-    this.status,
-    this.createdAt,
-    this.updatedAt,
-  });
+  const ProviderEntity(
+      {this.id,
+      this.description,
+      this.phone,
+      this.email,
+      this.addressName,
+      this.addressDistrict,
+      this.addressCity,
+      this.addressProvince,
+      this.addressCountry,
+      this.companyName,
+      this.socialMedia,
+      this.avatarImageUrl,
+      this.bannerImageUrl,
+      this.businessLicense,
+      this.status,
+      this.createdAt,
+      this.updatedAt,
+      this.avgRating});
 
   @override
   List<Object?> get props => [
@@ -58,5 +59,6 @@ class ProviderEntity extends Equatable {
         status,
         createdAt,
         updatedAt,
+        avgRating
       ];
 }

@@ -37,7 +37,8 @@ class _UserReviewState extends State<UserReview> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.tourReview.user!.fullName!,
+                    widget.tourReview.user?.fullName ??
+                        widget.tourReview.user!.email!.split('@').first,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(width: 8.0),

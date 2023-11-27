@@ -42,7 +42,6 @@ class ProfileScreen extends StatelessWidget {
                           width: 80,
                           height: 80,
                           child: ClipRRect(
-                            
                             borderRadius: BorderRadius.circular(100),
                             child: state.user?.avatarImageUrl != null
                                 ? CachedNetworkImage(
@@ -51,6 +50,7 @@ class ProfileScreen extends StatelessWidget {
                                         (context, url, downloadProgress) =>
                                             Center(
                                       child: CircularProgressIndicator(
+                             
                                           value: downloadProgress.progress),
                                     ),
                                     errorWidget: (context, url, error) =>

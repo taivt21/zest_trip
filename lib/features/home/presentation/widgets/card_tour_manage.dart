@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -97,7 +98,8 @@ class CardTourManage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage("${invoice.tour?.tourImages?.first}"),
+                      image: CachedNetworkImageProvider(
+                          "${invoice.tour?.tourImages?.first}"),
                     ),
                   ),
                 ),

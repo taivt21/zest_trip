@@ -45,7 +45,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    on<RegisterWithEmailAndPasswordEvent>((event, emit) async {
+    on<RegisterWithEmailAndPasswordEvent>((event, emit) async {emit(AuthLoading());
       final registrationResult =
           await _registerWithEmailAndPasswordUseCase.call(
         event.email,

@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 abstract class RemoteTourEvent {
   const RemoteTourEvent();
 }
@@ -8,7 +9,19 @@ class GetTours extends RemoteTourEvent {
   final int? limit;
   final String? orderBy;
   final Set<int>? tags;
-  const GetTours({this.search, this.page, this.limit, this.orderBy, this.tags});
+  final Set<int>? vehicles;
+  final String? province;
+  final String? district;
+  const GetTours({
+    this.search,
+    this.page,
+    this.limit,
+    this.orderBy,
+    this.tags,
+    this.vehicles,
+    this.province,
+    this.district,
+  });
 }
 
 class GetToursWithTag extends RemoteTourEvent {

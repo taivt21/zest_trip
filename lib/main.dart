@@ -13,9 +13,11 @@ import 'package:zest_trip/features/home/presentation/blocs/tour/remote/remote_to
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_search/tour_recommend_search_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
-import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/province/province_bloc.dart';
-import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/tags/tour_tag_bloc.dart';
-import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/vehicles/tour_vehicle_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/district/district_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/province/province_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/tags/tour_tag_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/vehicles/tour_vehicle_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_sponsore/tour_sponsore_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/my_review/my_review_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/payment/payment_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/voucher/voucher_bloc.dart';
@@ -66,6 +68,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<ProvinceBloc>(
           create: (context) => sl()..add(const GetProvinces()),
         ),
+        BlocProvider<DistrictBloc>(
+          create: (context) => sl()..add(const GetDistricts()),
+        ),
         BlocProvider<RefundBloc>(
           create: (context) => sl(),
         ),
@@ -83,6 +88,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<LocationPopularBloc>(
           create: (context) => sl()..add(const GetPopularLocation()),
+        ),
+        BlocProvider<TourSponsoreBloc>(
+          create: (context) => sl()..add(const GetToursSponsore()),
         ),
         BlocProvider<MyReviewBloc>(
           create: (context) => sl()..add(GetMyReview()),

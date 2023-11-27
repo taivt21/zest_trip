@@ -9,7 +9,7 @@ import 'package:zest_trip/features/payment/data/models/tour_availability_model.d
 class TourModel extends TourEntity {
   const TourModel({
     String? id,
-    String? providerUserId,
+    String? providerId,
     String? name,
     String? description,
     String? footnote,
@@ -40,7 +40,7 @@ class TourModel extends TourEntity {
     Map<String, dynamic>? departureLocation,
   }) : super(
           id: id,
-          providerUserId: providerUserId,
+          providerId: providerId,
           name: name,
           description: description,
           footnote: footnote,
@@ -72,8 +72,7 @@ class TourModel extends TourEntity {
   factory TourModel.fromJson(Map<String, dynamic> json) {
     return TourModel(
       id: json.containsKey('id') ? json['id'] : "",
-      providerUserId:
-          json.containsKey('provider_user_id') ? json['provider_user_id'] : "",
+      providerId: json.containsKey('provider_id') ? json['provider_id'] : "",
       name: json.containsKey('name') ? json['name'] : "",
       description: json.containsKey('description') ? json['description'] : "",
       footnote: json.containsKey('footnote') ? json['footnote'] : "",

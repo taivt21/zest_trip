@@ -4,8 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
-import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/tags/tour_tag_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/tags/tour_tag_bloc.dart';
 import 'package:zest_trip/features/home/presentation/screens/search_location_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/search_query_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/empty_widget.dart';
 import 'package:zest_trip/features/home/presentation/widgets/tour_item.dart';
@@ -29,6 +30,11 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
   late int currentPage;
   bool _isLoading = true;
   String search = "";
+  String province = "";
+  String district = "";
+  Set<int> tagIds = <int>{};
+  Set<int> vehicleIds = <int>{};
+
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 3), () {
@@ -48,8 +54,6 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
     _scrollController.dispose();
   }
 
-  Set<int> tagIds = <int>{};
-
   @override
   Widget build(context) {
     var logger = Logger();
@@ -58,7 +62,14 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
       providers: [
         BlocProvider<RemoteTourBloc>(
           create: (context) => sl()
-            ..add(GetTours(page: 1, limit: 5, tags: tagIds, search: search)),
+            ..add(GetTours(
+              page: 1,
+              limit: 5,
+              tags: tagIds,
+              search: search,
+              province: province,
+              district: district,
+            )),
         ),
       ],
       child: Scaffold(
@@ -80,14 +91,59 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                         (BuildContext context, SearchController controller) {
                       return SearchBar(
                           elevation: const MaterialStatePropertyAll(0.6),
-                          hintText: "Search...",
+                          hintText: search.isEmpty ? "Search..." : search,
                           controller: controller,
-                          // padding: const MaterialStatePropertyAll<EdgeInsets>(
-                          //   EdgeInsets.symmetric(horizontal: 8.0),
-                          // ),
-                          onTap: () {
-                            controller.openView();
+                          onTap: () async {
+                            final searchQuery = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SearchQueryScreen(),
+                              ),
+                            );
+
+                            if (searchQuery != null) {
+                              setState(() {
+                                search = searchQuery;
+                                print(searchQuery);
+                              });
+                              final remoteTourBloc =
+                                  BlocProvider.of<RemoteTourBloc>(context);
+                              remoteTourBloc.add(const ClearTour());
+                              remoteTourBloc.add(GetTours(
+                                page: currentPage,
+                                limit: 10,
+                                tags: tagIds,
+                                search: search,
+                                province: province,
+                                district: district,
+                              ));
+                            }
                           },
+                          trailing: [
+                            IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                setState(() {
+                                  tagIds = {};
+                                  vehicleIds = {};
+                                  province = "";
+                                  district = "";
+                                  search = "";
+                                });
+                                final remoteTourBloc =
+                                    BlocProvider.of<RemoteTourBloc>(context);
+                                remoteTourBloc.add(const ClearTour());
+                                remoteTourBloc.add(GetTours(
+                                  page: currentPage,
+                                  limit: 10,
+                                  tags: tagIds,
+                                  search: search,
+                                  province: province,
+                                  district: district,
+                                ));
+                              },
+                            ),
+                          ],
                           onChanged: (_) {
                             controller.openView();
                           },
@@ -103,7 +159,7 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
 
                               if (selectedLocation != null) {
                                 setState(() {
-                                  search = selectedLocation;
+                                  province = selectedLocation;
                                 });
                                 final remoteTourBloc =
                                     BlocProvider.of<RemoteTourBloc>(context);
@@ -113,6 +169,8 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                                   limit: 5,
                                   tags: tagIds,
                                   search: search,
+                                  province: province,
+                                  district: district,
                                 ));
                               }
                             },
@@ -120,7 +178,8 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                               padding: const EdgeInsets.all(4),
                               shape: const StadiumBorder(),
                               deleteIcon: const Icon(Icons.arrow_drop_down),
-                              label: Text(search == "" ? "Location" : search),
+                              label:
+                                  Text(province == "" ? "Location" : province),
                             ),
                           ));
                     },
@@ -165,14 +224,20 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                         setState(() {
                           currentPage = 1;
                           tagIds = {};
+                          search = "";
+                          province = "";
+                          district = "";
                           _isLoading = true;
                         });
                         remoteTourBloc.add(
                           GetTours(
-                              page: currentPage,
-                              limit: 5,
-                              tags: tagIds,
-                              search: search),
+                            page: currentPage,
+                            limit: 5,
+                            tags: tagIds,
+                            search: search,
+                            province: province,
+                            district: district,
+                          ),
                         );
                       },
                       child: NotificationListener<ScrollNotification>(
@@ -186,7 +251,13 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
 
                             BlocProvider.of<RemoteTourBloc>(context).add(
                               GetTours(
-                                  page: currentPage, limit: 5, tags: tagIds),
+                                page: currentPage,
+                                limit: 5,
+                                tags: tagIds,
+                                search: search,
+                                province: province,
+                                district: district,
+                              ),
                             );
                           }
                           return false;
@@ -267,8 +338,8 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InkWell(
-                  onTap: () {
-                    showModalBottomSheet(
+                  onTap: () async {
+                    Map<String, dynamic>? result = await showModalBottomSheet(
                       isScrollControlled: true,
                       shape: const RoundedRectangleBorder(
                         borderRadius:
@@ -276,9 +347,34 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                       ),
                       context: context,
                       builder: (context) {
-                        return const FilterBottomSheet();
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.9,
+                          child: const FilterBottomSheet(),
+                        );
                       },
                     );
+
+                    if (result != null) {
+                      setState(() {
+                        tagIds = Set.from(result['selectedTags']);
+                        vehicleIds = Set.from(result['selectedVehicles']);
+                        province = result['selectedProvince'];
+                        district = result['selectedDistrict'];
+                      });
+                      final remoteTourBloc =
+                          BlocProvider.of<RemoteTourBloc>(context);
+                      remoteTourBloc.add(const ClearTour());
+                      remoteTourBloc.add(
+                        GetTours(
+                          page: 1,
+                          limit: 5,
+                          tags: tagIds,
+                          search: search,
+                          province: province,
+                          district: district,
+                        ),
+                      );
+                    }
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -287,9 +383,15 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                     ),
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(4),
-                    child: const Icon(
-                      Icons.filter_alt_outlined,
-                      color: colorBlack,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.filter_alt_outlined,
+                          color: colorBlack,
+                        ),
+                        Text(
+                            "•${totalFilters(tagIds, vehicleIds, province, district)}")
+                      ],
                     ),
                   ),
                 ),
@@ -342,10 +444,13 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                               );
                               remoteTourBloc.add(
                                 GetTours(
-                                    page: 1,
-                                    limit: 5,
-                                    tags: tagIds,
-                                    search: search),
+                                  page: 1,
+                                  limit: 10,
+                                  tags: tagIds,
+                                  search: search,
+                                  province: province,
+                                  district: district,
+                                ),
                               );
 
                               print("tagId : $tagIds");
@@ -356,10 +461,13 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                               );
                               remoteTourBloc.add(
                                 GetTours(
-                                    page: 1,
-                                    limit: 5,
-                                    tags: tagIds,
-                                    search: search),
+                                  page: 1,
+                                  limit: 5,
+                                  tags: tagIds,
+                                  search: search,
+                                  province: province,
+                                  district: district,
+                                ),
                               );
                             }
                           });
@@ -374,5 +482,23 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
         ),
       ),
     );
+  }
+
+  int totalFilters(
+    Set<int> listTag,
+    Set<int> listVehicle,
+    String? province,
+    String? district,
+  ) {
+    int total = 0;
+    int tag = listTag.length;
+    int vehicle = listVehicle.length;
+    if (province != "") {
+      total += 1;
+    }
+    if (district != "") {
+      total += 1;
+    }
+    return total + tag + vehicle;
   }
 }

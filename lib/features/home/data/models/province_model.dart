@@ -18,7 +18,7 @@ class ProvinceModel extends ProvinceEntity {
 
   factory ProvinceModel.fromJson(Map<String, dynamic> json) {
     return ProvinceModel(
-      // code: json['code'],
+      code: json['code'],
       name: json['name'],
       // nameEn: json['name_en'],
       // fullname: json['fullname'],

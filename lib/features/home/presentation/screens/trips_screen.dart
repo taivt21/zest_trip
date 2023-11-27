@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour_manage.dart';
+import 'package:zest_trip/features/home/presentation/widgets/empty_widget.dart';
 import 'package:zest_trip/features/payment/domain/entities/invoice_entity.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/booking/booking_bloc.dart';
 import 'package:zest_trip/get_it.dart';
@@ -71,12 +73,13 @@ class TripsScreen extends StatelessWidget {
       decoration: const BoxDecoration(color: colorBackground),
       child: filteredInvoices.isEmpty
           ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  "No trips ${frontendStatus.replaceAll('_', ' ')}",
-                  style: Theme.of(context).textTheme.headlineMedium,
+                const EmptyWidget(
+                  imageSvg: travelSvg,
+                  title: "There are no bookings yet",
+                  // subtitle: "Please leave your review for future bookings"
                 ),
                 OutlinedButton(
                   onPressed: () {

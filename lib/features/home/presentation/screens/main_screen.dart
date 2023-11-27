@@ -9,6 +9,7 @@ import 'package:zest_trip/features/authentication/presentation/blocs/auth/authen
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_sponsore/tour_sponsore_bloc.dart';
 import 'package:zest_trip/features/home/presentation/screens/select_hobby_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_recommend_location.dart';
@@ -215,12 +216,17 @@ class MainScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Tour recommendation (♥_♥)",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(fontSize: 18),
+                          Row(
+                            children: [
+                              SvgPicture.asset(adsSvg, height: 24),
+                              Text(
+                                " Sponsored tours",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(fontSize: 18),
+                              ),
+                            ],
                           ),
                           TextButton(
                             onPressed: () {},
@@ -232,46 +238,39 @@ class MainScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      // SingleChildScrollView(
-                      //   scrollDirection: Axis.horizontal,
-                      //   child: Row(
-                      //     children: List.generate(
-                      //       5,
-                      //       (index) => CardRecommendLocation(
-                      //         tour: state.tours![index],
-                      //         width: widthScreen * 0.35,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                      BlocBuilder<TourSponsoreBloc, TourSponsoreState>(
+                        builder: (context, state) {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: List.generate(
+                                state.tours?.length ?? 0,
+                                (index) => GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => TourDetailScreen(
+                                            tour: state.tours![index]),
+                                      ),
+                                    );
+                                  },
+                                  child: CardRecommendLocation(
+                                    tour: state.tours![index],
+                                    width: widthScreen * 0.35,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                // CustomScrollTabBar(
-                //   categories: context.watch<TourTagBloc>().state.tourTags ?? [],
-                //   onTabChanged: (index) {
-                //     // Do something when tab is changed
-                //   },
-                // ),
+
                 const SizedBox(height: 20),
 
-                // GridView.count(
-                //   crossAxisCount: 2,
-                //   crossAxisSpacing: 16,
-                //   mainAxisSpacing: 16,
-                //   children: List.generate(2, (index) {
-                //     return CardRecommendLocation(
-                //       price: 120000,
-                //       width: widthScreen * 0.35,
-                //       imageUrl:
-                //           "https://baoanhdatmui.vn/wp-content/uploads/2023/02/du-lich-da-nang.jpg",
-                //       title: "Da Nang",
-                //       numberOfActivities: 100,
-                //     );
-                //   }),
-                // ),
-                // const SizedBox(height: 60),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
@@ -385,7 +384,8 @@ class HeaderMainScreen extends StatelessWidget {
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(32),
                         child: CachedNetworkImage(
-                          imageUrl: authState.user!.avatarImageUrl!,
+                          imageUrl: authState.user?.avatarImageUrl ??
+                              "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
                           placeholder: (context, url) => Container(
                             height: 60,
                             width: 60,

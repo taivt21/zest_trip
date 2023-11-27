@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:zest_trip/features/home/data/models/district_model.dart';
 import 'package:zest_trip/features/home/data/models/province_model.dart';
 import 'package:zest_trip/features/home/data/models/tour_review_model.dart';
 import '../../../../../../config/network/dio_helper.dart';
@@ -10,12 +11,16 @@ import '../../../../../../features/home/data/models/tour_tag.dart';
 import '../../../../../../features/home/data/models/tour_vehicle.dart';
 
 abstract class TourApiService {
-  Future<DataState<List<TourModel>>> getAllTours(
-      {String? search,
-      int? page,
-      int? limit,
-      String? orderBy,
-      Set<int>? tagIds});
+  Future<DataState<List<TourModel>>> getAllTours({
+    String? search,
+    int? page,
+    int? limit,
+    String? orderBy,
+    Set<int>? tagIds,
+    Set<int>? vehicleIds,
+    String? province,
+    String? district,
+  });
   Future<DataState<List<TourModel>>> getAllToursRcmTag(
       {String? search,
       int? page,
@@ -34,6 +39,12 @@ abstract class TourApiService {
       int? limit,
       String? orderBy,
       Set<int>? tagIds});
+  Future<DataState<List<TourModel>>> getAllToursSponsore(
+      {String? search,
+      int? page,
+      int? limit,
+      String? orderBy,
+      Set<int>? tagIds});
 
   Future<DataState<dynamic>> analyticTag(Set<int> tags);
   Future<DataState<dynamic>> analyticLocation(Set<String> locations);
@@ -43,6 +54,7 @@ abstract class TourApiService {
   Future<DataState<List<TourTag>>> getAllTags();
   Future<DataState<List<TourVehicle>>> getAllVehicles();
   Future<DataState<List<ProvinceModel>>> getAllProvinces();
+  Future<DataState<List<DistrictModel>>> getAllDistricts();
 
   Future<DataState<bool>> addToWishlist(String tourId);
   Future<DataState<bool>> removeFromWishlist(String tourId);
@@ -52,23 +64,31 @@ abstract class TourApiService {
 
 class TourApiServiceImpl implements TourApiService {
   @override
-  Future<DataState<List<TourModel>>> getAllTours(
-      {String? search,
-      int? page,
-      int? limit,
-      String? orderBy,
-      Set<int>? tagIds}) async {
+  Future<DataState<List<TourModel>>> getAllTours({
+    String? search,
+    int? page,
+    int? limit,
+    String? orderBy,
+    Set<int>? tagIds,
+    Set<int>? vehicleIds,
+    String? province,
+    String? district,
+  }) async {
     List<int> tags = tagIds?.toList() ?? [];
-    final params = {
+    List<int> vehicles = vehicleIds?.toList() ?? [];
+    final queries = {
       "page": page,
       "limit": 10,
       "tag": tags,
-      "search": search ?? ""
+      "vehicle": vehicles,
+      if (province != null && province.isNotEmpty) "province": province,
+      if (district != null && district.isNotEmpty) "district": district,
+      if (search != null && search.isNotEmpty) "query": search,
     };
-    print("data search tour: $params");
+    print("data search tour: $queries");
     try {
       final response =
-          await DioHelper.dio.get('/tour/v2', queryParameters: params);
+          await DioHelper.dio.get('/tour/v2', queryParameters: queries);
       List<TourModel> tours = [];
 
       if (response.data['data'] != null &&
@@ -227,6 +247,30 @@ class TourApiServiceImpl implements TourApiService {
   }
 
   @override
+  Future<DataState<List<DistrictModel>>> getAllDistricts() async {
+    try {
+      final response = await DioHelper.dio.get('/resource/district/all');
+      final districts = (response.data['data'] as List)
+          .map((e) => DistrictModel.fromJson(e))
+          .toList();
+      print("call api districts: $districts");
+      if (response.statusCode == 200) {
+        return DataSuccess(districts);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
   Future<DataState<List<TourModel>>> getAllToursRcmTag(
       {String? search,
       int? page,
@@ -311,6 +355,40 @@ class TourApiServiceImpl implements TourApiService {
             .toList();
       }
       print("getAllToursRcmSearch: $tours");
+      if (response.statusCode == 200) {
+        return DataSuccess(tours);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<TourModel>>> getAllToursSponsore(
+      {String? search,
+      int? page,
+      int? limit,
+      String? orderBy,
+      Set<int>? tagIds}) async {
+    try {
+      final response = await DioHelper.dio.get('/analytic/boost');
+      List<TourModel> tours = [];
+
+      if (response.data['data'] != null &&
+          (response.data['data'] as List).isNotEmpty) {
+        tours = (response.data['data'] as List)
+            .map((e) => TourModel.fromJson(e))
+            .toList();
+      }
+      print("getAllToursSponsore: $tours");
       if (response.statusCode == 200) {
         return DataSuccess(tours);
       } else {

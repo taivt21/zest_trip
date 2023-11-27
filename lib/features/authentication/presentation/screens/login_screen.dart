@@ -31,6 +31,7 @@ class LoginScreen extends StatelessWidget {
               fontSize: 16.0);
         }
       },
+      buildWhen: (previous, current) => previous != current,
       builder: (context, state) {
         Widget contentWidget;
 

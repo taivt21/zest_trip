@@ -207,7 +207,6 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                       const Titles(title: "Participant details"),
                       InkWell(
                         onTap: () async {
-                          // Hiển thị bottom sheet và nhận giá trị trả về
                           Map<String, String>? result =
                               await showModalBottomSheet(
                             shape: const RoundedRectangleBorder(
@@ -277,17 +276,14 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                                     fullname.isEmpty
                                         ? "Please enter"
                                         : fullname,
-                                    style: const TextStyle(color: colorHint),
                                   ),
                                   const SizedBox(height: 8.0),
                                   Text(
                                     phone.isEmpty ? "Please enter" : phone,
-                                    style: const TextStyle(color: colorHint),
                                   ),
                                   const SizedBox(height: 8.0),
                                   Text(
                                     email.isEmpty ? "Please enter" : email,
-                                    style: const TextStyle(color: colorHint),
                                   ),
                                   const SizedBox(height: 8.0),
                                   Text(note.isEmpty

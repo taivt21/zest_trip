@@ -2,6 +2,7 @@ import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service.dart';
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
 import 'package:zest_trip/features/home/data/models/tour_vehicle.dart';
+import 'package:zest_trip/features/home/domain/entities/district_entity.dart';
 import 'package:zest_trip/features/home/domain/entities/province_entity.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_review_entity.dart';
@@ -23,18 +24,26 @@ class TourRepositoryImpl implements TourRepository {
   }
 
   @override
-  Future<DataState<List<TourEntity>>> getAllTours(
-      {String? search,
-      int? page,
-      int? limit,
-      String? orderBy,
-      Set<int>? tagIds}) async {
+  Future<DataState<List<TourEntity>>> getAllTours({
+    String? search,
+    int? page,
+    int? limit,
+    String? orderBy,
+    Set<int>? tagIds,
+    Set<int>? vehicleIds,
+    String? province,
+    String? district,
+  }) async {
     return await _tourApiService.getAllTours(
-        page: page,
-        limit: limit,
-        search: search,
-        orderBy: orderBy,
-        tagIds: tagIds);
+      page: page,
+      limit: limit,
+      search: search,
+      orderBy: orderBy,
+      tagIds: tagIds,
+      vehicleIds: vehicleIds,
+      province: province,
+      district: district,
+    );
   }
 
   @override
@@ -65,6 +74,11 @@ class TourRepositoryImpl implements TourRepository {
   @override
   Future<DataState<List<ProvinceEntity>>> getAllProvinces() async {
     return await _tourApiService.getAllProvinces();
+  }
+
+  @override
+  Future<DataState<List<DistrictEntity>>> getAllDistricts() async {
+    return await _tourApiService.getAllDistricts();
   }
 
   @override
@@ -99,6 +113,21 @@ class TourRepositoryImpl implements TourRepository {
 
   @override
   Future<DataState<List<TourEntity>>> getAllToursRcmSearch(
+      {String? search,
+      int? page,
+      int? limit,
+      String? orderBy,
+      Set<int>? tagIds}) async {
+    return await _tourApiService.getAllToursRcmSearch(
+        page: page,
+        limit: limit,
+        search: search,
+        orderBy: orderBy,
+        tagIds: tagIds);
+  }
+
+  @override
+  Future<DataState<List<TourEntity>>> getAllToursSponsore(
       {String? search,
       int? page,
       int? limit,

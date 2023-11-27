@@ -72,8 +72,7 @@ class CardRecommendLocation extends StatelessWidget {
                       Icon(Icons.star, color: Colors.yellow[700], size: 12),
                       const SizedBox(width: 4),
                       Text(
-                        // tour.avgRating ??
-                        "5.0",
+                        tour.avgRating!,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Colors.yellow[700],
                             fontWeight: FontWeight.bold),

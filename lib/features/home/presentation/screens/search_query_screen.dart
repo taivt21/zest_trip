@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/home/presentation/blocs/location_popular/location_popular_bloc.dart';
-import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_search/tour_recommend_search_bloc.dart';
-import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.dart';
-import 'package:zest_trip/features/home/presentation/widgets/card_recommend_location.dart';
 
-class SearchLocationScreen extends StatefulWidget {
-  const SearchLocationScreen({super.key});
+class SearchQueryScreen extends StatefulWidget {
+  const SearchQueryScreen({super.key});
 
   @override
-  State<SearchLocationScreen> createState() => _SearchLocationScreenState();
+  State<SearchQueryScreen> createState() => _SearchQueryScreenState();
 }
 
-class _SearchLocationScreenState extends State<SearchLocationScreen> {
+class _SearchQueryScreenState extends State<SearchQueryScreen> {
   TextEditingController searchController = TextEditingController();
   @override
   void dispose() {
@@ -23,7 +20,6 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double widthScreen = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -43,7 +39,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                       color: primaryColor, style: BorderStyle.solid, width: 2)),
                   surfaceTintColor: const MaterialStatePropertyAll(whiteColor),
                   elevation: const MaterialStatePropertyAll(0),
-                  hintText: "Location...",
+                  hintText: "Search...",
                   trailing: [
                     GestureDetector(
                         onTap: () {
@@ -87,42 +83,6 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
               ),
               const SizedBox(
                 height: 8,
-              ),
-              Text(
-                "Tours are highly sought after",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontSize: 18),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              BlocBuilder<TourRecommendSearchBloc, TourRecommendSearchState>(
-                builder: (context, state) {
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: List.generate(
-                        state.tours?.length ?? 0,
-                        (index) => GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    TourDetailScreen(tour: state.tours![index]),
-                              ),
-                            );
-                          },
-                          child: CardRecommendLocation(
-                            tour: state.tours![index],
-                            width: widthScreen * 0.35,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
               ),
             ],
           ),

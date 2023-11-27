@@ -12,8 +12,9 @@ import 'package:zest_trip/features/authentication/presentation/blocs/auth/authen
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_review_entity.dart';
-import 'package:zest_trip/features/home/presentation/blocs/tour_resource/remote/reviews/tour_reviews_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/reviews/tour_reviews_bloc.dart';
 import 'package:zest_trip/features/home/presentation/screens/map_tour_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/provider_profile_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/review_of_tour_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/review_detail.dart';
 import 'package:zest_trip/features/home/presentation/widgets/tour_schedule_detail_widget.dart';
@@ -225,59 +226,70 @@ class TourDetailScreenState extends State<TourDetailScreen> {
       // Display host information
       Padding(
         padding: const EdgeInsets.all(16),
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 6,
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                          radius: 40,
-                          backgroundColor: whiteColor,
-                          backgroundImage:
-                              widget.tour.provider?.avatarImageUrl != null
-                                  ? CachedNetworkImageProvider(
-                                      '${widget.tour.provider?.avatarImageUrl}')
-                                  : null),
-                      const SizedBox(height: 8),
-                      Text(widget.tour.provider?.companyName ?? "Company name",
-                          style: Theme.of(context).textTheme.titleMedium)
-                    ],
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProviderProfileScreeen(
+                        providerId: widget.tour.providerId!)));
+          },
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                            radius: 40,
+                            backgroundColor: whiteColor,
+                            backgroundImage: widget
+                                        .tour.provider?.avatarImageUrl !=
+                                    null
+                                ? CachedNetworkImageProvider(
+                                    '${widget.tour.provider?.avatarImageUrl}')
+                                : null),
+                        const SizedBox(height: 8),
+                        Text(
+                            widget.tour.provider?.companyName ?? "Company name",
+                            style: Theme.of(context).textTheme.titleMedium)
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  flex: 4,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.star, size: 18),
-                          const SizedBox(width: 4),
-                          Text('4.5',
-                              style: Theme.of(context).textTheme.bodyMedium),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text('123 Reviews',
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      const SizedBox(height: 4),
-                      widget.tour.provider != null
-                          ? Text(joinedAgo(widget.tour.provider!.createdAt!),
-                              style: Theme.of(context).textTheme.bodyMedium)
-                          : const Text(""),
-                    ],
+                  const SizedBox(width: 16),
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.star, size: 18),
+                            const SizedBox(width: 4),
+                            Text('4.5',
+                                style: Theme.of(context).textTheme.bodyMedium),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text('123 Reviews',
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        const SizedBox(height: 4),
+                        widget.tour.provider != null
+                            ? Text(joinedAgo(widget.tour.provider!.createdAt!),
+                                style: Theme.of(context).textTheme.bodyMedium)
+                            : const Text(""),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

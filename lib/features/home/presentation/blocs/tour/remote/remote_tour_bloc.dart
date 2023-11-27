@@ -1,18 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
-import 'package:zest_trip/features/home/domain/usecases/add_wishlist.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tours.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour/remote/remote_tour_event.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour/remote/remote_tour_state.dart';
 
 class RemoteTourBloc extends Bloc<RemoteTourEvent, RemoteTourState> {
   final GetTourUseCase _getTourUseCase;
-  final AddWishlistUseCase _addWishlistUseCase;
 
   RemoteTourBloc(
     this._getTourUseCase,
-    this._addWishlistUseCase,
   ) : super(const RemoteTourLoading()) {
     on<ClearTour>((event, emit) {
       emit(const RemoteTourDone(tours: [], hasMore: false));
@@ -26,7 +23,9 @@ class RemoteTourBloc extends Bloc<RemoteTourEvent, RemoteTourState> {
         page: event.page,
         limit: event.limit ?? 5,
         tagIds: event.tags,
-        search: event.search,
+        search: event.search ?? "",
+        province: event.province ?? "",
+        district: event.district ?? "",
       );
 
       if (dataState is DataSuccess) {
@@ -45,17 +44,6 @@ class RemoteTourBloc extends Bloc<RemoteTourEvent, RemoteTourState> {
       if (dataState is DataFailed) {
         print(dataState.error?.response?.data["message"]);
         emit(RemoteTourError(dataState.error!));
-      }
-    });
-
-    on<AddToWishlist>((event, emit) async {
-      final dataState = await _addWishlistUseCase.call(event.tourId);
-
-      if (dataState is DataSuccess) {
-        emit(const AddedToWishlist());
-      } else if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
-        emit(AddToWishlistError(dataState.error!));
       }
     });
   }

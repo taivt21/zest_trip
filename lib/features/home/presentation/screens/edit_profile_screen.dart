@@ -19,12 +19,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String _phone = "";
   DateTime? _selectedDate;
   String _selectedGender = "Male";
-  final _formKey = GlobalKey<FormState>(); // Add this key
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController dateController = TextEditingController();
   Map<String, IconData> genderIcons = {
     "Male": Icons.male,
     "Female": Icons.female,
     "Other": Icons.transgender,
   };
+  @override
+  void dispose() {
+    dateController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
@@ -50,7 +57,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: CachedNetworkImage(
-                              imageUrl: state.user!.avatarImageUrl!,
+                              imageUrl: state.user?.avatarImageUrl ??
+                                  "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
                               placeholder: (context, url) => Container(
                                 height: 60,
                                 width: 60,
@@ -89,7 +97,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         _buildTextField(
                           initialValue: (state is AuthSuccess)
-                              ? "${state.user?.fullName}"
+                              ? "${state.user?.email}".split('@').first
                               : "",
                           label: "Full name",
                           icon: Icons.person,
@@ -115,35 +123,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         const SizedBox(height: 20),
 
-                        _buildTextField(
-                          initialValue: (state is AuthSuccess)
-                              ? "${state.user?.dob}"
-                              : "$_selectedDate",
-                          label: "Date of Birth",
-                          icon: Icons.calendar_today,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedDate = value;
-                            });
-                          },
-                          readOnly: true,
-                          onTap: () async {
-                            final DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: _selectedDate ?? DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now(),
-                            );
-                            if (pickedDate != null &&
-                                pickedDate != _selectedDate) {
-                              setState(() {
-                                _selectedDate = pickedDate;
-                              });
-                            }
-                          },
-                        ),
+                        _buildDateField(context),
                         const SizedBox(height: 20),
-
                         _buildTextFieldGender(
                           label: "Gender",
                           icon: genderIcons[_selectedGender] ?? Icons.person,
@@ -172,43 +153,42 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         const SizedBox(height: 16),
 
-                        // -- Created Date and Delete Button
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text.rich(
-                              TextSpan(
-                                text: "Joined ",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                children: [
-                                  TextSpan(
-                                      text: (state is AuthSuccess)
-                                          ? DateFormat("dd MMM yyyy")
-                                              .format(state.user!.createdAt!)
-                                          : DateFormat("dd MMM yyyy")
-                                              .format(DateTime.now()),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w500))
-                                ],
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.redAccent.withOpacity(0.1),
-                                elevation: 0,
-                                foregroundColor: Colors.red,
-                                shape: const StadiumBorder(),
-                                side: BorderSide.none,
-                              ),
-                              child: const Text("Delete"),
-                            ),
-                          ],
-                        )
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Text.rich(
+                        //       TextSpan(
+                        //         text: "Joined ",
+                        //         style: Theme.of(context).textTheme.bodyMedium,
+                        //         children: [
+                        //           TextSpan(
+                        //               text: (state is AuthSuccess)
+                        //                   ? DateFormat("dd MMM yyyy")
+                        //                       .format(state.user!.createdAt!)
+                        //                   : DateFormat("dd MMM yyyy")
+                        //                       .format(DateTime.now()),
+                        //               style: Theme.of(context)
+                        //                   .textTheme
+                        //                   .bodyMedium
+                        //                   ?.copyWith(
+                        //                       fontWeight: FontWeight.w500))
+                        //         ],
+                        //       ),
+                        //     ),
+                        //     ElevatedButton(
+                        //       onPressed: () {},
+                        //       style: ElevatedButton.styleFrom(
+                        //         backgroundColor:
+                        //             Colors.redAccent.withOpacity(0.1),
+                        //         elevation: 0,
+                        //         foregroundColor: Colors.red,
+                        //         shape: const StadiumBorder(),
+                        //         side: BorderSide.none,
+                        //       ),
+                        //       child: const Text("Delete"),
+                        //     ),
+                        //   ],
+                        // )
                       ],
                     ),
                   ],
@@ -218,6 +198,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
         );
       },
+    );
+  }
+
+  TextFormField _buildDateField(BuildContext context) {
+    return TextFormField(
+      readOnly: true,
+      controller: dateController,
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Icons.calendar_today),
+        labelText: 'Date of Birth',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(32)),
+        ),
+      ),
+      onTap: () {
+        _selectDate(context);
+      },
+      validator: _validateDateOfBirth,
+      keyboardType: TextInputType.datetime,
     );
   }
 
@@ -279,6 +278,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       value: selectedValue,
       onChanged: onChanged,
     );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate!);
+      });
+    }
+  }
+
+  String? _validateDateOfBirth(String? value) {
+    if (_selectedDate == null) {
+      return 'Please select your date of birth';
+    }
+    return null;
   }
 
   void _saveProfile() {

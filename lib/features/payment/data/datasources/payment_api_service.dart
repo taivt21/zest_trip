@@ -161,10 +161,11 @@ class PaymentApiServiceImpl implements PaymentApiService {
   @override
   Future<DataState<ProviderModel>> getInfoProvider(String providerId) async {
     try {
+      print("providerId call: $providerId");
       final response = await DioHelper.dio.get(
         '/provider/detail/$providerId',
       );
-      print("me: ${response.data}");
+      print("provider info: ${response.data}");
 
       if (response.statusCode == 200) {
         final user = ProviderModel.fromJson(response.data);
