@@ -38,8 +38,8 @@ class ReviewScreenState extends State<ReviewScreen> {
   Future<void> _showConfirmationDialog() async {
     bool? confirmed = await DialogUtils.showConfirmDialog(
       context,
-      title: 'Confirm request refund',
-      content: 'Are you sure you want to refund?',
+      title: 'Confirm review',
+      content: 'Are you sure you want to review?',
       noText: 'Cancel',
       yesText: 'Confirm',
     );
@@ -79,6 +79,8 @@ class ReviewScreenState extends State<ReviewScreen> {
                   fontSize: 16.0);
             }
             if (state is ReviewSuccess) {
+              context.read<MyReviewBloc>().add(GetMyReview());
+              context.read<BookingBloc>().add(const GetBookings());
               Fluttertoast.showToast(
                   msg: "Review success!",
                   toastLength: Toast.LENGTH_SHORT,
@@ -86,7 +88,6 @@ class ReviewScreenState extends State<ReviewScreen> {
                   timeInSecForIosWeb: 1,
                   textColor: Colors.white,
                   fontSize: 16.0);
-              context.read<MyReviewBloc>().add(GetMyReview());
 
               Navigator.pop(
                 context,

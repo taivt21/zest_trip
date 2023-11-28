@@ -397,20 +397,28 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                   ),
                   ElevatedButtonCustom(
                     onPressed: () {
-                      BookingEntity bookingEntity = BookingEntity(
-                        bookerName: fullname,
-                        bookerPhone: phone,
-                        bookerEmail: email,
-                        adult: widget.orderEntity.adult,
-                        children: widget.orderEntity.children ?? 0,
-                        selectedDate: widget.orderEntity.selectedDate,
-                        tourId: widget.orderEntity.tourId,
-                      );
+                      if (fullname == "" || phone == "" || email == "") {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content:
+                              Text("Please fill full the information contact!"),
+                        ));
+                      } else {
+                        BookingEntity bookingEntity = BookingEntity(
+                          bookerName: fullname,
+                          bookerPhone: phone,
+                          bookerEmail: email,
+                          adult: widget.orderEntity.adult,
+                          children: widget.orderEntity.children ?? 0,
+                          selectedDate: widget.orderEntity.selectedDate,
+                          tourId: widget.orderEntity.tourId,
+                        );
 
-                      context.read<PaymentBloc>().add(CreateBooking(
-                            bookingEntity: bookingEntity,
-                            voucherId: appliedVoucherId,
-                          ));
+                        context.read<PaymentBloc>().add(CreateBooking(
+                              bookingEntity: bookingEntity,
+                              voucherId: appliedVoucherId,
+                            ));
+                      }
                     },
                     text: "Go to payment",
                   ),

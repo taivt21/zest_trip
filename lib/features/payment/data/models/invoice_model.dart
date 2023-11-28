@@ -50,7 +50,7 @@ class InvoiceModel extends InvoiceEntity {
   factory InvoiceModel.fromJson(Map<String, dynamic> json) {
     return InvoiceModel(
       id: json["id"] ?? "bookingId",
-      note: json['note'] ?? "note",
+      note: json['note'] ?? "",
       tourId: json['tour_id'] ?? "tourId",
       userId: json['user_id'] ?? "userId",
       bookerName: json['booker_name'] ?? "bookerName",

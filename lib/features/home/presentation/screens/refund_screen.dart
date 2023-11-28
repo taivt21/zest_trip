@@ -80,6 +80,8 @@ class RefundScreenState extends State<RefundScreen> {
                   fontSize: 16.0);
             }
             if (state is RequestRefundSuccess) {
+              BlocProvider.of<MyReviewBloc>(context).add(GetMyReview());
+              BlocProvider.of<BookingBloc>(context).add(const GetBookings());
               Fluttertoast.showToast(
                   msg: "Request refund success!",
                   toastLength: Toast.LENGTH_SHORT,
@@ -87,7 +89,6 @@ class RefundScreenState extends State<RefundScreen> {
                   timeInSecForIosWeb: 1,
                   textColor: Colors.white,
                   fontSize: 16.0);
-              BlocProvider.of<MyReviewBloc>(context).add(GetMyReview());
 
               Navigator.pop(context, (route) => false);
             }
@@ -187,6 +188,5 @@ class RefundScreenState extends State<RefundScreen> {
     // context.read<BookingBloc>().add(const GetBookings());
     BlocProvider.of<RefundBloc>(context).add(RequestRefundEvent(
         reason: commentController.text, bookingId: widget.bookingId));
-    BlocProvider.of<BookingBloc>(context).add(const GetBookings());
   }
 }

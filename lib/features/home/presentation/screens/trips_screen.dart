@@ -9,8 +9,24 @@ import 'package:zest_trip/features/payment/domain/entities/invoice_entity.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/booking/booking_bloc.dart';
 import 'package:zest_trip/get_it.dart';
 
-class TripsScreen extends StatelessWidget {
+class TripsScreen extends StatefulWidget {
   const TripsScreen({Key? key}) : super(key: key);
+
+  @override
+  State<TripsScreen> createState() => _TripsScreenState();
+}
+
+class _TripsScreenState extends State<TripsScreen> {
+  @override
+  void initState() {
+    BlocProvider.of<BookingBloc>(context).add(const GetBookings());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +37,7 @@ class TripsScreen extends StatelessWidget {
         ),
       ],
       child: DefaultTabController(
-        length: 5,
+        length: 4,
         child: Scaffold(
           appBar: AppBar(
             title: const Text("My Bookings"),
@@ -30,7 +46,7 @@ class TripsScreen extends StatelessWidget {
               isScrollable: true,
               tabs: [
                 Tab(text: 'Accepted'),
-                Tab(text: 'Pending'),
+                // Tab(text: 'Pending'),
                 Tab(text: 'Refunded'),
                 Tab(text: 'Refunding'),
                 Tab(text: 'Cancelled by provider'),
@@ -38,13 +54,14 @@ class TripsScreen extends StatelessWidget {
             ),
           ),
           body: BlocBuilder<BookingBloc, BookingState>(
+            buildWhen: (previous, current) => previous != current,
             builder: (context, state) {
               if (state is GetBookingSuccess) {
                 List<InvoiceEntity> invoices = state.bookings!;
                 return TabBarView(
                   children: [
                     _buildTabContent(context, invoices, 'accepted'),
-                    _buildTabContent(context, invoices, 'pending'),
+                    // _buildTabContent(context, invoices, 'pending'),
                     _buildTabContent(context, invoices, 'refunded'),
                     _buildTabContent(context, invoices, 'user_request_refund'),
                     _buildTabContent(context, invoices, 'provider_refunded'),
@@ -103,13 +120,13 @@ class TripsScreen extends StatelessWidget {
   String _mapStatus(String backendStatus) {
     Map<String, String> statusMap = {
       'accepted': 'accepted',
-      'pending': 'pending',
+      // 'pending': 'pending',
       'rejected': 'refunded',
       'refunded': 'refunded',
       'user_request_refund': 'user_request_refund',
       'provider_refunded': 'provider_refunded',
     };
 
-    return statusMap[backendStatus.toLowerCase()] ?? 'pending';
+    return statusMap[backendStatus.toLowerCase()] ?? 'accepted';
   }
 }

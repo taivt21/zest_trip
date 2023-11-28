@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
+import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/webview.dart';
 import '../../../../config/utils/constants/color_constant.dart';
@@ -106,7 +107,9 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Text(state.user?.fullName ?? state.user!.email!,
+                    Text(
+                        state.user?.fullName ??
+                            state.user!.email!.split('@')[0],
                         style: Theme.of(context).textTheme.headlineSmall),
                     Text(state.user?.email ?? "email",
                         style: Theme.of(context).textTheme.bodyMedium),
@@ -141,7 +144,14 @@ class ProfileScreen extends StatelessWidget {
 
                     /// -- MENU
                     CardProfile(
-                      ontap: null,
+                      ontap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const HomeScreen(initialPageIndex: 1)),
+                        );
+                      },
                       icon: Icons.manage_search,
                       title: "Manage Booking",
                     ),
@@ -155,11 +165,11 @@ class ProfileScreen extends StatelessWidget {
                       icon: Icons.reviews_outlined,
                       title: "Manage Reivew",
                     ),
-                    CardProfile(
-                      ontap: null,
-                      icon: Icons.help_center,
-                      title: "Help center",
-                    ),
+                    // CardProfile(
+                    //   ontap: null,
+                    //   icon: Icons.help_center,
+                    //   title: "Help center",
+                    // ),
                     CardProfile(
                       ontap: () {
                         Navigator.push(

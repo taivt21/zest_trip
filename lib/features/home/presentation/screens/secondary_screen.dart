@@ -22,6 +22,7 @@ import '../widgets/bottomsheet_filter.dart';
 class SecondaryScreen extends StatefulWidget {
   final TourTag? tag;
   final String? searchLocation;
+
   const SecondaryScreen({
     Key? key,
     this.tag,

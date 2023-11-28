@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:zest_trip/config/network/dio_helper.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
@@ -252,6 +253,8 @@ class MainScreen extends StatelessWidget {
                                 state.tours?.length ?? 0,
                                 (index) => GestureDetector(
                                   onTap: () {
+                                    DioHelper.dio.get(
+                                        "/tour/detail/${state.tours?[index].id}");
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) => TourDetailScreen(
@@ -362,7 +365,7 @@ class SearchMainScreen extends StatelessWidget {
           children: [
             const Icon(Icons.location_on),
             const SizedBox(width: 8),
-            Text("Your location",
+            Text("Search location...",
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium

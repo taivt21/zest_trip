@@ -16,6 +16,7 @@ class TourSponsoreBloc extends Bloc<TourSponsoreEvent, TourSponsoreState> {
   ) : super(TourSponsoreInitial()) {
     on<TourSponsoreEvent>((event, emit) {});
     on<GetToursSponsore>((event, emit) async {
+      emit(TourSponsoreInitial());
       final dataState = await _getTourSponsoreUseCase.call();
 
       if (dataState is DataSuccess) {

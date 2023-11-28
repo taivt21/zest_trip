@@ -133,8 +133,8 @@ class OTPScreenState extends State<OTPScreen> {
                       child: RichText(
                         text: TextSpan(
                           text: 'Resend OTP in',
-                          style: TextStyle(
-                            color: isOTPVerified ? colorBlack : colorLightGrey,
+                          style: const TextStyle(
+                            color: colorBlack,
                             fontWeight: FontWeight.bold,
                           ),
                           children: <TextSpan>[

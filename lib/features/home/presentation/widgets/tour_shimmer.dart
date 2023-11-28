@@ -1,10 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TourShimmer extends StatelessWidget {
+  final double width;
   const TourShimmer({
-    super.key,
-  });
+    Key? key,
+    this.width = double.infinity,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class TourShimmer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: double.infinity,
+                  width: width,
                   height: 200,
                   color: Colors.white,
                 ),

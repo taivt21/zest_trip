@@ -86,6 +86,12 @@ class CardTourManage extends StatelessWidget {
                       }).toList(),
                     ),
                     const SizedBox(height: 4),
+                    invoice.note == ""
+                        ? const SizedBox()
+                        : Text(
+                            "Note: ${invoice.note}",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                   ],
                 ),
               ),
@@ -121,11 +127,11 @@ class CardTourManage extends StatelessWidget {
                       const Text("Price: "),
                       Text(
                         "${NumberFormatter.format(num.parse(invoice.originalPrice!))} ₫",
-                        // style: Theme.of(context)
-                        //     .textTheme
-                        //     .bodySmall
-                        //     ?.copyWith(
-                        //         decoration: TextDecoration.lineThrough),
+                        // style: double.parse(invoice.originalPrice!) >
+                        //         double.parse(invoice.paidPrice!)
+                        //     ? Theme.of(context).textTheme.bodySmall?.copyWith(
+                        //         decoration: TextDecoration.lineThrough)
+                        //     : null,
                       ),
                     ],
                   ),
@@ -247,6 +253,7 @@ bool canRefund(InvoiceEntity invoice) {
 
 bool canReview(InvoiceEntity invoice) {
   DateTime bookDate = invoice.bookedDate ?? DateTime.now();
-  return DateTime.now().isAfter(bookDate) &&
-      invoice.status?.toLowerCase() == "accepted";
+  return DateTime.now().isAfter(bookDate) ||
+      DateTime.now().isAtSameMomentAs(bookDate) &&
+          invoice.status?.toLowerCase() == "accepted";
 }
