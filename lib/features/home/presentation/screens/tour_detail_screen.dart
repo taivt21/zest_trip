@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:readmore/readmore.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
@@ -14,7 +15,7 @@ import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_review_entity.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/reviews/tour_reviews_bloc.dart';
 import 'package:zest_trip/features/home/presentation/screens/map_tour_screen.dart';
-import 'package:zest_trip/features/home/presentation/screens/provider_profile_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/photo_zoom_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/review_of_tour_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/review_detail.dart';
 import 'package:zest_trip/features/home/presentation/widgets/tour_schedule_detail_widget.dart';
@@ -33,6 +34,9 @@ class TourDetailScreen extends StatefulWidget {
 }
 
 class TourDetailScreenState extends State<TourDetailScreen> {
+  bool isExpanded = false;
+  final int maxLines = 10;
+
   int _currentPage = 0;
   final PageController _pageController = PageController();
   bool showReadMore = false;
@@ -40,26 +44,24 @@ class TourDetailScreenState extends State<TourDetailScreen> {
 
   GoogleMapController? mapController;
   Set<Marker> markers = {};
-  late String lat;
-  late String long;
-  late String zoom;
+  late double lat;
+  late double long;
+  late double zoom;
   late LatLng showLocation;
-
   @override
   void dispose() {
+    mapController!.dispose();
     _pageController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
-    lat = widget.tour.departureLocation?["lat"] ?? "10.8161456";
-    long = widget.tour.departureLocation?["long"] ?? "106.6615997";
-    zoom = widget.tour.departureLocation?["zoom"]
-            .replaceAll(RegExp('[a-zA-Z]'), '') ??
-        "18";
+    zoom = double.parse(widget.tour.departureLocation?["zoom"]
+        .replaceAll(RegExp('[a-zA-Z]'), ''));
 
-    showLocation = LatLng(double.parse(lat), double.parse(long));
+    showLocation = LatLng(double.parse(widget.tour.departureLocation?["lat"]),
+        double.parse(widget.tour.departureLocation?["long"]));
     markers.add(Marker(
       markerId: MarkerId(showLocation.toString()),
       position: showLocation,
@@ -86,7 +88,8 @@ class TourDetailScreenState extends State<TourDetailScreen> {
       const SizedBox(
         height: 4,
       ),
-      Text('${widget.tour.addressCity}, ${widget.tour.addressCountry}',
+      Text(
+          '${widget.tour.addressWard}, ${widget.tour.addressDistrict}, ${widget.tour.addressProvince}',
           style: Theme.of(context).textTheme.bodyMedium),
       const SizedBox(
         height: 4,
@@ -98,20 +101,32 @@ class TourDetailScreenState extends State<TourDetailScreen> {
           Text('${widget.tour.avgRating} ',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.yellow[800], fontWeight: FontWeight.w400)),
-          RichText(
-            text: TextSpan(
-              text: '(${widget.tour.count?['TourReview']}  ',
-              style: const TextStyle(
-                  fontWeight: FontWeight.w400, color: Colors.black),
-              children: const <TextSpan>[
-                TextSpan(
-                    text: 'reviews',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                        decoration: TextDecoration.underline)),
-                TextSpan(text: ") • ")
-              ],
+          GestureDetector(
+            onTap: () {
+              if (widget.tour.count?['TourReview'] > 0) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ReviewsOfTour(
+                          tourId: widget.tour.id!,
+                          ratingCount: widget.tour.count?["TourReview"] ?? 0,
+                          ratingTour: widget.tour.avgRating ?? "0",
+                        )));
+              }
+            },
+            child: RichText(
+              text: TextSpan(
+                text: '(${widget.tour.count?['TourReview']}  ',
+                style: const TextStyle(
+                    fontWeight: FontWeight.w400, color: Colors.black),
+                children: const <TextSpan>[
+                  TextSpan(
+                      text: 'reviews',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                          decoration: TextDecoration.underline)),
+                  TextSpan(text: ") • ")
+                ],
+              ),
             ),
           ),
           Text(
@@ -143,14 +158,29 @@ class TourDetailScreenState extends State<TourDetailScreen> {
       const Titles(title: "About"),
       const SizedBox(height: 8),
       Container(
+        width: double.infinity,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: colorHyperlinkSecondary,
         ),
-        child: Text(
-          widget.tour.description!,
+        child: ReadMoreText(
+          "${widget.tour.description!} ",
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+          trimLines: 8,
+          trimMode: TrimMode.Line,
+          trimCollapsedText: 'Show more',
+          trimExpandedText: 'Show less',
+          moreStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: primaryColor,
+              decoration: TextDecoration.underline),
+          lessStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontSize: 14,
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline),
         ),
       ),
       const SizedBox(height: 16),
@@ -170,7 +200,17 @@ class TourDetailScreenState extends State<TourDetailScreen> {
       ),
       const SizedBox(height: 8),
       const Titles(
-        title: "Location",
+        title: "Departure location",
+      ),
+      const SizedBox(
+        height: 8,
+      ),
+      Text(
+        widget.tour.departureLocation?["location"],
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 16),
+      ),
+      const SizedBox(
+        height: 8,
       ),
       InkWell(
         onTap: () {
@@ -181,22 +221,21 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                 lat: widget.tour.departureLocation?["lat"],
                 long: widget.tour.departureLocation?["long"],
                 zoom: widget.tour.departureLocation?["zoom"],
+                location: widget.tour.departureLocation?["location"],
               ),
             ),
           );
         },
         child: Container(
-          margin: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(style: BorderStyle.none)),
+          margin: const EdgeInsets.all(8),
           width: double.infinity,
           height: 150,
           child: GoogleMap(
+            myLocationEnabled: false,
             zoomGesturesEnabled: false,
             initialCameraPosition: CameraPosition(
               target: showLocation,
-              zoom: 14.0,
+              zoom: zoom,
             ),
             markers: markers,
             mapType: MapType.normal,
@@ -215,11 +254,15 @@ class TourDetailScreenState extends State<TourDetailScreen> {
       ),
       const SizedBox(height: 8),
       Container(
+          width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: fourthColor,
           ),
-          child: TourScheduleWidget(tourSchedules: widget.tour.tourSchedule!)),
+          child: TourScheduleWidget(
+            tourSchedules: widget.tour.tourSchedule!,
+            showMore: true,
+          )),
 
       const SizedBox(height: 8),
 
@@ -228,11 +271,11 @@ class TourDetailScreenState extends State<TourDetailScreen> {
         padding: const EdgeInsets.all(16),
         child: GestureDetector(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ProviderProfileScreeen(
-                        providerId: widget.tour.providerId!)));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => ProviderProfileScreeen(
+            //             providerId: widget.tour.providerId!)));
           },
           child: Card(
             elevation: 4,
@@ -273,13 +316,14 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                           children: [
                             const Icon(Icons.star, size: 18),
                             const SizedBox(width: 4),
-                            Text('4.5',
-                                style: Theme.of(context).textTheme.bodyMedium),
+                            Text(widget.tour.provider?.avgRating ?? "4.4",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                        overflow: TextOverflow.ellipsis)),
                           ],
                         ),
-                        const SizedBox(height: 4),
-                        Text('123 Reviews',
-                            style: Theme.of(context).textTheme.bodyMedium),
                         const SizedBox(height: 4),
                         widget.tour.provider != null
                             ? Text(joinedAgo(widget.tour.provider!.createdAt!),
@@ -424,21 +468,34 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                       },
                       itemCount: widget.tour.tourImages!.length,
                       itemBuilder: (context, index) {
-                        return CachedNetworkImage(
-                          imageUrl: widget.tour.tourImages![index],
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  Shimmer.fromColors(
-                            baseColor: Colors.grey,
-                            highlightColor:
-                                const Color.fromARGB(255, 116, 112, 112),
-                            child: const SizedBox(
-                              height: 300,
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PhotoZoomScreen(
+                                  imageUrls: widget.tour.tourImages!,
+                                  initialIndex: index,
+                                ),
+                              ),
+                            );
+                          },
+                          child: CachedNetworkImage(
+                            imageUrl: widget.tour.tourImages![index],
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    Shimmer.fromColors(
+                              baseColor: Colors.grey,
+                              highlightColor:
+                                  const Color.fromARGB(255, 116, 112, 112),
+                              child: const SizedBox(
+                                height: 300,
+                              ),
                             ),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                            fit: BoxFit.cover,
                           ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                          fit: BoxFit.cover,
                         );
                       },
                     ),
@@ -449,8 +506,9 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 51, 51, 51),
-                          borderRadius: BorderRadius.circular(8)),
+                        color: const Color.fromARGB(255, 51, 51, 51),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       child: Text(
                         '${_currentPage + 1}/${widget.tour.tourImages!.length}',
                         style: const TextStyle(
@@ -551,7 +609,12 @@ String joinedAgo(DateTime createdAt) {
   final int months =
       (now.year - createdAt.year) * 12 + now.month - createdAt.month;
 
-  return 'Joined $months ${months == 1 ? 'month' : 'months'} ago';
+  if (months == 0) {
+    final int days = now.difference(createdAt).inDays;
+    return 'Joined $days ${days == 1 ? 'day' : 'days'} ago';
+  } else {
+    return 'Joined $months ${months == 1 ? 'month' : 'months'} ago';
+  }
 }
 
 List<Widget> _buildChips(List<dynamic>? chips, String chipType) {

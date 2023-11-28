@@ -1,5 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/home/presentation/screens/main_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/profile_screen.dart';
@@ -14,7 +16,11 @@ const List<Widget> bottomNavScreen = [
 ];
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int? initialPageIndex;
+  const HomeScreen({
+    Key? key,
+    this.initialPageIndex = 0,
+  }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreen();
@@ -27,6 +33,12 @@ class _HomeScreen extends State<HomeScreen> {
   }
 
   int currentPageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    currentPageIndex = widget.initialPageIndex ?? 0;
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:zest_trip/config/utils/resources/formatter.dart';
 
 class TourCard extends StatelessWidget {
   final String tourName;
@@ -50,7 +49,7 @@ class TourCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "${NumberFormatter.format(num.parse(price))} ₫",
+                  "$price ₫",
                   style: const TextStyle(
                     fontSize: 14,
                   ),

@@ -8,7 +8,8 @@ import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/dimension_constant.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
-import 'package:zest_trip/features/home/presentation/screens/policy_webview.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
+import 'package:zest_trip/features/home/presentation/screens/webview.dart';
 import 'package:zest_trip/features/home/presentation/widgets/titles_common.dart';
 import 'package:zest_trip/features/payment/domain/entities/booking_entity.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/payment/payment_bloc.dart';
@@ -44,6 +45,10 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
   @override
   void initState() {
     discountedAmount = widget.orderEntity.totalPrice!;
+
+    fullname = BlocProvider.of<AuthBloc>(context).state.user?.fullName ?? "";
+    email = BlocProvider.of<AuthBloc>(context).state.user?.email ?? "";
+    phone = BlocProvider.of<AuthBloc>(context).state.user?.phoneNumber ?? "";
     super.initState();
   }
 
@@ -52,10 +57,11 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
     return BlocListener<PaymentBloc, PaymentState>(
       listener: (context, state) {
         if (state is BookTourSuccess) {
-          Navigator.push(
+          Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => MyWebView(
+                        title: "Complete payment",
                         urlWeb: state.url,
                       )));
         }
@@ -215,7 +221,10 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                             ),
                             context: context,
                             builder: (context) {
-                              return const ParticipantBottomSheet();
+                              return ParticipantBottomSheet(
+                                  fullname: fullname,
+                                  email: email,
+                                  phone: phone);
                             },
                           );
 
@@ -273,22 +282,22 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                                 children: [
                                   const SizedBox(height: 8.0),
                                   Text(
-                                    fullname.isEmpty
-                                        ? "Please enter"
-                                        : fullname,
+                                    fullname.isEmpty ? "..." : fullname,
                                   ),
                                   const SizedBox(height: 8.0),
                                   Text(
-                                    phone.isEmpty ? "Please enter" : phone,
+                                    phone.isEmpty ? "..." : phone,
                                   ),
                                   const SizedBox(height: 8.0),
                                   Text(
                                     email.isEmpty ? "Please enter" : email,
                                   ),
                                   const SizedBox(height: 8.0),
-                                  Text(note.isEmpty
-                                      ? "Any special request?"
-                                      : note),
+                                  Text(
+                                    note.isEmpty
+                                        ? "Any special request?"
+                                        : note,
+                                  ),
                                 ],
                               ),
                             ),

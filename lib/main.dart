@@ -18,6 +18,7 @@ import 'package:zest_trip/features/home/presentation/blocs/tour_resource/provinc
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/tags/tour_tag_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/vehicles/tour_vehicle_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_sponsore/tour_sponsore_bloc.dart';
+import 'package:zest_trip/features/payment/presentation/bloc/booking/booking_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/my_review/my_review_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/payment/payment_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/voucher/voucher_bloc.dart';
@@ -74,6 +75,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<RefundBloc>(
           create: (context) => sl(),
         ),
+        BlocProvider<BookingBloc>(
+          create: (context) => sl(),
+        ),
         BlocProvider<VoucherBloc>(
           create: (context) => sl(),
         ),
@@ -99,6 +103,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         onGenerateRoute: AppRoutes.onGenerateRoute,
         theme: ThemeData(
+          pageTransitionsTheme: const PageTransitionsTheme(builders: {
+            TargetPlatform.android: CupertinoPageTransitionsBuilder()
+          }),
           colorScheme: const ColorScheme.light(primary: primaryColor),
           fontFamily: 'SFCompact',
           useMaterial3: true,

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/config/utils/resources/confirm_dialog.dart';
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
 import 'package:zest_trip/features/home/domain/entities/province_entity.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
@@ -26,15 +27,39 @@ class _SelectHobbyScreenState extends State<SelectHobbyScreen> {
     return listTag.length >= 5 && listProvince.length >= 5;
   }
 
+  Future<void> _showConfirmationDialog() async {
+    bool? confirmed = await DialogUtils.showConfirmDialog(
+      context,
+      title: 'Confirm skip',
+      content: 'Do you want show this page again?',
+      noText: 'No',
+      yesText: 'Yes',
+    );
+
+    if (confirmed == true) {
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+    } else {
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+      context.read<TourRecommendLocationBloc>().add(
+            AnalyticLocation(locations: listProvince),
+          );
+      context.read<TourRecommendTagBloc>().add(
+            AnalyticTag(tags: listTag),
+          );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+              _showConfirmationDialog();
             },
             child: const Text(
               'Skip',

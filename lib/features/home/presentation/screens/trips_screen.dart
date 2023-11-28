@@ -85,7 +85,7 @@ class TripsScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, AppRoutes.landingScreen);
                   },
-                  child: const Text("Search for your trip now"),
+                  child: const Text("Explore more tours now"),
                 ),
               ],
             )

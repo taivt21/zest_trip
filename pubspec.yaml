@@ -70,6 +70,8 @@ dependencies:
   uuid: ^4.2.1
   gap: ^3.0.1
   bloc_concurrency: ^0.2.2
+  photo_view: ^0.14.0
+  readmore: ^2.2.0
 
     #Database
 

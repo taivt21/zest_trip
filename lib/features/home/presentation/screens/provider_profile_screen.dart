@@ -26,6 +26,10 @@ class _ProviderProfileScreeenState extends State<ProviderProfileScreeen> {
             builder: (context, state) {
               if (state is GetInfoProviderSuccess) {
                 return Scaffold(
+                  appBar: AppBar(
+                    title: Text(
+                        state.providerEntity?.companyName ?? "Company name"),
+                  ),
                   body: SingleChildScrollView(
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

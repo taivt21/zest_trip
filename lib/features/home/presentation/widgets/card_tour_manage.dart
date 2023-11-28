@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
+import 'package:zest_trip/features/home/presentation/screens/photo_zoom_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/refund_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/review_screen.dart';
 import 'package:zest_trip/features/payment/domain/entities/invoice_entity.dart';
@@ -132,21 +133,32 @@ class CardTourManage extends StatelessWidget {
                       "Paid: ${NumberFormatter.format(num.parse(invoice.paidPrice!))} ₫"),
                 ],
               ),
-              Row(
-                children: [
-                  invoice.status?.toLowerCase() == "pending"
-                      ? ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            shape: const StadiumBorder(),
+              invoice.status == "REFUNDED"
+                  ? TextButton(
+                      onPressed: () {
+                        List<String> url = [];
+                        url.add(invoice.refundImage ??
+                            "https://cdn.pixabay.com/photo/2017/08/20/10/47/grey-2661270_1280.png");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PhotoZoomScreen(
+                              imageUrls: url,
+                              initialIndex: 1,
+                            ),
                           ),
-                          onPressed: () {},
-                          child: const Text(
-                            "Continue payment",
-                            style: TextStyle(color: whiteColor),
-                          ),
-                        )
-                      : TextButton(
+                        );
+                      },
+                      child: Text(
+                        "Refund image",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(decoration: TextDecoration.underline),
+                      ))
+                  : Row(
+                      children: [
+                        TextButton(
                           onPressed: () {
                             if (canRefund(invoice)) {
                               Navigator.push(
@@ -182,12 +194,10 @@ class CardTourManage extends StatelessWidget {
                             ),
                           ),
                         ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  invoice.status?.toLowerCase() == "pending"
-                      ? const SizedBox.shrink()
-                      : ElevatedButton(
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 canReview(invoice) ? primaryColor : Colors.grey,
@@ -217,8 +227,8 @@ class CardTourManage extends StatelessWidget {
                             style: TextStyle(color: whiteColor),
                           ),
                         ),
-                ],
-              ),
+                      ],
+                    ),
             ],
           )
         ],

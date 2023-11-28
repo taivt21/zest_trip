@@ -11,6 +11,9 @@ class BookingEntity extends Equatable {
   final int? totalPrice;
   final DateTime? selectedDate;
   final DateTime? returnDate;
+  final String? refundAmount;
+  final String? refundImage;
+  final String? refundReason;
   final String? timeSlot;
 
   final String? bookingId;
@@ -28,30 +31,34 @@ class BookingEntity extends Equatable {
   final List<TicketOnBookingEntity>? ticketOnBooking;
   // final BookingOnTourEntity? bookingOnTour;
 
-  const BookingEntity(
-      {this.tourId,
-      this.id,
-      this.tourName,
-      this.adult,
-      this.children,
-      this.totalPrice,
-      this.selectedDate,
-      this.returnDate,
-      this.timeSlot,
-      //booking return
-      this.userId,
-      this.bookingId,
-      this.bookerName,
-      this.bookerEmail,
-      this.bookerPhone,
-      this.note,
-      this.paidPrice,
-      this.originalPrice,
-      this.createdAt,
-      this.updatedAt,
-      this.bookedDate,
-      this.status,
-      this.ticketOnBooking});
+  const BookingEntity({
+    this.tourId,
+    this.id,
+    this.tourName,
+    this.adult,
+    this.children,
+    this.totalPrice,
+    this.selectedDate,
+    this.returnDate,
+    this.timeSlot,
+    //booking return
+    this.userId,
+    this.bookingId,
+    this.bookerName,
+    this.bookerEmail,
+    this.bookerPhone,
+    this.note,
+    this.paidPrice,
+    this.originalPrice,
+    this.createdAt,
+    this.updatedAt,
+    this.bookedDate,
+    this.status,
+    this.ticketOnBooking,
+    this.refundAmount,
+    this.refundImage,
+    this.refundReason,
+  });
 
   @override
   List<Object?> get props => [
@@ -63,6 +70,9 @@ class BookingEntity extends Equatable {
         totalPrice,
         selectedDate,
         returnDate,
-        timeSlot
+        timeSlot,
+        refundAmount,
+        refundImage,
+        refundReason
       ];
 }

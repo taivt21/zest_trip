@@ -20,6 +20,7 @@ class InvoiceEntity extends Equatable {
   final String? timeSlot;
   final String? refundReason;
   final String? refundAmount;
+  final String? refundImage;
 
   final List<TicketOnBookingEntity>? ticketOnBooking;
   final TourEntity? tour;
@@ -43,6 +44,7 @@ class InvoiceEntity extends Equatable {
     this.status,
     this.refundReason,
     this.refundAmount,
+    this.refundImage,
     this.ticketOnBooking,
     this.tour,
     this.provider,
@@ -66,8 +68,9 @@ class InvoiceEntity extends Equatable {
         timeSlot,
         refundReason,
         refundAmount,
+        refundImage,
         ticketOnBooking,
         tour,
-        provider
+        provider,
       ];
 }

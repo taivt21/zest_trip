@@ -1,6 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:logger/logger.dart';
+
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
@@ -11,15 +14,19 @@ import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.
 import 'package:zest_trip/features/home/presentation/widgets/empty_widget.dart';
 import 'package:zest_trip/features/home/presentation/widgets/tour_item.dart';
 import 'package:zest_trip/features/home/presentation/widgets/tour_shimmer.dart';
-import '../blocs/tour/remote/tour_bloc_ex.dart';
-
-import '../widgets/bottomsheet_filter.dart';
-import 'package:logger/logger.dart';
 import 'package:zest_trip/get_it.dart';
+
+import '../blocs/tour/remote/tour_bloc_ex.dart';
+import '../widgets/bottomsheet_filter.dart';
 
 class SecondaryScreen extends StatefulWidget {
   final TourTag? tag;
-  const SecondaryScreen({super.key, this.tag});
+  final String? searchLocation;
+  const SecondaryScreen({
+    Key? key,
+    this.tag,
+    this.searchLocation,
+  }) : super(key: key);
 
   @override
   State<SecondaryScreen> createState() => _SecondaryScreenState();
@@ -44,14 +51,15 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
         });
       }
     });
+    province = widget.searchLocation ?? "";
     currentPage = 1;
     super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -272,9 +280,10 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                             if (tourState.tours!.isEmpty) {
                               return const Center(
                                 child: EmptyWidget(
-                                  imageSvg: logoNoLetter,
-                                  title: "Don't have any tour",
-                                  subtitle: "",
+                                  imageSvg: travelSvg,
+                                  title: "No tour found",
+                                  subtitle:
+                                      "Please try searching for other keywords",
                                 ),
                                 // child: CircularProgressIndicator(),
                               );

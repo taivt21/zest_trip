@@ -1,15 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
-import 'package:zest_trip/features/home/presentation/screens/edit_profile_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
-import 'package:zest_trip/features/home/presentation/screens/policy_webview.dart';
+import 'package:zest_trip/features/home/presentation/screens/webview.dart';
 import '../../../../config/utils/constants/color_constant.dart';
 import '../../../authentication/presentation/blocs/auth/auth_bloc_ex.dart';
 import '../widgets/card_profile.dart';
@@ -50,7 +47,6 @@ class ProfileScreen extends StatelessWidget {
                                         (context, url, downloadProgress) =>
                                             Center(
                                       child: CircularProgressIndicator(
-                             
                                           value: downloadProgress.progress),
                                     ),
                                     errorWidget: (context, url, error) =>
@@ -74,30 +70,30 @@ class ProfileScreen extends StatelessWidget {
                                 color: primaryColor),
                             child: IconButton(
                               onPressed: () async {
-                                final picker = ImagePicker();
+                                // final picker = ImagePicker();
 
-                                try {
-                                  // Chọn ảnh từ thư viện
-                                  final pickedFile = await picker.pickImage(
-                                      source: ImageSource.gallery);
+                                // try {
+                                //   // Chọn ảnh từ thư viện
+                                //   final pickedFile = await picker.pickImage(
+                                //       source: ImageSource.gallery);
 
-                                  if (pickedFile != null) {
-                                    File imageFile = File(pickedFile.path);
+                                //   if (pickedFile != null) {
+                                //     File imageFile = File(pickedFile.path);
 
-                                    context
-                                        .read<AuthBloc>()
-                                        .add(UploadImageEvent(imageFile));
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content:
-                                            Text('Please choose an image.'),
-                                      ),
-                                    );
-                                  }
-                                } catch (e) {
-                                  debugPrint('Error picking image: $e');
-                                }
+                                //     context
+                                //         .read<AuthBloc>()
+                                //         .add(UploadImageEvent(imageFile));
+                                //   } else {
+                                //     ScaffoldMessenger.of(context).showSnackBar(
+                                //       const SnackBar(
+                                //         content:
+                                //             Text('Please choose an image.'),
+                                //       ),
+                                //     );
+                                //   }
+                                // } catch (e) {
+                                //   debugPrint('Error picking image: $e');
+                                // }
                               },
                               icon: const Icon(
                                 Icons.edit,
@@ -121,11 +117,11 @@ class ProfileScreen extends StatelessWidget {
                       width: 160,
                       child: ElevatedButton(
                         onPressed: () => {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const EditProfileScreen()))
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             const EditProfileScreen()))
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
@@ -170,6 +166,7 @@ class ProfileScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => const MyWebView(
+                                  title: "Policy's Zest Travel",
                                   urlWeb:
                                       "https://www.travelperk.com/guides/corporate-travel-policy/"),
                             ));
@@ -178,7 +175,10 @@ class ProfileScreen extends StatelessWidget {
                       title: "Policy",
                     ),
                     CardProfile(
-                      ontap: () => context.read<AuthBloc>().add(LogoutEvent()),
+                      ontap: () {
+                        context.read<AuthBloc>().add(LogoutEvent());
+                        Navigator.pushNamed(context, AppRoutes.login);
+                      },
                       icon: Icons.logout,
                       title: "Logout",
                       colorText: Colors.red,

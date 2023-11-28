@@ -26,6 +26,9 @@ class BookingModel extends BookingEntity {
     DateTime? bookedDate,
     String? status,
     List<TicketOnBookingModel>? ticketOnBooking,
+    String? refundAmount,
+    String? refundImage,
+    String? refundReason,
   }) : super(
           id: id,
           tourId: tourId,
@@ -50,6 +53,9 @@ class BookingModel extends BookingEntity {
           bookedDate: bookedDate,
           status: status,
           ticketOnBooking: ticketOnBooking,
+          refundAmount: refundAmount,
+          refundImage: refundImage,
+          refundReason: refundReason,
         );
 
   factory BookingModel.fromJson(Map<String?, dynamic> json) {
@@ -71,6 +77,9 @@ class BookingModel extends BookingEntity {
       note: json['note'] ?? "note",
       paidPrice: json['paid_price'],
       originalPrice: json['original_price'],
+      // refundAmount: json['refund_amount'] ?? "",
+      // refundImage: json['refund_image'] ?? "",
+      // refundReason: json['refund_reason'] ?? "",
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       bookedDate: DateTime.parse(json['booked_date']),

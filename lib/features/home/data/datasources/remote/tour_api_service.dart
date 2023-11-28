@@ -78,7 +78,7 @@ class TourApiServiceImpl implements TourApiService {
     List<int> vehicles = vehicleIds?.toList() ?? [];
     final queries = {
       "page": page,
-      "limit": 10,
+      "limit": 5,
       "tag": tags,
       "vehicle": vehicles,
       if (province != null && province.isNotEmpty) "province": province,

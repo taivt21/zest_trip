@@ -1,10 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
 import 'package:zest_trip/config/routes/routes.dart';
+import 'package:zest_trip/config/utils/resources/confirm_dialog.dart';
 
 class MyWebView extends StatefulWidget {
   final String urlWeb;
-  const MyWebView({super.key, required this.urlWeb});
+  final String title;
+  const MyWebView({
+    Key? key,
+    required this.urlWeb,
+    required this.title,
+  }) : super(key: key);
 
   @override
   MyWebViewState createState() => MyWebViewState();
@@ -53,12 +61,40 @@ class MyWebViewState extends State<MyWebView> {
         ),
       )
       ..loadRequest(Uri.parse(widget.urlWeb));
-    return Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: const Text('Web'),
-          actions: const [],
-        ),
-        body: WebViewWidget(controller: controller));
+    return WillPopScope(
+      onWillPop: () async {
+        bool? confirmExit = await DialogUtils.showConfirmDialog(
+          context,
+          title: 'Confirm Exit',
+          content: 'Do you really want to exit?',
+          noText: 'No',
+          yesText: 'Yes',
+        );
+        return confirmExit ?? false;
+      },
+      child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () async {
+                bool? confirmExit = await DialogUtils.showConfirmDialog(
+                  context,
+                  title: 'Confirm exit',
+                  content: 'Your booking will be cancelled!',
+                  noText: 'Cancel',
+                  yesText: 'Confirm',
+                );
+                if (confirmExit != null && confirmExit) {
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+            automaticallyImplyLeading: false,
+            title: Text(widget.title),
+            actions: const [],
+          ),
+          body: WebViewWidget(controller: controller)),
+    );
   }
 }

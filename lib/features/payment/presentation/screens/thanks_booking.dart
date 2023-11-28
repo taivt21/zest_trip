@@ -5,7 +5,7 @@ import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
-import 'package:zest_trip/features/home/presentation/screens/trips_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
 
 class ThankYouPage extends StatefulWidget {
   const ThankYouPage({Key? key, required this.title}) : super(key: key);
@@ -51,7 +51,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 Text(
-                  "Payment done Successfully",
+                  "Payment successfully!",
                   style: TextStyle(
                     color: Colors.black87,
                     fontWeight: FontWeight.w400,
@@ -71,9 +71,11 @@ class _ThankYouPageState extends State<ThankYouPage> {
                 SizedBox(height: screenHeight * 0.06),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => TripsScreen()),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              HomeScreen(initialPageIndex: 1)),
                     );
                   },
                   child: Text(

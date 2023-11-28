@@ -54,14 +54,6 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     return BlocListener<PaymentBloc, PaymentState>(
       listener: (context, state) {
         if (state is CheckSuccess) {
-          Fluttertoast.showToast(
-            msg: "Success",
-            toastLength: Toast.LENGTH_SHORT,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.black,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
           Navigator.push(
               context,
               MaterialPageRoute(

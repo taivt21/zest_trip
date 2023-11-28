@@ -25,6 +25,7 @@ class TourEntity extends Equatable {
   final DateTime? updatedAt;
   final String? addressName;
   final String? addressDistrict;
+  final String? addressWard;
   final String? addressCity;
   final String? addressProvince;
   final String? addressCountry;
@@ -56,6 +57,7 @@ class TourEntity extends Equatable {
     this.updatedAt,
     this.addressName,
     this.addressDistrict,
+    this.addressWard,
     this.addressCity,
     this.addressProvince,
     this.addressCountry,
@@ -95,6 +97,7 @@ class TourEntity extends Equatable {
         addressCity,
         addressProvince,
         addressCountry,
+        addressWard,
         tourLocationType,
         tourSchedule,
         tags,

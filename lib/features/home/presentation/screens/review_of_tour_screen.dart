@@ -98,12 +98,12 @@ class _ReviewsOfTourState extends State<ReviewsOfTour> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(right: 16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(right: 16),
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               PopupMenuButton<int>(
@@ -122,7 +122,7 @@ class _ReviewsOfTourState extends State<ReviewsOfTour> {
                                       child: Row(
                                         children: [
                                           Text('${index + 1}'),
-                                          const Icon(Icons.star_border_rounded,
+                                          const Icon(Icons.star_rounded,
                                               color: Colors.amber),
                                         ],
                                       ),
@@ -149,33 +149,32 @@ class _ReviewsOfTourState extends State<ReviewsOfTour> {
                                 const Text("Filter"),
                             ],
                           ),
-                          ListView.separated(
-                            shrinkWrap: true,
-                            itemCount: selectedStars != null
+                        ),
+                        ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: selectedStars != null
+                              ? state.reviews!
+                                  .where((review) =>
+                                      review.rating == selectedStars)
+                                  .length
+                              : state.reviews!.length,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const Divider();
+                          },
+                          itemBuilder: (BuildContext context, int index) {
+                            var review = selectedStars != null
                                 ? state.reviews!
                                     .where((review) =>
                                         review.rating == selectedStars)
-                                    .length
-                                : state.reviews!.length,
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const Divider();
-                            },
-                            itemBuilder: (BuildContext context, int index) {
-                              var review = selectedStars != null
-                                  ? state.reviews!
-                                      .where((review) =>
-                                          review.rating == selectedStars)
-                                      .toList()[index]
-                                  : state.reviews![index];
-                              return Padding(
-                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                                child: UserReview(tourReview: review),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
+                                    .toList()[index]
+                                : state.reviews![index];
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                              child: UserReview(tourReview: review),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),

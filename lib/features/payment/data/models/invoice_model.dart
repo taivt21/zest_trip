@@ -20,6 +20,7 @@ class InvoiceModel extends InvoiceEntity {
     String? timeSlot,
     String? refundReason,
     String? refundAmount,
+    String? refundImage,
     List<TicketOnBookingModel>? ticketOnBooking,
     TourModel? tour,
     // Map<String, dynamic>? provider,
@@ -40,6 +41,7 @@ class InvoiceModel extends InvoiceEntity {
           timeSlot: timeSlot,
           refundReason: refundReason,
           refundAmount: refundAmount,
+          refundImage: refundImage,
           ticketOnBooking: ticketOnBooking,
           tour: tour,
           // provider: provider,
@@ -63,6 +65,7 @@ class InvoiceModel extends InvoiceEntity {
       timeSlot: json['time_slot'] ?? "time_slot",
       refundReason: json['refund_reason'] ?? "refund_reason",
       refundAmount: json['refund_ammount'] ?? "refund_amount",
+      refundImage: json['refund_image'] ?? "refund_image",
       ticketOnBooking: json['TicketOnBooking'] != null
           ? List<TicketOnBookingModel>.from(json['TicketOnBooking']
               .map((component) => TicketOnBookingModel.fromJson(component)))

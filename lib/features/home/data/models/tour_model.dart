@@ -25,6 +25,7 @@ class TourModel extends TourEntity {
     DateTime? updatedAt,
     String? addressName,
     String? addressDistrict,
+    String? addressWard,
     String? addressCity,
     String? addressProvince,
     String? addressCountry,
@@ -55,6 +56,7 @@ class TourModel extends TourEntity {
           updatedAt: updatedAt,
           addressName: addressName,
           addressDistrict: addressDistrict,
+          addressWard: addressWard,
           addressCity: addressCity,
           addressProvince: addressProvince,
           addressCountry: addressCountry,
@@ -67,6 +69,7 @@ class TourModel extends TourEntity {
           pricingTicket: pricingTicket,
           avgRating: avgRating,
           count: count,
+          departureLocation: departureLocation,
         );
 
   factory TourModel.fromJson(Map<String, dynamic> json) {
@@ -96,7 +99,7 @@ class TourModel extends TourEntity {
       addressName: json.containsKey('address_name') ? json['address_name'] : "",
       addressDistrict:
           json.containsKey('address_district') ? json['address_district'] : "",
-      addressCity: json.containsKey('address_ward') ? json['address_ward'] : "",
+      addressWard: json.containsKey('address_ward') ? json['address_ward'] : "",
       addressProvince:
           json.containsKey('address_province') ? json['address_province'] : "",
       addressCountry:

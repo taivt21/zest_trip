@@ -18,6 +18,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     on<BookingEvent>((event, emit) async {
       final dataState = await _getOwnBookingUseCase.call();
       if (dataState is DataSuccess) {
+        emit(BookingInitial());
         emit(GetBookingSuccess(dataState.data!));
       }
       if (dataState is DataFailed) {

@@ -10,7 +10,8 @@ import 'package:zest_trip/features/authentication/presentation/blocs/auth/authen
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_sponsore/tour_sponsore_bloc.dart';
-import 'package:zest_trip/features/home/presentation/screens/select_hobby_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/search_location_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/secondary_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_recommend_location.dart';
 import 'package:zest_trip/get_it.dart';
@@ -48,7 +49,7 @@ class MainScreen extends StatelessWidget {
                 ),
                 // LocationRecommend(widthScreen: widthScreen),
                 const SizedBox(
-                  height: 40,
+                  height: 20,
                 ),
                 ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -92,11 +93,8 @@ class MainScreen extends StatelessWidget {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SelectHobbyScreen()));
+                              Navigator.pushNamed(
+                                  context, AppRoutes.landingScreen);
                             },
                             child: const Text(
                               'See all',
@@ -163,7 +161,10 @@ class MainScreen extends StatelessWidget {
                             ],
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.landingScreen);
+                            },
                             child: const Text(
                               'See all',
                               style: TextStyle(
@@ -220,7 +221,7 @@ class MainScreen extends StatelessWidget {
                             children: [
                               SvgPicture.asset(adsSvg, height: 24),
                               Text(
-                                " Sponsored tours",
+                                " Trending tours",
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium
@@ -229,7 +230,10 @@ class MainScreen extends StatelessWidget {
                             ],
                           ),
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.landingScreen);
+                            },
                             child: const Text(
                               'See all',
                               style: TextStyle(
@@ -325,42 +329,61 @@ class SearchMainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 56,
-      decoration: BoxDecoration(
-        color: colorLightGrey,
-        borderRadius: BorderRadius.circular(32),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      margin: const EdgeInsets.symmetric(vertical: 16),
-      alignment: Alignment.center,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Icon(Icons.location_on),
-          const SizedBox(width: 8),
-          Text("Your location",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(fontWeight: FontWeight.w400, fontSize: 16)),
-          const Expanded(child: SizedBox()),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            decoration: BoxDecoration(
-              color: primaryColor,
-              borderRadius: BorderRadius.circular(32),
-            ),
-            child: const Icon(
-              Icons.search,
-              color: whiteColor,
-            ),
+    return GestureDetector(
+      onTap: () async {
+        final searchLocation = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SearchLocationScreen(),
           ),
-        ],
+        );
+
+        if (searchLocation != null) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SecondaryScreen(
+                        searchLocation: searchLocation,
+                      )));
+        }
+      },
+      child: Container(
+        height: 56,
+        decoration: BoxDecoration(
+          color: colorLightGrey,
+          borderRadius: BorderRadius.circular(32),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 16),
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.location_on),
+            const SizedBox(width: 8),
+            Text("Your location",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.w400, fontSize: 16)),
+            const Expanded(child: SizedBox()),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(32),
+              ),
+              child: const Icon(
+                Icons.search,
+                color: whiteColor,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -377,32 +400,30 @@ class HeaderMainScreen extends StatelessWidget {
       builder: (context, authState) {
         return Row(
           children: [
-            authState is AuthSuccess
-                ? SizedBox(
-                    height: 60,
-                    width: 60,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(32),
-                        child: CachedNetworkImage(
-                          imageUrl: authState.user?.avatarImageUrl ??
-                              "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
-                          placeholder: (context, url) => Container(
-                            height: 60,
-                            width: 60,
-                            decoration: BoxDecoration(color: colorLightGrey),
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            height: 60,
-                            width: 60,
-                            decoration: BoxDecoration(color: colorLightGrey),
-                          ),
-                        )),
-                  )
-                : Container(
-                    height: 60,
-                    width: 60,
-                    decoration: BoxDecoration(color: colorLightGrey),
-                  ),
+            SizedBox(
+              height: 60,
+              width: 60,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(32),
+                  child: CachedNetworkImage(
+                    imageUrl: authState.user?.avatarImageUrl ??
+                        "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
+                    placeholder: (context, url) => Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                          color: colorLightGrey,
+                          borderRadius: BorderRadius.circular(100)),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                          color: colorLightGrey,
+                          borderRadius: BorderRadius.circular(100)),
+                    ),
+                  )),
+            ),
             const SizedBox(width: 16),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -410,8 +431,9 @@ class HeaderMainScreen extends StatelessWidget {
               children: [
                 Text(
                   authState is AuthSuccess
-                      ? authState.user?.fullName ?? "Username"
-                      : "Username",
+                      ? authState.user?.fullName ??
+                          "${authState.user?.email!.split('@')[0]}"
+                      : "Guest",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 8),

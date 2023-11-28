@@ -44,7 +44,7 @@ class TourItemWidget extends StatelessWidget {
                 Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 18),
             overflow: TextOverflow.ellipsis,
           ),
-          Text('${tour.addressCity}, ${tour.addressCountry}',
+          Text('${tour.addressDistrict}, ${tour.addressProvince}',
               style: Theme.of(context).textTheme.bodyMedium),
           Row(
             children: [

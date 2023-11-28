@@ -5,8 +5,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/config/utils/resources/confirm_dialog.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour.dart';
+import 'package:zest_trip/features/payment/presentation/bloc/booking/booking_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/my_review/my_review_bloc.dart';
 
 class ReviewScreen extends StatefulWidget {
@@ -32,84 +34,112 @@ class ReviewScreenState extends State<ReviewScreen> {
   int userRating = 0;
   TextEditingController commentController = TextEditingController();
   bool showError = false;
+
+  Future<void> _showConfirmationDialog() async {
+    bool? confirmed = await DialogUtils.showConfirmDialog(
+      context,
+      title: 'Confirm request refund',
+      content: 'Are you sure you want to refund?',
+      noText: 'Cancel',
+      yesText: 'Confirm',
+    );
+
+    if (confirmed == true) {
+      // Gọi hàm submitReview() khi người dùng xác nhận
+      submitReview();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Review'),
-      ),
-      body: BlocListener<MyReviewBloc, MyReviewState>(
-        listener: (context, state) {
-          if (state is ReviewFail) {
-            Fluttertoast.showToast(
-                msg: "${{state.error?.response?.data['message']}}",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                timeInSecForIosWeb: 1,
-                textColor: Colors.white,
-                fontSize: 16.0);
-          }
-          if (state is ReviewSuccess) {
-            Fluttertoast.showToast(
-                msg: "Review success!",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                timeInSecForIosWeb: 1,
-                textColor: Colors.white,
-                fontSize: 16.0);
-            context.read<MyReviewBloc>().add(GetMyReview());
+    return WillPopScope(
+      onWillPop: () async {
+        bool? confirmExit = await DialogUtils.showConfirmDialog(
+          context,
+          title: 'Confirm exit',
+          content: 'Do you want to exit?',
+          noText: 'No',
+          yesText: 'Yes',
+        );
+        return confirmExit ?? false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('User Review'),
+        ),
+        body: BlocListener<MyReviewBloc, MyReviewState>(
+          listener: (context, state) {
+            if (state is ReviewFail) {
+              Fluttertoast.showToast(
+                  msg: "${{state.error?.response?.data['message']}}",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+            }
+            if (state is ReviewSuccess) {
+              Fluttertoast.showToast(
+                  msg: "Review success!",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+              context.read<MyReviewBloc>().add(GetMyReview());
 
-            Navigator.pop(
-              context,
-            );
-          }
-        },
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            // decoration: const BoxDecoration(color: colorBackground),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TourCard(
-                  location: widget.location,
-                  tourName: widget.tourName,
-                  imageUrl: widget.image,
-                  price: NumberFormatter.format(num.parse(widget.paid)),
-                ),
-                const Text(
-                  'Share your experience',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                buildStarRating(),
-                const SizedBox(height: 20),
-                const Text(
-                  'Your feedback:',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                buildCommentTextField(),
-                const SizedBox(height: 20),
-              ],
+              Navigator.pop(
+                context,
+              );
+            }
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              // decoration: const BoxDecoration(color: colorBackground),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TourCard(
+                    location: widget.location,
+                    tourName: widget.tourName,
+                    imageUrl: widget.image,
+                    price: NumberFormatter.format(num.parse(widget.paid)),
+                  ),
+                  const Text(
+                    'Share your experience',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  buildStarRating(),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Your feedback:',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  buildCommentTextField(),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: ElevatedButtonCustom(
-            onPressed: () {
-              setState(() {
-                showError = true;
-              });
-              if (validateReview()) {
-                submitReview();
-              }
-            },
-            text: "Submit Review",
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ElevatedButtonCustom(
+              onPressed: () {
+                setState(() {
+                  showError = true;
+                });
+                if (validateReview()) {
+                  _showConfirmationDialog();
+                }
+              },
+              text: "Submit Review",
+            ),
           ),
         ),
       ),
@@ -117,7 +147,7 @@ class ReviewScreenState extends State<ReviewScreen> {
   }
 
   bool validateReview() {
-    return userRating != 0 && commentController.text.length >= 20;
+    return userRating != 0 && commentController.text.length >= 10;
   }
 
   Column buildStarRating() {
@@ -200,7 +230,7 @@ class ReviewScreenState extends State<ReviewScreen> {
         fillColor: Colors.grey[200],
         border: const OutlineInputBorder(),
         errorText: showError && commentController.text.length < 20
-            ? 'Please enter at least 20 characters.'
+            ? 'Please enter at least 10 characters.'
             : null,
       ),
       onEditingComplete: () {},
@@ -215,5 +245,6 @@ class ReviewScreenState extends State<ReviewScreen> {
         .add(PostReview(commentController.text, userRating, widget.tourId));
 
     BlocProvider.of<MyReviewBloc>(context).add(GetMyReview());
+    BlocProvider.of<BookingBloc>(context).add(const GetBookings());
   }
 }

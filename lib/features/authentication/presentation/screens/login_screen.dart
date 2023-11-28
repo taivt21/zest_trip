@@ -8,6 +8,7 @@ import 'package:zest_trip/features/authentication/presentation/blocs/auth/authen
 import 'package:zest_trip/features/authentication/presentation/widgets/form_header_login.dart';
 import 'package:zest_trip/features/authentication/presentation/widgets/login_footer_widget.dart';
 import 'package:zest_trip/features/authentication/presentation/widgets/login_form_widget.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -70,8 +71,11 @@ class LoginScreen extends StatelessWidget {
                       .titleMedium
                       ?.copyWith(decoration: TextDecoration.underline),
                 ),
-                onPressed: () => {
-                  Navigator.of(context).pushNamed(AppRoutes.home),
+                onPressed: () async {
+                  const secureStorage = FlutterSecureStorage();
+                  await secureStorage.delete(key: 'access_token');
+                  await secureStorage.delete(key: 'refresh_token');
+                  Navigator.of(context).pushNamed(AppRoutes.home);
                 },
               ),
             ],
