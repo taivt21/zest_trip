@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:zest_trip/features/home/presentation/widgets/item_booking.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zest_trip/config/utils/constants/image_constant.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_wishlist/tour_wishlist_bloc.dart';
+import 'package:zest_trip/features/home/presentation/widgets/empty_widget.dart';
+import 'package:zest_trip/features/home/presentation/widgets/gridview_tour.dart';
+import 'package:zest_trip/get_it.dart';
 
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({Key? key}) : super(key: key);
@@ -8,32 +15,41 @@ class WishlistScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('My wishlist'),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(0.1),
-          child: Divider(
-            color: Colors.black,
-          ),
-        ),
       ),
-      body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 8.0,
-            mainAxisSpacing: 8.0,
-          ),
-          itemCount: 2,
-          itemBuilder: (context, index) {
-            return ItemBooking(
-              width: double.infinity,
-              imageUrl:
-                  'https://baoanhdatmui.vn/wp-content/uploads/2023/02/du-lich-da-nang.jpg',
-              title: 'Location Title $index',
-              price: 200,
-              numberOfActivities: 5,
-            );
+      body: BlocProvider<TourWishlistBloc>(
+        create: (context) => sl()..add(const GetWishlist()),
+        child: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthSuccess) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  BlocProvider.of<TourWishlistBloc>(context)
+                      .add(const GetWishlist());
+                },
+                child: BlocBuilder<TourWishlistBloc, TourWishlistState>(
+                  builder: (context, state) {
+                    if (state is TourWishlistInitial) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (state is GetToursWishlistSuccess) {
+                      return state.tours!.isNotEmpty && state.tours != null
+                          ? GridViewTour(tours: state.tours!)
+                          : const EmptyWidget(
+                              imageSvg: travelSvg, title: "No wishlist found");
+                    } else {
+                      return Text("${state.error?.response?.data["message"]}");
+                    }
+                  },
+                ),
+              );
+            } else {
+              return const Center(
+                child: EmptyWidget(imageSvg: loginSvg, title: "Please login"),
+              );
+            }
           },
         ),
       ),

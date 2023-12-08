@@ -5,6 +5,7 @@ import 'package:zest_trip/features/home/domain/entities/tour_review_entity.dart'
 import 'package:zest_trip/features/payment/data/datasources/payment_api_service.dart';
 import 'package:zest_trip/features/payment/domain/entities/booking_entity.dart';
 import 'package:zest_trip/features/payment/domain/entities/invoice_entity.dart';
+import 'package:zest_trip/features/payment/domain/entities/tour_check_booking_entity.dart';
 import 'package:zest_trip/features/payment/domain/entities/tour_voucher_entity.dart';
 import 'package:zest_trip/features/payment/domain/repositories/payment_repository.dart';
 
@@ -28,8 +29,8 @@ class PaymentRepositoryImpl extends PaymentRepository {
   }
 
   @override
-  Future<DataState<List<InvoiceEntity>>> getOwnBooking() async {
-    return await _paymentApiService.getOwnBooking();
+  Future<DataState<List<InvoiceEntity>>> getOwnBooking(String userId) async {
+    return await _paymentApiService.getOwnBooking(userId);
   }
 
   @override
@@ -57,5 +58,11 @@ class PaymentRepositoryImpl extends PaymentRepository {
   @override
   Future<DataState<List<TourVoucherEntity>>> getVoucher(String tourId) async {
     return await _paymentApiService.getVoucher(tourId);
+  }
+
+  @override
+  Future<DataState<TourCheckBookingEntity>> getCheckingTour(
+      String tourId) async {
+    return await _paymentApiService.getCheckingTour(tourId);
   }
 }

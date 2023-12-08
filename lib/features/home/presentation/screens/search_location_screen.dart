@@ -26,7 +26,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
     double widthScreen = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(scrolledUnderElevation: 0,
           automaticallyImplyLeading: false,
           flexibleSpace: Row(children: [
             IconButton(
@@ -109,8 +109,9 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    TourDetailScreen(tour: state.tours![index]),
+                                builder: (context) => TourDetailScreen(
+                                  tourId: state.tours![index].id!,
+                                ),
                               ),
                             );
                           },

@@ -7,9 +7,11 @@ import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/resources/confirm_dialog.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
+import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/booking/booking_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/my_review/my_review_bloc.dart';
+import 'package:zest_trip/get_it.dart';
 
 class ReviewScreen extends StatefulWidget {
   final String tourId;
@@ -45,9 +47,14 @@ class ReviewScreenState extends State<ReviewScreen> {
     );
 
     if (confirmed == true) {
-      // Gọi hàm submitReview() khi người dùng xác nhận
       submitReview();
     }
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
   }
 
   @override
@@ -65,33 +72,31 @@ class ReviewScreenState extends State<ReviewScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           title: const Text('User Review'),
         ),
         body: BlocListener<MyReviewBloc, MyReviewState>(
           listener: (context, state) {
             if (state is ReviewFail) {
               Fluttertoast.showToast(
-                  msg: "${{state.error?.response?.data['message']}}",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIosWeb: 1,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+                msg: "${{state.error?.response?.data['message']}}",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+              );
             }
             if (state is ReviewSuccess) {
-              context.read<MyReviewBloc>().add(GetMyReview());
-              context.read<BookingBloc>().add(const GetBookings());
+              // context.read<MyReviewBloc>().add(GetMyReview());
+              sl<BookingBloc>().add(const GetBookings());
               Fluttertoast.showToast(
-                  msg: "Review success!",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIosWeb: 1,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-
-              Navigator.pop(
-                context,
+                msg: "Review success!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
               );
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ManageReviewScreen()));
             }
           },
           child: SingleChildScrollView(
@@ -230,7 +235,7 @@ class ReviewScreenState extends State<ReviewScreen> {
         filled: true,
         fillColor: Colors.grey[200],
         border: const OutlineInputBorder(),
-        errorText: showError && commentController.text.length < 20
+        errorText: showError && commentController.text.length < 10
             ? 'Please enter at least 10 characters.'
             : null,
       ),
@@ -239,13 +244,8 @@ class ReviewScreenState extends State<ReviewScreen> {
   }
 
   void submitReview() {
-    debugPrint('Rating: $userRating');
-    debugPrint('Comment: ${commentController.text}');
     context
         .read<MyReviewBloc>()
         .add(PostReview(commentController.text, userRating, widget.tourId));
-
-    BlocProvider.of<MyReviewBloc>(context).add(GetMyReview());
-    BlocProvider.of<BookingBloc>(context).add(const GetBookings());
   }
 }

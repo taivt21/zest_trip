@@ -17,14 +17,19 @@ class GetTourUseCase {
     Set<int>? vehicleIds,
     String? province,
     String? district,
+    int? lowPrice,
+    int? highPrice,
   }) {
     return _tourRepository.getAllTours(
-        limit: limit,
-        search: search,
-        page: page,
-        orderBy: orderBy,
-        tagIds: tagIds,
-        province: province,
-        district: district);
+      limit: limit,
+      search: search,
+      page: page,
+      orderBy: orderBy,
+      tagIds: tagIds,
+      province: province,
+      district: district,
+      lowPrice: lowPrice,
+      highPrice: highPrice,
+    );
   }
 }

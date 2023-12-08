@@ -7,6 +7,7 @@ import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/home/data/models/provider_model.dart';
 import 'package:zest_trip/features/home/data/models/tour_review_model.dart';
 import 'package:zest_trip/features/payment/data/models/invoice_model.dart';
+import 'package:zest_trip/features/payment/data/models/tour_check_booking_model.dart';
 import 'package:zest_trip/features/payment/data/models/tour_voucher_model.dart';
 import 'package:zest_trip/features/payment/domain/entities/booking_entity.dart';
 
@@ -18,10 +19,11 @@ abstract class PaymentApiService {
   Future<DataState<dynamic>> requestRefund(String bookingId, String reason);
   Future<DataState<bool>> postReview(String content, int rating, String tourId);
 
-  Future<DataState<List<InvoiceModel>>> getOwnBooking();
+  Future<DataState<List<InvoiceModel>>> getOwnBooking(String userId);
   Future<DataState<List<TourReviewModel>>> getOwnReview();
   Future<DataState<List<TourVoucherModel>>> getVoucher(String tourId);
   Future<DataState<ProviderModel>> getInfoProvider(String providerId);
+  Future<DataState<TourCheckBookingModel>> getCheckingTour(String tourId);
 }
 
 class PaymentApiServiceImpl implements PaymentApiService {
@@ -34,13 +36,12 @@ class PaymentApiServiceImpl implements PaymentApiService {
         "children": children,
         "date": DateFormat('yyyy-MM-dd').format(date),
       };
-      print(data);
-      print(tourId);
+      print("data check booking $data");
       final response =
           await DioHelper.dio.post('/booking/bookingCheck/$tourId', data: data);
-      print("response checkAvailable :$response ");
       if (response.statusCode == 200) {
-        return DataSuccess(response);
+        print("check: ${response.data["data"]}");
+        return DataSuccess(response.data["data"]["data"]);
       } else {
         return DataFailed(DioException(
           type: DioExceptionType.badResponse,
@@ -74,10 +75,8 @@ class PaymentApiServiceImpl implements PaymentApiService {
       if (voucherId != -1) {
         data["voucher_id"] = voucherId;
       }
-      print("data create: $data");
       final response =
           await DioHelper.dio.post('/booking/bookTour', data: data);
-      print("response createBooking :${response.data} ");
       if (response.statusCode == 201) {
         return DataSuccess(response.data["data"]["transaction"]);
       } else {
@@ -100,7 +99,6 @@ class PaymentApiServiceImpl implements PaymentApiService {
       final data = {'content': content, 'rating': rating};
 
       final response = await DioHelper.dio.post('/review/$tourId', data: data);
-      print(response.data);
       if (response.statusCode == 201) {
         return DataSuccess(true);
       } else {
@@ -118,7 +116,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
   }
 
   @override
-  Future<DataState<List<InvoiceModel>>> getOwnBooking() async {
+  Future<DataState<List<InvoiceModel>>> getOwnBooking(String userId) async {
     const secureStorage = FlutterSecureStorage();
     final accessToken = await secureStorage.read(key: 'access_token');
 
@@ -141,7 +139,6 @@ class PaymentApiServiceImpl implements PaymentApiService {
             .map((e) => InvoiceModel.fromJson(e))
             .toList();
       }
-      print("response getOwnBooking :${response.data["data"]}");
 
       if (response.statusCode == 200) {
         return DataSuccess(bookings);
@@ -161,14 +158,12 @@ class PaymentApiServiceImpl implements PaymentApiService {
   @override
   Future<DataState<ProviderModel>> getInfoProvider(String providerId) async {
     try {
-      print("providerId call: $providerId");
       final response = await DioHelper.dio.get(
         '/provider/detail/$providerId',
       );
-      print("provider info: ${response.data}");
 
       if (response.statusCode == 200) {
-        final user = ProviderModel.fromJson(response.data);
+        final user = ProviderModel.fromJson(response.data["data"]);
 
         return DataSuccess(user);
       } else {
@@ -207,7 +202,6 @@ class PaymentApiServiceImpl implements PaymentApiService {
             .map((e) => TourReviewModel.fromJson(e))
             .toList();
       }
-      print("response getOwnBooking :${response.data["data"]}");
 
       if (response.statusCode == 200) {
         return DataSuccess(reviews);
@@ -234,7 +228,6 @@ class PaymentApiServiceImpl implements PaymentApiService {
       };
       final response =
           await DioHelper.dio.patch('/booking/refund/request', data: data);
-      print("response refund: ${response.data}");
 
       if (response.statusCode == 200) {
         return DataSuccess(true);
@@ -265,10 +258,33 @@ class PaymentApiServiceImpl implements PaymentApiService {
             .map((e) => TourVoucherModel.fromJson(e))
             .toList();
       }
-      print("response vouchers :${response.data["data"]}");
 
       if (response.statusCode == 200) {
         return DataSuccess(vouchers);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<TourCheckBookingModel>> getCheckingTour(
+      String tourId) async {
+    try {
+      final response = await DioHelper.dio.get('/pricing/byTour/$tourId');
+
+      final tourChecking =
+          TourCheckBookingModel.fromJson(response.data["data"]);
+
+      if (response.statusCode == 200) {
+        return DataSuccess(tourChecking);
       } else {
         return DataFailed(DioException(
           type: DioExceptionType.badResponse,

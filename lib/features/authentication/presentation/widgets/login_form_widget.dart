@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logger/logger.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
@@ -30,9 +29,6 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var logger = Logger();
-    logger.i('render form login');
-
     return Form(
         key: _formKey,
         child: Container(

@@ -20,7 +20,6 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
           emit(GetInfoProviderSuccess(dataState.data!));
         }
         if (dataState is DataFailed) {
-          print(dataState.error?.response?.data["message"]);
           emit(GetInfoProviderFail(dataState.error!));
         }
       },

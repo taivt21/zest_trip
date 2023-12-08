@@ -22,7 +22,6 @@ class TourRecommendSearchBloc
         emit(GetToursRcmLocationSuccess(dataState.data!));
       }
       if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(GetToursRcmSearchFail(dataState.error!));
       }
     });

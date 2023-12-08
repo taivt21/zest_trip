@@ -67,7 +67,6 @@ class AuthApiServiceImpl implements AuthApiService {
 
       final response =
           await DioHelper.dio.post('/auth/customer/signup', data: data);
-      print(response);
       if (response.statusCode == 201) {
         return DataSuccess(true);
       } else {
@@ -93,7 +92,6 @@ class AuthApiServiceImpl implements AuthApiService {
       };
       final response =
           await DioHelper.dio.post('/otp/generate/customer', data: data);
-      print("otp $response");
       if (response.statusCode == 201) {
         return DataSuccess(true);
       }
@@ -168,7 +166,6 @@ class AuthApiServiceImpl implements AuthApiService {
       final response = await DioHelper.dio.get(
         '/users/me',
       );
-      print("me: ${response.data}");
 
       if (response.statusCode == 200) {
         final user = AuthUserModel.fromJson(response.data);

@@ -20,6 +20,7 @@ class CardRecommendLocation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 240,
       margin: const EdgeInsets.only(right: 8),
       decoration: BoxDecoration(
         color: whiteColor,

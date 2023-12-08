@@ -2,9 +2,10 @@
 part of 'payment_bloc.dart';
 
 abstract class PaymentState extends Equatable {
+  final Map<String, dynamic>? payment;
   final DioException? error;
 
-  const PaymentState({this.error});
+  const PaymentState({this.error, this.payment});
 
   @override
   List<Object?> get props => [error];
@@ -13,7 +14,7 @@ abstract class PaymentState extends Equatable {
 final class PaymentInitial extends PaymentState {}
 
 final class CheckSuccess extends PaymentState {
-  const CheckSuccess();
+  const CheckSuccess(Map<String, dynamic> payment) : super(payment: payment);
 }
 
 final class CheckFail extends PaymentState {

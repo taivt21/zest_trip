@@ -53,7 +53,8 @@ class MyWebViewState extends State<MyWebView> {
           onNavigationRequest: (NavigationRequest request) {
             if (request.url.startsWith('https://google.com')) {
               debugPrint('blocking navigation to ${request.url}');
-              Navigator.pushNamed(context, AppRoutes.thanksBooking);
+              Navigator.pushNamedAndRemoveUntil(
+                  context, AppRoutes.thanksBooking, (route) => false);
               return NavigationDecision.prevent;
             }
             return NavigationDecision.navigate;

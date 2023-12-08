@@ -23,7 +23,6 @@ class TourSponsoreBloc extends Bloc<TourSponsoreEvent, TourSponsoreState> {
         emit(GetToursSponsoreSuccess(dataState.data!));
       }
       if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(GetToursSponsoreFail(dataState.error!));
       }
     });

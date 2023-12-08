@@ -25,7 +25,6 @@ class TourRecommendLocationBloc
         emit(GetToursRcmLocationSuccess(dataState.data!));
       }
       if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(GetToursRcmLocationFail(dataState.error!));
       }
     });
@@ -37,7 +36,6 @@ class TourRecommendLocationBloc
         emit(AnalyticTourRecommendLoction());
       }
       if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(GetToursRcmLocationFail(dataState.error!));
       }
     });

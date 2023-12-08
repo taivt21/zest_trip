@@ -24,12 +24,10 @@ class LoginScreen extends StatelessWidget {
         }
         if (state is AuthFailure) {
           Fluttertoast.showToast(
-              msg: state.error?.response?.data["message"],
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              textColor: Colors.white,
-              fontSize: 16.0);
+            msg: state.error?.response?.data["message"],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+          );
         }
       },
       buildWhen: (previous, current) => previous != current,
@@ -59,6 +57,7 @@ class LoginScreen extends StatelessWidget {
         return Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
+            scrolledUnderElevation: 0,
             title: const Text("Login"),
             centerTitle: true,
             automaticallyImplyLeading: false,

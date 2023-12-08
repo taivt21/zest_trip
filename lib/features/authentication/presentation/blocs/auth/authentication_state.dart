@@ -33,7 +33,7 @@ final class VerifiedFailState extends AuthState {
 }
 
 final class AuthFailure extends AuthState {
-  const AuthFailure(DioException e) : super(error: e);
+  const AuthFailure(DioException? e) : super(error: e);
 }
 
 final class AuthLoggedOut extends AuthState {}

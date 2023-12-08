@@ -26,7 +26,6 @@ class TourItemWidget extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: CachedNetworkImage(
-              // Assuming tourImages is a list of URLs
               imageUrl: tour.tourImages![0],
               placeholder: (context, url) => Container(
                 color: colorLightGrey,

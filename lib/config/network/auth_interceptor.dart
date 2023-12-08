@@ -9,29 +9,34 @@ class AuthInterceptor extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final accessToken = await getAccessToken();
-    print(accessToken);
+    print("accessToken $accessToken");
     if (options.path == '/tour') {
       return handler.next(options);
     }
-    if (accessToken == null) {
-      return handler.next(options);
-    }
+    // if (accessToken == null) {
+    //   return handler.next(options);
+    // }
+    // if (await isAccessTokenValid(accessToken)) {
+    //   options.headers['Authorization'] = "Bearer $accessToken";
+    //   return handler.next(options);
+    // }
 
-    if (await isAccessTokenValid(accessToken)) {
+    if (accessToken != null) {
       options.headers['Authorization'] = "Bearer $accessToken";
       return handler.next(options);
     }
 
-    try {
-      final newAccessToken = await refreshAccessToken();
-      if (newAccessToken != null) {
-        options.headers['Authorization'] = "Bearer $newAccessToken";
-      }
-    } on DioException catch (error) {
-      return handler.reject(error, true);
-    }
+    // try {
+    //   final newAccessToken = await refreshAccessToken();
+    //   if (newAccessToken != null) {
+    //     options.headers['Authorization'] = "Bearer $newAccessToken";
+    //     return handler.next(options);
+    //   }
+    // } on DioException catch (error) {
+    //   return handler.reject(error, true);
+    // }
 
-    handler.next(options);
+    return handler.next(options);
   }
 
   Future<bool> isAccessTokenValid(String accessToken) async {
@@ -68,16 +73,16 @@ class AuthInterceptor extends Interceptor {
     return null;
   }
 
-  Future<bool> isAccessTokenExpired(String accessToken) async {
-    Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
-    final expirationTimeInSeconds = payload['exp'];
-    if (expirationTimeInSeconds != null) {
-      final expirationTime =
-          DateTime.fromMillisecondsSinceEpoch(expirationTimeInSeconds * 1000);
-      return DateTime.now().isAfter(expirationTime);
-    }
-    return true;
-  }
+  // Future<bool> isAccessTokenExpired(String accessToken) async {
+  //   Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
+  //   final expirationTimeInSeconds = payload['exp'];
+  //   if (expirationTimeInSeconds != null) {
+  //     final expirationTime =
+  //         DateTime.fromMillisecondsSinceEpoch(expirationTimeInSeconds * 1000);
+  //     return DateTime.now().isAfter(expirationTime);
+  //   }
+  //   return true;
+  // }
 
   Future<void> deleteAccessToken() async {
     const secureStorage = FlutterSecureStorage();

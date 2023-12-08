@@ -12,6 +12,8 @@ class GetTours extends RemoteTourEvent {
   final Set<int>? vehicles;
   final String? province;
   final String? district;
+  final int? lowPrice;
+  final int? highPrice;
   const GetTours({
     this.search,
     this.page,
@@ -21,6 +23,8 @@ class GetTours extends RemoteTourEvent {
     this.vehicles,
     this.province,
     this.district,
+    this.lowPrice,
+    this.highPrice,
   });
 }
 
@@ -30,10 +34,4 @@ class GetToursWithTag extends RemoteTourEvent {
 
 class ClearTour extends RemoteTourEvent {
   const ClearTour();
-}
-
-class AddToWishlist extends RemoteTourEvent {
-  final String tourId;
-
-  const AddToWishlist(this.tourId);
 }

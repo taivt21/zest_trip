@@ -36,6 +36,7 @@ class ReviewWidget extends StatelessWidget {
                 Text(
                   tourReviews?.user?.fullName ?? "Anonymous",
                   style: Theme.of(context).textTheme.bodyMedium,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -44,9 +45,9 @@ class ReviewWidget extends StatelessWidget {
               children: List.generate(5, (index) {
                 return Icon(
                   index < tourReviews!.rating!.floor()
-                      ? Icons.star
-                      : Icons.star_border,
-                  color: Colors.yellow,
+                      ? Icons.star_rounded
+                      : Icons.star_border_rounded,
+                  color: Colors.amber,
                 );
               }),
             ),

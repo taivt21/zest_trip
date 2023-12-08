@@ -39,6 +39,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         return Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
+            scrolledUnderElevation: 0,
             title: const Text("Edit profile"),
           ),
           body: SingleChildScrollView(

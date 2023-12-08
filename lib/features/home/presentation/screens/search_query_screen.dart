@@ -22,7 +22,7 @@ class _SearchQueryScreenState extends State<SearchQueryScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(scrolledUnderElevation: 0,
           automaticallyImplyLeading: false,
           flexibleSpace: Row(children: [
             IconButton(

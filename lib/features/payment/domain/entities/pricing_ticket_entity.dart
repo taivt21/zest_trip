@@ -1,4 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
+import 'package:zest_trip/features/payment/data/models/pricing_ticket_model.dart';
+
 import 'package:zest_trip/features/payment/domain/entities/pricing_ticket_range_entity.dart';
 import 'package:zest_trip/features/payment/domain/entities/pricing_ticket_type_entity.dart';
 import 'package:zest_trip/features/payment/domain/entities/ticket_entity.dart';
@@ -18,6 +21,8 @@ class PricingTicketEntity extends Equatable {
   final List<PricingTicketRangeEntity>? priceRange;
   final PricingTypeEntity? pricingType;
   final TicketEntity? ticket;
+  final bool? isDefault;
+  final List<DateTime>? applyDate;
 
   const PricingTicketEntity({
     this.ticketTypeId,
@@ -34,6 +39,8 @@ class PricingTicketEntity extends Equatable {
     this.priceRange,
     this.pricingType,
     this.ticket,
+    this.isDefault,
+    this.applyDate,
   });
 
   @override
@@ -51,6 +58,16 @@ class PricingTicketEntity extends Equatable {
         toPrice,
         priceRange,
         pricingType,
-        ticket
+        ticket,
+        isDefault,
+        applyDate,
       ];
+
+  PricingTicketEntity get emptyInstance {
+    return const PricingTicketEntity();
+  }
+
+  PricingTicketModel emptyInstances() {
+    return const PricingTicketModel();
+  }
 }

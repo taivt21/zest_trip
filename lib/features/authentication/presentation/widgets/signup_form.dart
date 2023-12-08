@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:logger/logger.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
@@ -16,7 +15,6 @@ class SignUpFormWidget extends StatefulWidget {
 }
 
 class SignUpFormWidgetState extends State<SignUpFormWidget> {
-  var logger = Logger();
   bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
@@ -74,12 +72,10 @@ class SignUpFormWidgetState extends State<SignUpFormWidget> {
           );
         } else {
           Fluttertoast.showToast(
-              msg: state.error?.response?.data["message"],
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              textColor: Colors.white,
-              fontSize: 16.0);
+            msg: state.error?.response?.data["message"],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+          );
         }
       },
       child: Form(

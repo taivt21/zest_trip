@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:zest_trip/config/utils/constants/color_constant.dart';
 
 class PhotoZoomScreen extends StatefulWidget {
   final List<String> imageUrls;
@@ -28,11 +29,14 @@ class _PhotoZoomScreenState extends State<PhotoZoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      backgroundColor: Colors.black,
+      appBar: AppBar(scrolledUnderElevation: 0,
+        foregroundColor: whiteColor,
+        backgroundColor: Colors.black,
         title: Text(
           '$_currentPage/${widget.imageUrls.length}',
+          style: const TextStyle(color: whiteColor),
         ),
-        backgroundColor: Colors.transparent,
       ),
       body: PhotoViewGallery.builder(
         itemCount: widget.imageUrls.length,

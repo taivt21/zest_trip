@@ -36,7 +36,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   dio: ^5.2.1+1
   intl: ^0.18.1
-  logger: ^2.0.1
   cached_network_image: ^3.2.3
   google_sign_in: ^6.1.5
   equatable: ^2.0.5
@@ -47,7 +46,6 @@ dependencies:
   firebase_auth: ^4.7.2
   firebase_core: ^2.14.0
   # connectivity_plus: ^4.0.1
-  introduction_screen: ^3.1.11
   #hooks
   # flutter_hooks: ^0.20.0
   get_it: ^7.6.4
@@ -62,16 +60,15 @@ dependencies:
   image_picker: ^1.0.4
   permission_handler: ^11.0.1
   webview_flutter: ^4.4.1
-  fluttertoast: any
+  fluttertoast: ^8.2.4
   google_maps_flutter: ^2.5.0
-  flutter_config: ^2.0.2
-  geolocator:
-    ^10.1.0
-  uuid: ^4.2.1
-  gap: ^3.0.1
-  bloc_concurrency: ^0.2.2
+  # geolocator: ^10.1.0
+  # bloc_concurrency: ^0.2.2
   photo_view: ^0.14.0
   readmore: ^2.2.0
+  # table_calendar: ^3.0.9
+  logger:
+    ^2.0.2+1
 
     #Database
 
@@ -88,13 +85,13 @@ dev_dependencies:
 flutter_native_splash:
   color: "#FFFFFF"
   color_dark: "#FFFFFF"
-  image: assets/images/logo-green.png
-  image_dark: assets/images/logo-green.png
+  image: assets/images/logo-green2.png
+  image_dark: assets/images/logo-green2.png
 
   android_12:
-    image: assets/images/logo-green.png
+    image: assets/images/logo-green2.png
     icon_background_color: "#FFFFFF"
-    image_dark: assets/images/logo-green.png
+    image_dark: assets/images/logo-green2.png
     icon_background_color_dark: "#FFFFFF"
 
 flutter_launcher_icons:
@@ -116,23 +113,23 @@ flutter:
     - assets/icons/vehicles/
     - assets/icons/app/
   fonts:
-    - family: AirbnbCereal
-      fonts:
-        - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealBlack.ttf
-        - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealBold.ttf
-        - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealBook.ttf
-        - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealExtraBold.ttf
-        - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealLight.ttf
-        - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealMedium.ttf
+    # - family: AirbnbCereal
+    #   fonts:
+    #     - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealBlack.ttf
+    #     - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealBold.ttf
+    #     - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealBook.ttf
+    #     - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealExtraBold.ttf
+    #     - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealLight.ttf
+    #     - asset: assets/fonts/AirbnbCerealBlack/AirbnbCerealMedium.ttf
 
-    - family: Airbnb
-      fonts:
-        - asset: assets/fonts/Airbnb/AirbnbCereal_W_Bd.otf
-        - asset: assets/fonts/Airbnb/AirbnbCereal_W_Bk.otf
-        - asset: assets/fonts/Airbnb/AirbnbCereal_W_Blk.otf
-        - asset: assets/fonts/Airbnb/AirbnbCereal_W_Lt.otf
-        - asset: assets/fonts/Airbnb/AirbnbCereal_W_Md.otf
-        - asset: assets/fonts/Airbnb/AirbnbCereal_W_XBd.otf
+    # - family: Airbnb
+    #   fonts:
+    #     - asset: assets/fonts/Airbnb/AirbnbCereal_W_Bd.otf
+    #     - asset: assets/fonts/Airbnb/AirbnbCereal_W_Bk.otf
+    #     - asset: assets/fonts/Airbnb/AirbnbCereal_W_Blk.otf
+    #     - asset: assets/fonts/Airbnb/AirbnbCereal_W_Lt.otf
+    #     - asset: assets/fonts/Airbnb/AirbnbCereal_W_Md.otf
+    #     - asset: assets/fonts/Airbnb/AirbnbCereal_W_XBd.otf
 
     - family: SFCompact
       fonts:
@@ -175,46 +172,46 @@ flutter:
         - asset: assets/fonts/SFCompact/SF-Compact-Text-ThinItalic.ttf
         - asset: assets/fonts/SFCompact/SF-Compact-Display-Thin.ttf
 
-    - family: SFPro
-      fonts:
-        - asset: assets/fonts/SFPro/SF-Pro-Display-LightItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-Bold.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-SemiboldItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-Light.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-MediumItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-Regular.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-UltralightItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-LightItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-BoldItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-Heavy.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-LightItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-Thin.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-Ultralight.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-RegularItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-LightItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-BoldItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-SemiboldItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-BoldItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-HeavyItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-HeavyItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-LightItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-BoldItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-SemiboldItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-LightItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-UltralightItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-RegularItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-MediumItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-MediumItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-RegularItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-BlackItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-HeavyItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-LightItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-ThinItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-BoldItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-SemiboldItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-MediumItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Display-RegularItalic.ttf
-        - asset: assets/fonts/SFPro/SF-Pro-Text-SemiboldItalic.ttf
+    # - family: SFPro
+    #   fonts:
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-LightItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-Bold.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-SemiboldItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-Light.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-MediumItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-Regular.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-UltralightItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-LightItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-BoldItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-Heavy.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-LightItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-Thin.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-Ultralight.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-RegularItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-LightItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-BoldItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-SemiboldItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-BoldItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-HeavyItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-HeavyItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-LightItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-BoldItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-SemiboldItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-LightItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-UltralightItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-RegularItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-MediumItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-MediumItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-RegularItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-BlackItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-HeavyItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-LightItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-ThinItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-BoldItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-SemiboldItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-MediumItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Display-RegularItalic.ttf
+    #     - asset: assets/fonts/SFPro/SF-Pro-Text-SemiboldItalic.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

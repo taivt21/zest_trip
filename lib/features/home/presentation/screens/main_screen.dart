@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:zest_trip/config/network/dio_helper.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
+import 'package:zest_trip/features/home/presentation/blocs/banner/banner_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_sponsore/tour_sponsore_bloc.dart';
@@ -15,6 +15,7 @@ import 'package:zest_trip/features/home/presentation/screens/search_location_scr
 import 'package:zest_trip/features/home/presentation/screens/secondary_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_recommend_location.dart';
+import 'package:zest_trip/features/home/presentation/widgets/shimmer_card_tour_manage.dart';
 import 'package:zest_trip/get_it.dart';
 
 class MainScreen extends StatelessWidget {
@@ -31,6 +32,12 @@ class MainScreen extends StatelessWidget {
         ),
         BlocProvider<TourRecommendTagBloc>(
           create: (context) => sl()..add(const GetToursRcmTag()),
+        ),
+        BlocProvider<TourSponsoreBloc>(
+          create: (context) => sl()..add(const GetToursSponsore()),
+        ),
+        BlocProvider<BannerBloc>(
+          create: (context) => sl()..add(const GetBanner()),
         ),
       ],
       child: Scaffold(
@@ -49,12 +56,29 @@ class MainScreen extends StatelessWidget {
                   height: 16,
                 ),
                 // LocationRecommend(widthScreen: widthScreen),
-                const SizedBox(
-                  height: 20,
+                // const SizedBox(
+                //   height: 20,
+                // ),
+                BlocBuilder<BannerBloc, BannerState>(
+                  builder: (context, state) {
+                    return ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: CachedNetworkImage(
+                          width: double.infinity,
+                          height: 180,
+                          imageUrl: state.url ?? "",
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            color: colorPlaceHolder,
+                            width: double.infinity,
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            color: colorPlaceHolder,
+                            width: double.infinity,
+                          ),
+                        ));
+                  },
                 ),
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.asset("assets/images/qc.png")),
                 const SizedBox(
                   height: 20,
                 ),
@@ -108,28 +132,34 @@ class MainScreen extends StatelessWidget {
                       BlocBuilder<TourRecommendLocationBloc,
                           TourRecommendLocationState>(
                         builder: (context, state) {
-                          return SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: List.generate(
-                                state.tours?.length ?? 0,
-                                (index) => GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => TourDetailScreen(
-                                            tour: state.tours![index]),
-                                      ),
-                                    );
-                                  },
-                                  child: CardRecommendLocation(
-                                    tour: state.tours![index],
-                                    width: widthScreen * 0.35,
+                          if (state is GetToursRcmLocationSuccess) {
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: List.generate(
+                                  state.tours?.length ?? 0,
+                                  (index) => GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              TourDetailScreen(
+                                                  tourId:
+                                                      state.tours![index].id!),
+                                        ),
+                                      );
+                                    },
+                                    child: CardRecommendLocation(
+                                      tour: state.tours![index],
+                                      width: widthScreen * 0.35,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
+                            );
+                          } else {
+                            return const ShimmerCardTourManage();
+                          }
                         },
                       ),
                     ],
@@ -145,11 +175,13 @@ class MainScreen extends StatelessWidget {
                     color: fourthColor,
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SvgPicture.asset(travelSvg, height: 28),
                               Text(
@@ -176,29 +208,35 @@ class MainScreen extends StatelessWidget {
                       ),
                       BlocBuilder<TourRecommendTagBloc, TourRecommendTagState>(
                         builder: (context, state) {
-                          return SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(
-                                state.tours?.length ?? 0,
-                                (index) => GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => TourDetailScreen(
-                                            tour: state.tours![index]),
-                                      ),
-                                    );
-                                  },
-                                  child: CardRecommendLocation(
-                                    tour: state.tours![index],
-                                    width: widthScreen * 0.35,
+                          if (state is GetToursRcmTagSuccess) {
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(
+                                  state.tours?.length ?? 0,
+                                  (index) => GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              TourDetailScreen(
+                                                  tourId:
+                                                      state.tours![index].id!),
+                                        ),
+                                      );
+                                    },
+                                    child: CardRecommendLocation(
+                                      tour: state.tours![index],
+                                      width: widthScreen * 0.35,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
+                            );
+                          } else {
+                            return const ShimmerCardTourManage();
+                          }
                         },
                       ),
                     ],
@@ -214,6 +252,7 @@ class MainScreen extends StatelessWidget {
                     color: secondaryColor.withOpacity(0.4),
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -245,31 +284,35 @@ class MainScreen extends StatelessWidget {
                       ),
                       BlocBuilder<TourSponsoreBloc, TourSponsoreState>(
                         builder: (context, state) {
-                          return SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(
-                                state.tours?.length ?? 0,
-                                (index) => GestureDetector(
-                                  onTap: () {
-                                    DioHelper.dio.get(
-                                        "/tour/detail/${state.tours?[index].id}");
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => TourDetailScreen(
-                                            tour: state.tours![index]),
-                                      ),
-                                    );
-                                  },
-                                  child: CardRecommendLocation(
-                                    tour: state.tours![index],
-                                    width: widthScreen * 0.35,
+                          if (state is GetToursSponsoreSuccess) {
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: List.generate(
+                                  state.tours?.length ?? 0,
+                                  (index) => GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              TourDetailScreen(
+                                                  tourId:
+                                                      state.tours![index].id!),
+                                        ),
+                                      );
+                                    },
+                                    child: CardRecommendLocation(
+                                      tour: state.tours![index],
+                                      width: widthScreen * 0.35,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
+                            );
+                          } else {
+                            return const ShimmerCardTourManage();
+                          }
                         },
                       ),
                     ],

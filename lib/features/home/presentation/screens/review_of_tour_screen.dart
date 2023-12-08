@@ -31,7 +31,7 @@ class _ReviewsOfTourState extends State<ReviewsOfTour> {
     return BlocProvider<TourReviewsBloc>(
       create: (context) => sl()..add(GetTourReviews(widget.tourId)),
       child: Scaffold(
-        appBar: AppBar(
+        appBar: AppBar(scrolledUnderElevation: 0,
           title: const Text("All reviews"),
         ),
         body: BlocBuilder<TourReviewsBloc, TourReviewsState>(

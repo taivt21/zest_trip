@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
@@ -40,6 +41,7 @@ class TourEntity extends Equatable {
   final String? avgRating;
   final Map<String, dynamic>? count;
   final Map<String, dynamic>? departureLocation;
+  final List<DateTime>? blockDate;
 
   const TourEntity({
     this.id,
@@ -50,6 +52,8 @@ class TourEntity extends Equatable {
     this.tourImages,
     this.price,
     this.duration,
+    this.durationDay,
+    this.durationNight,
     this.bookBefore,
     this.refundBefore,
     this.status,
@@ -70,9 +74,8 @@ class TourEntity extends Equatable {
     this.pricingTicket,
     this.avgRating,
     this.count,
-    this.durationDay,
-    this.durationNight,
     this.departureLocation,
+    this.blockDate,
   });
 
   @override
@@ -106,6 +109,7 @@ class TourEntity extends Equatable {
         pricingTicket,
         avgRating,
         count,
-        departureLocation
+        departureLocation,
+        blockDate,
       ];
 }

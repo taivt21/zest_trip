@@ -19,9 +19,10 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         automaticallyImplyLeading: false,
         title: const Text(
-          'My Profile',
+          'My profile',
         ),
       ),
       body: SingleChildScrollView(
@@ -149,7 +150,7 @@ class ProfileScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  const HomeScreen(initialPageIndex: 1)),
+                                  const HomeScreen(initialPageIndex: 2)),
                         );
                       },
                       icon: Icons.manage_search,

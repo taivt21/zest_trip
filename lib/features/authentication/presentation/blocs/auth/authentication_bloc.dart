@@ -40,12 +40,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (result is DataSuccess<AuthUser>) {
         emit(AuthSuccess(result.data!));
       } else if (result is DataFailed) {
-        print(result.error?.response?.data["message"]);
         emit(AuthFailure(result.error!));
       }
     });
 
-    on<RegisterWithEmailAndPasswordEvent>((event, emit) async {emit(AuthLoading());
+    on<RegisterWithEmailAndPasswordEvent>((event, emit) async {
+      emit(AuthLoading());
       final registrationResult =
           await _registerWithEmailAndPasswordUseCase.call(
         event.email,
@@ -56,7 +56,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (registrationResult is DataSuccess) {
         emit(VerifiedState());
       } else if (registrationResult is DataFailed) {
-        print(registrationResult.error?.response?.data["message"]);
         emit(VerifiedFailState(registrationResult.error!));
       }
     });
@@ -67,15 +66,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (verificationResult is DataSuccess) {
         emit(VerifyInProgressState());
       } else if (verificationResult is DataFailed) {
-        print(verificationResult.error?.response?.data["message"]);
         emit(VerifiedFailState(verificationResult.error!));
       }
     });
 
     on<SignInWithGoogleEvent>((event, emit) async {
       emit(AuthLoading());
+      final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount? googleSignInAccount =
-          await GoogleSignIn().signIn();
+          await googleSignIn.signIn();
+
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
@@ -93,7 +93,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           String? accessToken = await firebaseUser.getIdToken();
           const secureStorage = FlutterSecureStorage();
           await secureStorage.delete(key: 'access_token');
-          print("token gg:======== $accessToken");
           final result = await _signInWithGoogleUseCase.call(accessToken ?? "");
           if (result is DataSuccess<AuthUser>) {
             emit(AuthSuccess(result.data!));
@@ -111,9 +110,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthLoggedOut());
       } else {
         final result = await _getUserUseCase.call();
-        if (result is DataSuccess<AuthUser>) {
+        if (result is DataSuccess) {
           emit(AuthSuccess(result.data!));
-        } else if (result is DataFailed) {
+        } else {
           emit(AuthLoggedOut());
           await secureStorage.delete(key: 'access_token');
           await secureStorage.delete(key: 'refresh_token');
@@ -151,7 +150,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final dataState = await _uploadImageUseCase.call(event.file);
 
       if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
-        // emit(UserUploadSuccess(dataState.data!));
+        emit(UserUploadSuccess());
+        // emit(AuthSuccess(user))
       }
       if (dataState is DataFailed) {
         // emit(RemoteTourTagError(dataState.error!));

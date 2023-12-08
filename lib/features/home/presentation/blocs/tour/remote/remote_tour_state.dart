@@ -28,28 +28,8 @@ class RemoteTourDone extends RemoteTourState {
     List<TourEntity>? tours,
     bool hasMore = false,
   }) : super(tours: tours, hasMore: hasMore);
-
-  // RemoteTourDone withMoreTours(List<TourEntity> moreTours) {
-  //   return RemoteTourDone(
-  //     tours: [...tours!, ...moreTours],
-  //     hasMore: hasMore!,
-  //   );
-  // }
 }
 
 final class RemoteTourError extends RemoteTourState {
   const RemoteTourError(DioException error) : super(error: error);
-}
-
-final class NoMoreToLoad extends RemoteTourState {
-  const NoMoreToLoad();
-}
-
-//wishlist
-final class AddedToWishlist extends RemoteTourState {
-  const AddedToWishlist() : super();
-}
-
-final class AddToWishlistError extends RemoteTourState {
-  const AddToWishlistError(DioException error) : super(error: error);
 }

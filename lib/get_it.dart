@@ -11,25 +11,36 @@ import 'package:zest_trip/features/home/domain/repositories/tour_repository.dart
 import 'package:zest_trip/features/home/domain/usecases/add_wishlist.dart';
 import 'package:zest_trip/features/home/domain/usecases/analytic_location.dart';
 import 'package:zest_trip/features/home/domain/usecases/analytic_tag.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_banner.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_district.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_popular_location.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_province.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_reviews_tour.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tags.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_tour_detail.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_tour_provider.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tour_rcm_location.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tour_rcm_search.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tour_rcm_tag.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tour_sponsore.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tours.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_vehicles.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_wishlist.dart';
+import 'package:zest_trip/features/home/domain/usecases/remove_wishlist.dart';
+import 'package:zest_trip/features/home/domain/usecases/report_provider.dart';
+import 'package:zest_trip/features/home/presentation/blocs/banner/banner_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/location_popular/location_popular_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_of_provider/tour_of_provider_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_search/tour_recommend_search_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/district/district_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/province/province_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_resource/tour_detail/tour_detail_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_sponsore/tour_sponsore_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_wishlist/tour_wishlist_bloc.dart';
 import 'package:zest_trip/features/payment/domain/usecases/get_own_review_usecase.dart';
+import 'package:zest_trip/features/payment/domain/usecases/get_pricing_tour.dart';
 import 'package:zest_trip/features/payment/domain/usecases/get_voucher_of_tour.dart';
 import 'package:zest_trip/features/payment/domain/usecases/post_review.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour/remote/remote_tour_bloc.dart';
@@ -45,10 +56,12 @@ import 'package:zest_trip/features/payment/domain/usecases/get_info_provider_use
 import 'package:zest_trip/features/payment/domain/usecases/get_own_booking.dart';
 import 'package:zest_trip/features/payment/domain/usecases/request_refund_usecase.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/booking/booking_bloc.dart';
+import 'package:zest_trip/features/payment/presentation/bloc/checking_tour/checking_tour_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/my_review/my_review_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/payment/payment_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/provider/provider_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/refund/refund_bloc.dart';
+import 'package:zest_trip/features/payment/presentation/bloc/report_provider/report_provider_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/voucher/voucher_bloc.dart';
 
 final sl = GetIt.instance;
@@ -99,6 +112,10 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => GetTourVehiclesUseCase(sl()));
 
   sl.registerLazySingleton(() => AddWishlistUseCase(sl()));
+
+  sl.registerLazySingleton(() => RemoveWishlistUseCase(sl()));
+
+  sl.registerLazySingleton(() => GetWishlistUseCase(sl()));
 
   sl.registerLazySingleton(() => PostReviewUseCase(sl()));
 
@@ -152,12 +169,29 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<GetTourSponsoreUseCase>(
     () => GetTourSponsoreUseCase(sl()),
   );
+  sl.registerLazySingleton<GetTourDetailUseCase>(
+    () => GetTourDetailUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetTourProviderUseCase>(
+    () => GetTourProviderUseCase(sl()),
+  );
+  sl.registerLazySingleton<ReportProviderUseCase>(
+    () => ReportProviderUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetBannerUseCase>(
+    () => GetBannerUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetPricingTourUseCase>(
+    () => GetPricingTourUseCase(sl()),
+  );
 
   //Blocs
   sl.registerFactory(
       () => AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   sl.registerFactory(() => RemoteTourBloc(sl()));
+
+  sl.registerFactory(() => TourWishlistBloc(sl(), sl(), sl()));
 
   sl.registerFactory(() => TourRecommendTagBloc(sl(), sl()));
 
@@ -190,4 +224,14 @@ Future<void> initializeDependencies() async {
   sl.registerFactory(() => ProvinceBloc(sl()));
 
   sl.registerFactory(() => DistrictBloc(sl()));
+
+  sl.registerFactory(() => TourDetailBloc(sl()));
+
+  sl.registerFactory(() => TourProviderBloc(sl()));
+
+  sl.registerFactory(() => ReportProviderBloc(sl()));
+
+  sl.registerFactory(() => BannerBloc(sl()));
+
+  sl.registerFactory(() => CheckingTourBloc(sl()));
 }

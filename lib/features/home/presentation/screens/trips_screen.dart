@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour_manage.dart';
 import 'package:zest_trip/features/home/presentation/widgets/empty_widget.dart';
 import 'package:zest_trip/features/payment/domain/entities/invoice_entity.dart';
@@ -19,7 +21,6 @@ class TripsScreen extends StatefulWidget {
 class _TripsScreenState extends State<TripsScreen> {
   @override
   void initState() {
-    BlocProvider.of<BookingBloc>(context).add(const GetBookings());
     super.initState();
   }
 
@@ -30,49 +31,107 @@ class _TripsScreenState extends State<TripsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<BookingBloc>(
-          create: (context) => sl()..add(const GetBookings()),
-        ),
-      ],
-      child: DefaultTabController(
-        length: 4,
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text("My Bookings"),
-            automaticallyImplyLeading: false,
-            bottom: const TabBar(
-              isScrollable: true,
-              tabs: [
-                Tab(text: 'Accepted'),
-                // Tab(text: 'Pending'),
-                Tab(text: 'Refunded'),
-                Tab(text: 'Refunding'),
-                Tab(text: 'Cancelled by provider'),
-              ],
-            ),
-          ),
-          body: BlocBuilder<BookingBloc, BookingState>(
-            buildWhen: (previous, current) => previous != current,
-            builder: (context, state) {
-              if (state is GetBookingSuccess) {
-                List<InvoiceEntity> invoices = state.bookings!;
-                return TabBarView(
-                  children: [
-                    _buildTabContent(context, invoices, 'accepted'),
-                    // _buildTabContent(context, invoices, 'pending'),
-                    _buildTabContent(context, invoices, 'refunded'),
-                    _buildTabContent(context, invoices, 'user_request_refund'),
-                    _buildTabContent(context, invoices, 'provider_refunded'),
-                  ],
-                );
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
-        ),
+    return BlocProvider<BookingBloc>(
+      create: (context) => sl()..add(const GetBookings()),
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is AuthSuccess) {
+            return DefaultTabController(
+              length: 4,
+              child: Scaffold(
+                  appBar: AppBar(
+                    title: const Text("My Bookings"),
+                    automaticallyImplyLeading: false,
+                    bottom: const TabBar(
+                      isScrollable: true,
+                      tabs: [
+                        Tab(text: 'Accepted'),
+                        // Tab(text: 'Pending'),
+                        Tab(text: 'Refunded'),
+                        Tab(text: 'Refunding'),
+                        Tab(text: 'Cancelled by provider'),
+                      ],
+                    ),
+                  ),
+                  body: RefreshIndicator(
+                    onRefresh: () async {
+                      final remoteTourBloc =
+                          BlocProvider.of<BookingBloc>(context);
+                      remoteTourBloc.add(const GetBookings());
+                    },
+                    child: BlocBuilder<BookingBloc, BookingState>(
+                      buildWhen: (previous, current) => previous != current,
+                      builder: (context, state) {
+                        if (state is GetBookingSuccess) {
+                          List<InvoiceEntity> invoices = state.bookings!;
+                          return TabBarView(
+                            children: [
+                              RefreshIndicator(
+                                onRefresh: () async {
+                                  final remoteTourBloc =
+                                      BlocProvider.of<BookingBloc>(context);
+                                  remoteTourBloc.add(const GetBookings());
+                                },
+                                child: _buildTabContent(
+                                    context, invoices, 'accepted'),
+                              ),
+                              // Repeat the same pattern for other tabs
+                              // RefreshIndicator(
+                              //   onRefresh: () async {
+                              //     final remoteTourBloc = BlocProvider.of<BookingBloc>(context);
+                              //     remoteTourBloc.add(const GetBookings());
+                              //   },
+                              //   child: _buildTabContent(context, invoices, 'pending'),
+                              // ),
+                              RefreshIndicator(
+                                onRefresh: () async {
+                                  final remoteTourBloc =
+                                      BlocProvider.of<BookingBloc>(context);
+                                  remoteTourBloc.add(const GetBookings());
+                                },
+                                child: _buildTabContent(
+                                    context, invoices, 'refunded'),
+                              ),
+                              RefreshIndicator(
+                                onRefresh: () async {
+                                  final remoteTourBloc =
+                                      BlocProvider.of<BookingBloc>(context);
+                                  remoteTourBloc.add(const GetBookings());
+                                },
+                                child: _buildTabContent(
+                                    context, invoices, 'user_request_refund'),
+                              ),
+                              RefreshIndicator(
+                                onRefresh: () async {
+                                  final remoteTourBloc =
+                                      BlocProvider.of<BookingBloc>(context);
+                                  remoteTourBloc.add(const GetBookings());
+                                },
+                                child: _buildTabContent(
+                                    context, invoices, 'provider_refunded'),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
+                  )),
+            );
+          } else {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text("My Bookings"),
+                automaticallyImplyLeading: false,
+              ),
+              body: const Center(
+                child: EmptyWidget(imageSvg: loginSvg, title: "Please login"),
+              ),
+            );
+          }
+        },
       ),
     );
   }

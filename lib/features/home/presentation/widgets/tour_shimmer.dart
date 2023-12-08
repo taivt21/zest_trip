@@ -17,10 +17,6 @@ class TourShimmer extends StatelessWidget {
       itemBuilder: (context, index) {
         return Container(
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Colors.white,
-          ),
           child: Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
             highlightColor: Colors.grey[100]!,
@@ -28,27 +24,39 @@ class TourShimmer extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
                   width: width,
                   height: 200,
-                  color: Colors.white,
                 ),
                 const SizedBox(height: 12),
                 Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
                   width: 150,
                   height: 16,
-                  color: Colors.white,
                 ),
                 const SizedBox(height: 4),
                 Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
                   width: 50,
                   height: 16,
-                  color: Colors.white,
                 ),
                 const SizedBox(height: 4),
                 Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
                   width: 40,
                   height: 16,
-                  color: Colors.white,
                 ),
               ],
             ),

@@ -16,6 +16,17 @@ abstract class TourRepository {
     Set<int>? vehicleIds,
     String? province,
     String? district,
+    int? lowPrice,
+    int? highPrice,
+  });
+  Future<DataState<List<TourEntity>>> getAllTourProvider(
+    String providerId, {
+    String? search,
+    int? page,
+    int? limit,
+    String? orderBy,
+    Set<int>? tagIds,
+    Set<int>? vehicleIds,
   });
   Future<DataState<List<TourEntity>>> getAllToursRcmTag(
       {String? search,
@@ -41,7 +52,9 @@ abstract class TourRepository {
       int? limit,
       String? orderBy,
       Set<int>? tagIds});
-
+  Future<DataState<String>> getBanner();
+  Future<DataState<List<TourEntity>>> getAllWishlist();
+  Future<DataState<TourEntity>> getTourDetail(String tourId);
   Future<DataState<List<dynamic>>> getPopularLocation();
   Future<DataState<dynamic>> analyticTag(Set<int> tags);
   Future<DataState<dynamic>> analyticLocation(Set<String> locations);
@@ -55,4 +68,6 @@ abstract class TourRepository {
   Future<DataState<bool>> removeFromWishlist(String tourId);
   Future<DataState<bool>> addToCart(String tourId);
   Future<DataState<bool>> removeFromCart(String tourId);
+  Future<DataState<bool>> reportProvider(
+      String providerId, String reason, String type);
 }

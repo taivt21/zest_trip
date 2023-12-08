@@ -22,7 +22,6 @@ class MyReviewBloc extends Bloc<MyReviewEvent, MyReviewState> {
       if (dataState is DataSuccess) {
         emit(const ReviewSuccess());
       } else if (dataState is DataFailed) {
-        print("${dataState.error?.response?.data["message"]}");
         emit(ReviewFail(dataState.error!));
       }
     }));
@@ -32,7 +31,6 @@ class MyReviewBloc extends Bloc<MyReviewEvent, MyReviewState> {
       if (dataState is DataSuccess) {
         emit(GetReviewSuccess(dataState.data ?? []));
       } else if (dataState is DataFailed) {
-        print("${dataState.error?.response?.data["message"]}");
         emit(GetReviewFail(dataState.error!));
       }
     }));

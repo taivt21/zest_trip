@@ -57,7 +57,7 @@ class _UserReviewState extends State<UserReview> {
           _buildStarRating(),
           const SizedBox(height: 8.0),
           Text(
-            widget.tourReview.description!,
+            widget.tourReview.description ?? "",
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 8.0),
@@ -65,7 +65,6 @@ class _UserReviewState extends State<UserReview> {
           if (widget.tourReview.reply != null && isExpanded)
             ReplyOfProvider(providerReplyEntity: widget.tourReview.reply!),
           const SizedBox(height: 8.0),
-          // GestureDetector for viewing replies
           if (widget.tourReview.reply != null)
             GestureDetector(
               onTap: () {

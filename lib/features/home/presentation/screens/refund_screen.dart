@@ -6,9 +6,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/resources/confirm_dialog.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
+import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/booking/booking_bloc.dart';
-import 'package:zest_trip/features/payment/presentation/bloc/my_review/my_review_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/refund/refund_bloc.dart';
 
 class RefundScreen extends StatefulWidget {
@@ -51,6 +51,12 @@ class RefundScreenState extends State<RefundScreen> {
   }
 
   @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
@@ -66,31 +72,51 @@ class RefundScreenState extends State<RefundScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           title: const Text('Request refund'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  showError = true;
+                });
+                if (validateReview()) {
+                  _showConfirmationDialog();
+                }
+              },
+              child: const Text(
+                "Send",
+                style: TextStyle(
+                    decoration: TextDecoration.underline, fontSize: 15),
+              ),
+            )
+          ],
         ),
         body: BlocListener<RefundBloc, RefundState>(
           listener: (context, state) {
             if (state is RequestRefundFail) {
               Fluttertoast.showToast(
-                  msg: "${{state.error?.response?.data['message']}}",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIosWeb: 1,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+                msg: "${{state.error?.response?.data['message']}}",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+              );
             }
             if (state is RequestRefundSuccess) {
-              BlocProvider.of<MyReviewBloc>(context).add(GetMyReview());
+              // BlocProvider.of<MyReviewBloc>(context).add(GetMyReview());
               BlocProvider.of<BookingBloc>(context).add(const GetBookings());
               Fluttertoast.showToast(
-                  msg: "Request refund success!",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIosWeb: 1,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+                msg: "Request refund success!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+              );
 
-              Navigator.pop(context, (route) => false);
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const HomeScreen(initialPageIndex: 2)),
+                  (route) => false);
+              // Navigator.pop(context, (route) => false);
             }
           },
           child: SingleChildScrollView(
@@ -111,7 +137,7 @@ class RefundScreenState extends State<RefundScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Refund amount:",
+                        "Refund amount (70%):",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
@@ -173,7 +199,7 @@ class RefundScreenState extends State<RefundScreen> {
         filled: true,
         fillColor: Colors.grey[200],
         border: const OutlineInputBorder(),
-        errorText: showError && commentController.text.length < 20
+        errorText: showError && commentController.text.length < 10
             ? 'Please enter at least 10 characters.'
             : null,
       ),
@@ -182,11 +208,8 @@ class RefundScreenState extends State<RefundScreen> {
   }
 
   void submitRefund() {
-    debugPrint('Comment: ${commentController.text}');
-    // context.read<RefundBloc>().add(RequestRefundEvent(
-    //     reason: commentController.text, bookingId: widget.bookingId));
-    // context.read<BookingBloc>().add(const GetBookings());
-    BlocProvider.of<RefundBloc>(context).add(RequestRefundEvent(
+    context.read<RefundBloc>().add(RequestRefundEvent(
         reason: commentController.text, bookingId: widget.bookingId));
+   
   }
 }

@@ -25,7 +25,6 @@ class TourRecommendTagBloc
         emit(GetToursRcmTagSuccess(dataState.data!));
       }
       if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(GetToursRcmTagFail(dataState.error!));
       }
     });
@@ -37,7 +36,6 @@ class TourRecommendTagBloc
         emit(AnalyticTourRecommendTag());
       }
       if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(GetToursRcmTagFail(dataState.error!));
       }
     });

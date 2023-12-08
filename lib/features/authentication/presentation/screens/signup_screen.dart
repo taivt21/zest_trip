@@ -13,6 +13,7 @@ class SignUpScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: const Text(
           'Sign Up',
         ),

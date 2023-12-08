@@ -20,7 +20,6 @@ class LocationPopularBloc
         emit(GetPopularLocationSuccess(dataState.data ?? []));
       }
       if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(GetPopularLocationFail(dataState.error!));
       }
     });

@@ -25,20 +25,17 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final dataState = await _availableUseCase.call(
           event.tourId, event.adult, event.children, event.date);
       if (dataState is DataSuccess) {
-        emit(const CheckSuccess());
+        emit(CheckSuccess(dataState.data!));
       } else if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(CheckFail(dataState.error!));
       }
     });
     on<CreateBooking>((event, emit) async {
       final dataState = await _createBookingUseCase.call(
           event.bookingEntity, event.redirectUrl ?? "", event.voucherId ?? -1);
-      print("datastate: $dataState");
       if (dataState is DataSuccess) {
         emit(BookTourSuccess(dataState.data));
       } else if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(BookTourFail(dataState.error!));
       }
     });

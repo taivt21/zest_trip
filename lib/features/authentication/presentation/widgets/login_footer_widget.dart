@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logger/logger.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/theme/text_theme.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
@@ -14,10 +13,6 @@ class LoginFooterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var logger = Logger();
-
-    logger.i('render footer');
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

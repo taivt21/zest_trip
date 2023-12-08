@@ -10,6 +10,7 @@ import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_locati
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/province/province_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/tags/tour_tag_bloc.dart';
+import 'package:zest_trip/get_it.dart';
 
 class SelectHobbyScreen extends StatefulWidget {
   const SelectHobbyScreen({Key? key}) : super(key: key);
@@ -53,101 +54,112 @@ class _SelectHobbyScreenState extends State<SelectHobbyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        actions: [
-          TextButton(
-            onPressed: () {
-              _showConfirmationDialog();
-            },
-            child: const Text(
-              'Skip',
-              style: TextStyle(decoration: TextDecoration.underline),
-            ),
-          ),
-        ],
-        leading: _currentPage > 0
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  _pageController.previousPage(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                  );
-                },
-              )
-            : null,
-        automaticallyImplyLeading: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (int page) {
-                  setState(() {
-                    _currentPage = page;
-                  });
-                },
-                children: [
-                  BlocBuilder<TourTagBloc, TourTagState>(
-                    builder: (context, tourTagState) {
-                      return _buildTagPage(tourTagState.tourTags);
-                    },
-                  ),
-                  BlocBuilder<ProvinceBloc, ProvinceState>(
-                    builder: (context, provinceState) {
-                      return _buildProvincePage(provinceState.provinces);
-                    },
-                  ),
-                ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ProvinceBloc>(
+          create: (context) => sl()..add(const GetProvinces()),
+        ),
+        BlocProvider<TourTagBloc>(
+          create: (context) => sl()..add(const GetTourTags()),
+        ),
+      ],
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          actions: [
+            TextButton(
+              onPressed: () {
+                _showConfirmationDialog();
+              },
+              child: const Text(
+                'Skip',
+                style: TextStyle(decoration: TextDecoration.underline),
               ),
             ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: _currentPage > 0
-                      ? () {
-                          _pageController.previousPage(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                      : null,
-                  child: const Text('Back'),
-                ),
-                Text('${_currentPage + 1} of 2'),
-                _currentPage < 1
-                    ? TextButton(
-                        onPressed: () {
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.easeInOut,
-                          );
-                        },
-                        child: const Text('Next'),
-                      )
-                    : FilledButton(
-                        onPressed: () {
-                          context.read<TourRecommendLocationBloc>().add(
-                                AnalyticLocation(locations: listProvince),
-                              );
-                          context.read<TourRecommendTagBloc>().add(
-                                AnalyticTag(tags: listTag),
-                              );
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              AppRoutes.home, (route) => false);
-                        },
-                        child: const Text('Start'),
-                      ),
-              ],
-            ),
           ],
+          leading: _currentPage > 0
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    _pageController.previousPage(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                )
+              : null,
+          automaticallyImplyLeading: false,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                  children: [
+                    BlocBuilder<TourTagBloc, TourTagState>(
+                      builder: (context, tourTagState) {
+                        return _buildTagPage(tourTagState.tourTags);
+                      },
+                    ),
+                    BlocBuilder<ProvinceBloc, ProvinceState>(
+                      builder: (context, provinceState) {
+                        return _buildProvincePage(provinceState.provinces);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: _currentPage > 0
+                        ? () {
+                            _pageController.previousPage(
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOut,
+                            );
+                          }
+                        : null,
+                    child: const Text('Back'),
+                  ),
+                  Text('${_currentPage + 1} of 2'),
+                  _currentPage < 1
+                      ? TextButton(
+                          onPressed: () {
+                            _pageController.nextPage(
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          child: const Text('Next'),
+                        )
+                      : FilledButton(
+                          onPressed: () {
+                            context.read<TourRecommendLocationBloc>().add(
+                                  AnalyticLocation(locations: listProvince),
+                                );
+                            context.read<TourRecommendTagBloc>().add(
+                                  AnalyticTag(tags: listTag),
+                                );
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                AppRoutes.home, (route) => false);
+                          },
+                          child: const Text('Start'),
+                        ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -203,7 +215,6 @@ class _SelectHobbyScreenState extends State<SelectHobbyScreen> {
                       if (selected) {
                         if (listTag.length < 5) {
                           listTag.add(tagId);
-                          print("listTag: $listTag");
                         } else {
                           // Hiển thị thông báo hoặc xử lý khi đạt đến giới hạn
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -216,7 +227,6 @@ class _SelectHobbyScreenState extends State<SelectHobbyScreen> {
                         }
                       } else {
                         listTag.remove(tagId);
-                        print("listTag: $listTag");
                       }
                     });
                   },
@@ -267,7 +277,6 @@ class _SelectHobbyScreenState extends State<SelectHobbyScreen> {
                       if (selected) {
                         if (listProvince.length < 5) {
                           listProvince.add(province.name!);
-                          print("listProvince: $listProvince");
                         } else {
                           // Hiển thị thông báo hoặc xử lý khi đạt đến giới hạn
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -280,7 +289,6 @@ class _SelectHobbyScreenState extends State<SelectHobbyScreen> {
                         }
                       } else {
                         listProvince.remove(province.name);
-                        print("listProvince: $listProvince");
                       }
                     });
                   },

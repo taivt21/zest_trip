@@ -7,7 +7,7 @@ class GetOwnBookingUseCase {
 
   GetOwnBookingUseCase(this._repository);
 
-  Future<DataState<List<InvoiceEntity>>> call() async {
-    return await _repository.getOwnBooking();
+  Future<DataState<List<InvoiceEntity>>> call(String userId) async {
+    return await _repository.getOwnBooking(userId);
   }
 }

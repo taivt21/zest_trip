@@ -19,6 +19,12 @@ class TourRepositoryImpl implements TourRepository {
   }
 
   @override
+  Future<DataState<bool>> reportProvider(
+      String providerId, String reason, String type) async {
+    return await _tourApiService.reportProvider(providerId, reason, type);
+  }
+
+  @override
   Future<DataState<bool>> addToWishlist(String tourId) async {
     return await _tourApiService.addToWishlist(tourId);
   }
@@ -33,6 +39,8 @@ class TourRepositoryImpl implements TourRepository {
     Set<int>? vehicleIds,
     String? province,
     String? district,
+    int? lowPrice,
+    int? highPrice,
   }) async {
     return await _tourApiService.getAllTours(
       page: page,
@@ -43,7 +51,35 @@ class TourRepositoryImpl implements TourRepository {
       vehicleIds: vehicleIds,
       province: province,
       district: district,
+      lowPrice: lowPrice,
+      highPrice: highPrice,
     );
+  }
+
+  @override
+  Future<DataState<List<TourEntity>>> getAllTourProvider(
+    String providerId, {
+    String? search,
+    int? page,
+    int? limit,
+    String? orderBy,
+    Set<int>? tagIds,
+    Set<int>? vehicleIds,
+  }) async {
+    return await _tourApiService.getAllTourProvider(
+      providerId,
+      page: page,
+      limit: limit,
+      search: search,
+      orderBy: orderBy,
+      tagIds: tagIds,
+      vehicleIds: vehicleIds,
+    );
+  }
+
+  @override
+  Future<DataState<List<TourEntity>>> getAllWishlist() async {
+    return await _tourApiService.getAllWishlist();
   }
 
   @override
@@ -67,8 +103,8 @@ class TourRepositoryImpl implements TourRepository {
   }
 
   @override
-  Future<DataState<bool>> removeFromWishlist(String tourId) {
-    throw UnimplementedError();
+  Future<DataState<bool>> removeFromWishlist(String tourId) async {
+    return await _tourApiService.removeFromWishlist(tourId);
   }
 
   @override
@@ -154,5 +190,15 @@ class TourRepositoryImpl implements TourRepository {
   @override
   Future<DataState> analyticTag(Set<int> tags) async {
     return await _tourApiService.analyticTag(tags);
+  }
+
+  @override
+  Future<DataState<TourEntity>> getTourDetail(String tourId) async {
+    return await _tourApiService.getTourDetail(tourId);
+  }
+  
+  @override
+  Future<DataState<String>> getBanner()async {
+     return await _tourApiService.getBanner();
   }
 }

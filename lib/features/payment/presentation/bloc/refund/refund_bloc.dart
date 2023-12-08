@@ -18,7 +18,6 @@ class RefundBloc extends Bloc<RefundEvent, RefundState> {
       if (dataState is DataSuccess) {
         emit(RequestRefundSuccess());
       } else if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(RequestRefundFail(dataState.error!));
       }
     });

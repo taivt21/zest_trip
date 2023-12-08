@@ -4,12 +4,11 @@ import 'package:logger/logger.dart';
 
 class MyBlocObserver extends BlocObserver {
   var logger = Logger();
-
   @override
   void onCreate(BlocBase bloc) {
     super.onCreate(bloc);
     if (kDebugMode) {
-      logger.i("Bloc create: ${bloc.runtimeType}");
+      logger.t("Bloc create: ${bloc.runtimeType}");
     }
   }
 
@@ -39,7 +38,7 @@ class MyBlocObserver extends BlocObserver {
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    logger.i("Bloc error: $error");
+    logger.e("Bloc error: $error");
     super.onError(bloc, error, stackTrace);
   }
 
@@ -47,7 +46,7 @@ class MyBlocObserver extends BlocObserver {
   void onClose(BlocBase bloc) {
     super.onClose(bloc);
     if (kDebugMode) {
-      print('Bloc close: ${bloc.runtimeType}');
+      logger.w('Bloc close: ${bloc.runtimeType}');
     }
   }
 }

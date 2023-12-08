@@ -71,11 +71,12 @@ class _ThankYouPageState extends State<ThankYouPage> {
                 SizedBox(height: screenHeight * 0.06),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              HomeScreen(initialPageIndex: 1)),
+                              HomeScreen(initialPageIndex: 2)),
+                      (route) => false,
                     );
                   },
                   child: Text(

@@ -18,14 +18,19 @@ class RemoteTourBloc extends Bloc<RemoteTourEvent, RemoteTourState> {
 
     on<GetTours>((event, emit) async {
       final currentState = state;
-
+      // if (currentState is RemoteTourDone) {
+      //   currentState.hasMore == true;
+      //   return;
+      // }
       final dataState = await _getTourUseCase.call(
         page: event.page,
-        limit: event.limit ?? 5,
+        limit: event.limit,
         tagIds: event.tags,
         search: event.search ?? "",
         province: event.province ?? "",
         district: event.district ?? "",
+        lowPrice: event.lowPrice,
+        highPrice: event.highPrice,
       );
 
       if (dataState is DataSuccess) {
@@ -42,7 +47,6 @@ class RemoteTourBloc extends Bloc<RemoteTourEvent, RemoteTourState> {
       }
 
       if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(RemoteTourError(dataState.error!));
       }
     });

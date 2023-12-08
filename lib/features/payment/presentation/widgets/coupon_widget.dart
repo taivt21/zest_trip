@@ -23,6 +23,7 @@ class _CouponWidgetState extends State<CouponWidget> {
 
   @override
   Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
       height: 160,
       width: double.infinity,
@@ -51,11 +52,8 @@ class _CouponWidgetState extends State<CouponWidget> {
                         Text(
                           widget.voucher.discountType == "PERCENT"
                               ? "Discount ${widget.voucher.discount}%"
-                              : "Discount ${NumberFormatter.format(num.parse(widget.voucher.discount!))}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(fontSize: 20),
+                              : "Discount ${NumberFormatter.format(num.parse(widget.voucher.discount!))} ₫",
+                          style: textTheme.titleLarge?.copyWith(fontSize: 20),
                         ),
                         TextButton(
                           onPressed: widget.voucher.quantityUsed! >=
@@ -73,28 +71,26 @@ class _CouponWidgetState extends State<CouponWidget> {
                                       'discountType':
                                           widget.voucher.discountType,
                                       'discount': widget.voucher.discount,
-                                      'voucherId': widget.voucher.id
+                                      'voucherId': widget.voucher.id,
+                                      'paid': widget.paid,
                                     },
                                   );
                                 },
                           child: Text(
                             "Apply",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  fontSize: 16,
-                                  color: _getApplyButtonColor(),
-                                ),
+                            style: textTheme.titleMedium?.copyWith(
+                              fontSize: 16,
+                              color: _getApplyButtonColor(),
+                            ),
                           ),
                         )
                       ],
                     ),
                     Text(
-                      "Minimum price: ${widget.voucher.applyConditions?["minimum_price"] ?? 0}",
+                      "Minimum price: ${NumberFormatter.format(widget.voucher.applyConditions?["minimum_price"])} ₫",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: _getMinimumPriceTextStyle(),
+                      style: textTheme.titleSmall,
                     ),
                   ],
                 ),
@@ -119,8 +115,10 @@ class _CouponWidgetState extends State<CouponWidget> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          "Used ${_calculatePercentageUsed()}%, Date expired: ${_formatDate(widget.voucher.expiredDate)}",
-                          style: _getExpirationTextStyle(),
+                          // Used ${_calculatePercentageUsed()}%,
+                          "Date expired: ${_formatDate(widget.voucher.expiredDate)}",
+                          style: textTheme.titleSmall!
+                              .copyWith(color: colorWarning),
                         ),
                         _buildVoucherStatus(),
                       ],
@@ -162,36 +160,6 @@ class _CouponWidgetState extends State<CouponWidget> {
       );
     } else {
       return const SizedBox.shrink();
-    }
-  }
-
-  TextStyle _getExpirationTextStyle() {
-    if (widget.voucher.quantityUsed! >= widget.voucher.quantity! ||
-        DateTime.now().isAfter(widget.voucher.expiredDate!) ||
-        widget.paid < widget.voucher.applyConditions?["minimum_price"]) {
-      return Theme.of(context)
-              .textTheme
-              .titleSmall
-              ?.copyWith(color: Colors.grey) ??
-          const TextStyle();
-    } else {
-      return Theme.of(context)
-              .textTheme
-              .titleSmall
-              ?.copyWith(color: colorWarning) ??
-          const TextStyle();
-    }
-  }
-
-  TextStyle _getMinimumPriceTextStyle() {
-    if (widget.paid < widget.voucher.applyConditions?["minimum_price"]) {
-      return Theme.of(context)
-              .textTheme
-              .titleSmall
-              ?.copyWith(color: Colors.grey) ??
-          const TextStyle();
-    } else {
-      return Theme.of(context).textTheme.titleSmall ?? const TextStyle();
     }
   }
 

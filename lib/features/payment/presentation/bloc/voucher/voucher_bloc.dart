@@ -22,7 +22,6 @@ class VoucherBloc extends Bloc<VoucherEvent, VoucherState> {
       if (dataState is DataSuccess) {
         emit(GetVoucherSuccess(dataState.data!));
       } else if (dataState is DataFailed) {
-        print(dataState.error?.response?.data["message"]);
         emit(GetVoucherFail(dataState.error!));
       }
     });

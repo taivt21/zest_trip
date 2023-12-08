@@ -18,7 +18,7 @@ class TourScheduleWidget extends StatefulWidget {
 
 class TourScheduleWidgetState extends State<TourScheduleWidget> {
   @override
-  void dispose() {
+  void to() {
     super.dispose();
   }
 
@@ -47,36 +47,44 @@ class TourScheduleWidgetState extends State<TourScheduleWidget> {
           const SizedBox(height: 8.0),
           if (schedule.tourScheduleDetails != null)
             for (var detail in schedule.tourScheduleDetails ?? []) ...[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
+              Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        // Container(
+                        //   width: 8,
+                        //   height: 8,
+                        //   decoration: const BoxDecoration(
+                        //     shape: BoxShape.circle,
+                        //     color: primaryColor,
+                        //   ),
+                        // ),
+                        const Icon(
+                          Icons.schedule,
+                          size: 16,
                           color: primaryColor,
                         ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        ' ${detail.from} - ${detail.to}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    detail.description,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        Text(
+                          ' ${detail.from} - ${detail.to}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      detail.description,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
               ),
             ],
         ],
@@ -103,8 +111,10 @@ class TourScheduleWidgetState extends State<TourScheduleWidget> {
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       context: context,
       builder: (BuildContext context) {
         return _BottomSheetContent(
@@ -136,7 +146,7 @@ class _BottomSheetContent extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Schedules'),
             bottom: TabBar(
-              isScrollable: tourSchedules.length > 8,
+              isScrollable: tourSchedules.length > 2,
               tabs: tourSchedules
                   .map((schedule) => Tab(
                         child: Text(

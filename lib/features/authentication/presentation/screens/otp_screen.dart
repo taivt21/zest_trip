@@ -27,12 +27,6 @@ class OTPScreenState extends State<OTPScreen> {
   void initState() {
     super.initState();
     _startCountdown();
-
-    context.read<AuthBloc>().add(
-          VerificationEmailEvent(
-            email: widget.email,
-          ),
-        );
   }
 
   @override
@@ -43,7 +37,6 @@ class OTPScreenState extends State<OTPScreen> {
   void _onSignUpPressed(String code) {
     final email = widget.email;
     final password = widget.password;
-    debugPrint("email, $password, $otp");
     context.read<AuthBloc>().add(
           RegisterWithEmailAndPasswordEvent(
             email: email,
@@ -60,29 +53,24 @@ class OTPScreenState extends State<OTPScreen> {
         if (state is VerifiedState) {
           _stopCountdown();
           Fluttertoast.showToast(
-              msg: "Sign up success! Login now ",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
+            msg: "Sign up success! Login now ",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+          );
           Navigator.of(context).pushNamed(AppRoutes.login);
         }
         if (state is VerifiedFailState) {
           Fluttertoast.showToast(
-              msg: "${state.error?.response?.data['message']}",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
+            msg: "${state.error?.response?.data['message']}",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+          );
         }
       },
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
+            scrolledUnderElevation: 0,
             title: const Text(tEmailVerify),
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -128,13 +116,17 @@ class OTPScreenState extends State<OTPScreen> {
                     padding: const EdgeInsets.only(top: 20.0),
                     child: TextButton(
                       onPressed: () {
-                        if (!isCountingDown) {}
+                        if (!isCountingDown) {
+                          context
+                              .read<AuthBloc>()
+                              .add(VerificationEmailEvent(email: widget.email));
+                        }
                       },
                       child: RichText(
                         text: TextSpan(
                           text: 'Resend OTP in',
                           style: const TextStyle(
-                            color: colorBlack,
+                            color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                           children: <TextSpan>[
@@ -195,7 +187,7 @@ class OTPScreenState extends State<OTPScreen> {
         timer.cancel(); // Dừng đồng hồ đếm ngược nếu cờ đã được đặt thành false
       } else if (countdownSeconds <= 0) {
         timer.cancel(); // Dừng đồng hồ đếm ngược khi hết thời gian
-        // Thực hiện xử lý khi hết thời gian, ví dụ chuyển đến màn hình khác
+        _stopCountdown();
       } else {
         setState(() {
           countdownSeconds--;
@@ -207,6 +199,7 @@ class OTPScreenState extends State<OTPScreen> {
   void _stopCountdown() {
     setState(() {
       isCountingDown = false;
+      isOTPVerified = false;
     });
   }
 }

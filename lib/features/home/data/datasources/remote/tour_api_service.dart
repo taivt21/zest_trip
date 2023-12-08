@@ -20,6 +20,17 @@ abstract class TourApiService {
     Set<int>? vehicleIds,
     String? province,
     String? district,
+    int? lowPrice,
+    int? highPrice,
+  });
+  Future<DataState<List<TourModel>>> getAllTourProvider(
+    String providerId, {
+    String? search,
+    int? page,
+    int? limit,
+    String? orderBy,
+    Set<int>? tagIds,
+    Set<int>? vehicleIds,
   });
   Future<DataState<List<TourModel>>> getAllToursRcmTag(
       {String? search,
@@ -45,7 +56,10 @@ abstract class TourApiService {
       int? limit,
       String? orderBy,
       Set<int>? tagIds});
+  Future<DataState<List<TourModel>>> getAllWishlist();
+  Future<DataState<String>> getBanner();
 
+  Future<DataState<TourModel>> getTourDetail(tourId);
   Future<DataState<dynamic>> analyticTag(Set<int> tags);
   Future<DataState<dynamic>> analyticLocation(Set<String> locations);
   Future<DataState<List<dynamic>>> getPopularLocation();
@@ -56,6 +70,8 @@ abstract class TourApiService {
   Future<DataState<List<ProvinceModel>>> getAllProvinces();
   Future<DataState<List<DistrictModel>>> getAllDistricts();
 
+  Future<DataState<bool>> reportProvider(
+      String providerId, String reason, String type);
   Future<DataState<bool>> addToWishlist(String tourId);
   Future<DataState<bool>> removeFromWishlist(String tourId);
   Future<DataState<bool>> addToCart(String tourId);
@@ -73,19 +89,22 @@ class TourApiServiceImpl implements TourApiService {
     Set<int>? vehicleIds,
     String? province,
     String? district,
+    int? lowPrice,
+    int? highPrice,
   }) async {
     List<int> tags = tagIds?.toList() ?? [];
     List<int> vehicles = vehicleIds?.toList() ?? [];
     final queries = {
       "page": page,
-      "limit": 5,
+      "select": limit,
       "tag": tags,
       "vehicle": vehicles,
       if (province != null && province.isNotEmpty) "province": province,
       if (district != null && district.isNotEmpty) "district": district,
       if (search != null && search.isNotEmpty) "query": search,
+      if (lowPrice != null && lowPrice != -1) "lower": lowPrice,
+      if (highPrice != null && highPrice != -1) "higher": highPrice,
     };
-    print("data search tour: $queries");
     try {
       final response =
           await DioHelper.dio.get('/tour/v2', queryParameters: queries);
@@ -97,7 +116,52 @@ class TourApiServiceImpl implements TourApiService {
             .map((e) => TourModel.fromJson(e))
             .toList();
       }
-      print("count tours : ${tours.length}");
+      if (response.statusCode == 200) {
+        return DataSuccess(tours);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<TourModel>>> getAllTourProvider(
+    String providerId, {
+    String? search,
+    int? page,
+    int? limit,
+    String? orderBy,
+    Set<int>? tagIds,
+    Set<int>? vehicleIds,
+  }) async {
+    List<int> tags = tagIds?.toList() ?? [];
+    List<int> vehicles = vehicleIds?.toList() ?? [];
+    final queries = {
+      if (page != null) "page": page,
+      if (limit != null) "select": limit,
+      if (tags.isNotEmpty) "tag": tags,
+      if (vehicles.isNotEmpty) "vehicle": vehicles,
+      if (search != null && search.isNotEmpty) "query": search,
+    };
+    try {
+      final response = await DioHelper.dio
+          .get('/tour/provider/list/$providerId', queryParameters: queries);
+      List<TourModel> tours = [];
+
+      if (response.data['data']["tours"] != null &&
+          (response.data['data']["tours"] as List).isNotEmpty) {
+        tours = (response.data['data']["tours"] as List)
+            .map((e) => TourModel.fromJson(e))
+            .toList();
+      }
       if (response.statusCode == 200) {
         return DataSuccess(tours);
       } else {
@@ -145,7 +209,6 @@ class TourApiServiceImpl implements TourApiService {
       final vehicles = (response.data['data'] as List)
           .map((e) => TourVehicle.fromJson(e))
           .toList();
-      print("call api vehicles: $vehicles");
       if (response.statusCode == 200) {
         return DataSuccess(vehicles);
       } else {
@@ -171,8 +234,31 @@ class TourApiServiceImpl implements TourApiService {
   Future<DataState<bool>> addToWishlist(String tourId) async {
     try {
       final data = {'tourId': tourId};
-      final response = await DioHelper.dio.post('/favorite', data: data);
-      if (response.statusCode == 200) {
+      final response = await DioHelper.dio.post('/users/favorites', data: data);
+      if (response.statusCode == 201) {
+        return DataSuccess(true);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<bool>> reportProvider(
+      String providerId, String reason, String type) async {
+    try {
+      final data = {'description': reason, type: type.toUpperCase()};
+      final response =
+          await DioHelper.dio.post('/report/provider/$providerId', data: data);
+      if (response.statusCode == 201) {
         return DataSuccess(true);
       } else {
         return DataFailed(DioException(
@@ -194,8 +280,23 @@ class TourApiServiceImpl implements TourApiService {
   }
 
   @override
-  Future<DataState<bool>> removeFromWishlist(String tourId) {
-    throw UnimplementedError();
+  Future<DataState<bool>> removeFromWishlist(String tourId) async {
+    try {
+      final response = await DioHelper.dio.delete('/users/favorites/$tourId');
+      if (response.statusCode == 204) {
+        return DataSuccess(true);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
   }
 
   @override
@@ -205,7 +306,6 @@ class TourApiServiceImpl implements TourApiService {
       final reviews = (response.data['data'] as List)
           .map((e) => TourReviewModel.fromJson(e))
           .toList();
-      print("response reviews: $reviews");
       if (response.statusCode == 200) {
         return DataSuccess(reviews);
       } else {
@@ -229,7 +329,6 @@ class TourApiServiceImpl implements TourApiService {
       final provinces = (response.data['data'] as List)
           .map((e) => ProvinceModel.fromJson(e))
           .toList();
-      print("call api provinces: $provinces");
       if (response.statusCode == 200) {
         return DataSuccess(provinces);
       } else {
@@ -253,9 +352,36 @@ class TourApiServiceImpl implements TourApiService {
       final districts = (response.data['data'] as List)
           .map((e) => DistrictModel.fromJson(e))
           .toList();
-      print("call api districts: $districts");
       if (response.statusCode == 200) {
         return DataSuccess(districts);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<TourModel>>> getAllWishlist() async {
+    try {
+      final response = await DioHelper.dio.get('/users/favorites');
+      List<TourModel> tours = [];
+
+      if (response.data['data'] != null &&
+          (response.data['data'] as List).isNotEmpty) {
+        tours = (response.data['data'] as List)
+            .map((e) => TourModel.fromJson(e))
+            .toList();
+      }
+      if (response.statusCode == 200) {
+        return DataSuccess(tours);
       } else {
         return DataFailed(DioException(
           type: DioExceptionType.badResponse,
@@ -320,7 +446,6 @@ class TourApiServiceImpl implements TourApiService {
             .map((e) => TourModel.fromJson(e))
             .toList();
       }
-      print("getAllToursRcmLocation: $tours");
       if (response.statusCode == 200) {
         return DataSuccess(tours);
       } else {
@@ -354,7 +479,6 @@ class TourApiServiceImpl implements TourApiService {
             .map((e) => TourModel.fromJson(e))
             .toList();
       }
-      print("getAllToursRcmSearch: $tours");
       if (response.statusCode == 200) {
         return DataSuccess(tours);
       } else {
@@ -388,7 +512,6 @@ class TourApiServiceImpl implements TourApiService {
             .map((e) => TourModel.fromJson(e))
             .toList();
       }
-      print("getAllToursSponsore: $tours");
       if (response.statusCode == 200) {
         return DataSuccess(tours);
       } else {
@@ -411,7 +534,6 @@ class TourApiServiceImpl implements TourApiService {
       final Map<String, dynamic> data = {"locations": locations.toList()};
       final response =
           await DioHelper.dio.post('/analytic/user/location', data: data);
-      print("response post location: $response , data: $data");
       if (response.statusCode == 200) {
         return DataSuccess(true);
       } else {
@@ -436,7 +558,6 @@ class TourApiServiceImpl implements TourApiService {
       final response =
           await DioHelper.dio.post('/analytic/user/tag', data: data);
 
-      print("response post tag: $response , data: $data");
       if (response.statusCode == 200) {
         return DataSuccess(true);
       } else {
@@ -460,6 +581,50 @@ class TourApiServiceImpl implements TourApiService {
 
       if (response.statusCode == 200) {
         return DataSuccess(response.data['data']);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<TourModel>> getTourDetail(tourId) async {
+    try {
+      final response = await DioHelper.dio.get('/tour/get/$tourId');
+
+      if (response.statusCode == 200) {
+        final tour = TourModel.fromJson(response.data["data"]);
+        return DataSuccess(tour);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
+          response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<String>> getBanner() async {
+    try {
+      final response = await DioHelper.dio.get('/global/banner');
+
+      if (response.statusCode == 200) {
+        final banner = response.data["data"];
+        return DataSuccess(banner);
       } else {
         return DataFailed(DioException(
           type: DioExceptionType.badResponse,
