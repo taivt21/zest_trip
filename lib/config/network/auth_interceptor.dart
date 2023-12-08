@@ -13,28 +13,32 @@ class AuthInterceptor extends Interceptor {
     if (options.path == '/tour') {
       return handler.next(options);
     }
-    if (accessToken == null) {
-      return handler.next(options);
-    }
-    if (await isAccessTokenValid(accessToken)) {
-      options.headers['Authorization'] = "Bearer $accessToken";
-      return handler.next(options);
-    }
+   
+    //  if (accessToken == null) {
+    //   return handler.next(options);
+    // }
 
-    // if (accessToken != null) {
+    // if (await isAccessTokenValid(accessToken)) {
     //   options.headers['Authorization'] = "Bearer $accessToken";
     //   return handler.next(options);
     // }
 
-    try {
-      final newAccessToken = await refreshAccessToken();
-      if (newAccessToken != null) {
-        options.headers['Authorization'] = "Bearer $newAccessToken";
-        return handler.next(options);
-      }
-    } on DioException catch (error) {
-      return handler.reject(error, true);
+    // try {
+    //   final newAccessToken = await refreshAccessToken();
+    //   if (newAccessToken != null) {
+    //     options.headers['Authorization'] = "Bearer $newAccessToken";
+    //   }
+    // } on DioException catch (error) {
+    //   return handler.reject(error, true);
+    // }
+    
+    //tạm
+     if (accessToken == null) {
+      return handler.next(options);
     }
+    options.headers['Authorization'] = "Bearer $accessToken";
+
+ 
 
     return handler.next(options);
   }

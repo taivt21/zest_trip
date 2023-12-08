@@ -18,7 +18,7 @@ class TourScheduleWidget extends StatefulWidget {
 
 class TourScheduleWidgetState extends State<TourScheduleWidget> {
   @override
-  void to() {
+  void dispose() {
     super.dispose();
   }
 
