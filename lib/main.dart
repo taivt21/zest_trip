@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zest_trip/bloc_observer.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
@@ -37,7 +36,7 @@ void main() async {
     initializeDependencies(),
   ]);
 
-  Bloc.observer = MyBlocObserver();
+  // Bloc.observer = MyBlocObserver();
   runApp(
     const MyApp(),
   );
@@ -102,7 +101,7 @@ class MyApp extends StatelessWidget {
           create: (context) => sl(),
         ),
         BlocProvider<TourWishlistBloc>(
-          create: (context) => sl()..add(const GetWishlist()),
+          create: (context) => sl(),
         ),
         BlocProvider<ReportProviderBloc>(
           create: (context) => sl(),
