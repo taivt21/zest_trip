@@ -24,6 +24,8 @@ class AuthApiServiceImpl implements AuthApiService {
   @override
   Future<DataState<AuthUserModel>> loginWithEmailAndPassword(
       String email, String password) async {
+    const secureStorage = FlutterSecureStorage();
+    await secureStorage.delete(key: 'access_token');
     final data = {
       'email': email,
       'password': password,
@@ -109,6 +111,8 @@ class AuthApiServiceImpl implements AuthApiService {
 
   @override
   Future<DataState<AuthUserModel>> signInWithGoogle(String accessToken) async {
+    const secureStorage = FlutterSecureStorage();
+    await secureStorage.delete(key: 'access_token');
     final data = {
       'accessToken': accessToken,
     };

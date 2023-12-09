@@ -252,8 +252,14 @@ bool canRefund(InvoiceEntity invoice) {
 }
 
 bool canReview(InvoiceEntity invoice) {
-  DateTime bookDate = invoice.bookedDate ?? DateTime.now();
-  return DateTime.now().isAfter(bookDate) ||
-      DateTime.now().isAtSameMomentAs(bookDate) &&
+  DateTime now = DateTime.now();
+  DateTime bookDate = invoice.bookedDate ?? now;
+
+  // Loại bỏ thành phần giờ, phút, giây để chỉ so sánh ngày tháng năm
+  now = DateTime(now.year, now.month, now.day);
+  bookDate = DateTime(bookDate.year, bookDate.month, bookDate.day);
+
+  return now.isAfter(bookDate) ||
+      now.isAtSameMomentAs(bookDate) &&
           invoice.status?.toLowerCase() == "accepted";
 }

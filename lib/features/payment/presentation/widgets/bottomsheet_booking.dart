@@ -46,7 +46,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     print("selectedDate $selectedDate");
     adultTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 1);
     print("adultTicket $adultTicket");
-    // childrenTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 2);
+    childrenTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 2);
     _totalPriceAdult = calculateTotalPrice(adultTicket, _adult) * _adult;
     super.initState();
   }
@@ -404,8 +404,16 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
         ],
       ),
       subtitle: totalPrice > 0
-          ? Text(
-              "${NumberFormatter.format(totalPrice)}₫",
+          ? Row(
+              children: [
+                Text(
+                  "${NumberFormatter.format(totalPrice)}₫ ",
+                ),
+                const Text(
+                  "/person",
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                ),
+              ],
             )
           : Text(
               "From ${NumberFormatter.format(num.parse(pricingTiket.fromPrice!))}₫",
@@ -528,6 +536,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
             childrenTicket =
                 filterTicket(widget.tour.pricingTicket!, selectedDate, 2);
           }
+          _totalPriceAdult = calculateTotalPrice(adultTicket, _adult) * _adult;
         });
       }
     } else {

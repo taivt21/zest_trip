@@ -7,6 +7,7 @@ import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
+import 'package:zest_trip/features/authentication/presentation/screens/forget_password_confirm_screen.dart';
 import 'package:zest_trip/features/home/presentation/blocs/banner/banner_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
@@ -490,9 +491,19 @@ class HeaderMainScreen extends StatelessWidget {
               ],
             ),
             const Expanded(child: SizedBox()),
-            const Icon(
-              Icons.notifications_outlined,
-              size: 32,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ForgetPasswordConfirmScreen(),
+                  ),
+                );
+              },
+              child: const Icon(
+                Icons.notifications_outlined,
+                size: 32,
+              ),
             ),
           ],
         );

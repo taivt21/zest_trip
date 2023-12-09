@@ -13,8 +13,8 @@ class AuthInterceptor extends Interceptor {
     if (options.path == '/tour') {
       return handler.next(options);
     }
-   
-    //  if (accessToken == null) {
+
+    // if (accessToken == null) {
     //   return handler.next(options);
     // }
 
@@ -31,20 +31,21 @@ class AuthInterceptor extends Interceptor {
     // } on DioException catch (error) {
     //   return handler.reject(error, true);
     // }
-    
-    //tạm
-     if (accessToken == null) {
+
+    // tạm
+    if (accessToken == null) {
       return handler.next(options);
     }
     options.headers['Authorization'] = "Bearer $accessToken";
-
- 
 
     return handler.next(options);
   }
 
   Future<bool> isAccessTokenValid(String accessToken) async {
-    final expirationTime = Jwt.getExpiryDate(accessToken);
+    // final expirationTime = Jwt.getExpiryDate(accessToken);
+    final accessToken = await getAccessToken();
+    Map<String, dynamic> payload = Jwt.parseJwt(accessToken!);
+    final expirationTime = payload["expired_time"];
     return expirationTime != null && DateTime.now().isBefore(expirationTime);
   }
 

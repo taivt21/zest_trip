@@ -73,7 +73,24 @@ class ReviewScreenState extends State<ReviewScreen> {
       child: Scaffold(
         appBar: AppBar(
           scrolledUnderElevation: 0,
-          title: const Text('User Review'),
+          title: const Text('Review'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  showError = true;
+                });
+                if (validateReview()) {
+                  _showConfirmationDialog();
+                }
+              },
+              child: const Text(
+                "Send",
+                style: TextStyle(
+                    decoration: TextDecoration.underline, fontSize: 15),
+              ),
+            )
+          ],
         ),
         body: BlocListener<MyReviewBloc, MyReviewState>(
           listener: (context, state) {
