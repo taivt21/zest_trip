@@ -65,8 +65,8 @@ class TourDetailScreenState extends State<TourDetailScreen> {
 
   @override
   void initState() {
-    print(
-        "init state----------------------------------------------------------------");
+    // print(
+    //     "init state----------------------------------------------------------------");
     super.initState();
   }
 
@@ -474,13 +474,14 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Maps(
-                                    lat: lat,
-                                    long: tourDetailState
-                                        .tour?.departureLocation?["long"],
-                                    zoom: tourDetailState
-                                        .tour?.departureLocation?["zoom"],
-                                    location: tourDetailState
-                                        .tour?.departureLocation?["location"],
+                                    lat: double.parse(tourDetailState
+                                        .tour?.departureLocation!["lat"]),
+                                    long: double.parse(tourDetailState
+                                        .tour?.departureLocation?["long"]),
+                                    zoom: double.parse(tourDetailState
+                                        .tour?.departureLocation?["zoom"]),
+                                    // location: tourDetailState
+                                    //     .tour?.departureLocation?["location"],
                                   ),
                                 ),
                               );
@@ -490,7 +491,6 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                               width: double.infinity,
                               height: 150,
                               child: GoogleMap(
-                                myLocationEnabled: false,
                                 zoomGesturesEnabled: false,
                                 initialCameraPosition: CameraPosition(
                                   target: showLocation,
@@ -502,6 +502,8 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                     mapController = controller;
                                   });
                                 },
+                                minMaxZoomPreference:
+                                    const MinMaxZoomPreference(10, 15),
                               ),
                             ),
                           ),
@@ -526,32 +528,32 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                           const SizedBox(height: 8),
 
                           // Display host information
-                          Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ProviderProfileScreen(
-                                              providerId: tourDetailState
-                                                  .tour!.provider!.id!,
-                                            )));
-                              },
-                              child: Card(
-                                color: whiteColor,
-                                elevation: 1,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Column(
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ProviderProfileScreen(
+                                            providerId: tourDetailState
+                                                .tour!.provider!.id!,
+                                          )));
+                            },
+                            child: Card(
+                              color: whiteColor,
+                              elevation: 1,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Row(
+                                  // mainAxisAlignment:
+                                  //     MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Column(
                                         children: [
                                           CircleAvatar(
                                               radius: 40,
@@ -569,13 +571,20 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                               tourDetailState.tour?.provider
                                                       ?.companyName ??
                                                   "Company name",
+                                              maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .titleMedium)
                                         ],
                                       ),
-                                      Column(
+                                    ),
+                                    const SizedBox(
+                                      width: 16,
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
@@ -621,8 +630,8 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                               : const Text(""),
                                         ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -776,7 +785,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height *
-                                                0.9,
+                                                0.95,
                                             child: BookingBottomSheet(
                                                 tour: tourDetailState.tour!),
                                           );

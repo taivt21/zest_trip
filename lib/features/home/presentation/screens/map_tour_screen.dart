@@ -9,13 +9,13 @@ class Maps extends StatefulWidget {
   final double lat;
   final double long;
   final double zoom;
-  final String location;
+  // final String location;
   const Maps({
     Key? key,
     required this.lat,
     required this.long,
     required this.zoom,
-    required this.location,
+    // required this.location,
   }) : super(key: key);
 
   @override

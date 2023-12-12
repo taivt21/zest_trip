@@ -111,12 +111,11 @@ class RefundScreenState extends State<RefundScreen> {
               );
 
               Navigator.pushAndRemoveUntil(
-                  context,
+                context,
                   MaterialPageRoute(
                       builder: (context) =>
                           const HomeScreen(initialPageIndex: 2)),
                   (route) => false);
-              // Navigator.pop(context, (route) => false);
             }
           },
           child: SingleChildScrollView(
@@ -210,6 +209,5 @@ class RefundScreenState extends State<RefundScreen> {
   void submitRefund() {
     context.read<RefundBloc>().add(RequestRefundEvent(
         reason: commentController.text, bookingId: widget.bookingId));
-   
   }
 }

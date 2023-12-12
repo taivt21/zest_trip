@@ -17,7 +17,23 @@ class DioHelper {
         },
       ),
     );
+    // Thêm interceptor để log thông tin request trước khi gửi
+    // _dio.interceptors.add(InterceptorsWrapper(
+    //   onRequest: (options, handler) {
+    //     print("Request URL: ${options.uri}");
+    //     print("Request Headers: ${options.headers}");
+    //     print("Request Data: ${options.data}");
+    //     return handler.next(options);
+    //   },
+    // ));
 
+    // Thêm interceptor để log thông tin response sau khi nhận
+    // _dio.interceptors.add(InterceptorsWrapper(
+    //   onResponse: (response, handler) {
+    //     print("Response Data: ${response.data}");
+    //     return handler.next(response);
+    //   },
+    // ));
     AuthInterceptor authInterceptor = AuthInterceptor();
     _dio.interceptors.add(authInterceptor);
 

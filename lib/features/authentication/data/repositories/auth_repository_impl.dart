@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/data/data_sources/authentication_api_service.dart';
 import 'package:zest_trip/features/authentication/data/models/auth_user_model.dart';
@@ -33,7 +32,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<DataState<AuthUserModel>> signInWithGoogle(String accessToken) async {
+  Future<DataState<String>> signInWithGoogle(String accessToken) async {
     try {
       return await _authApiService.signInWithGoogle(accessToken);
     } on DioException catch (e) {
@@ -66,7 +65,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<DataState<void>> uploadImage(File file) {
-   return _authApiService.uploadImage(file);
+  Future<DataState<void>> uploadImage(XFile file) {
+    return _authApiService.uploadImage(file);
   }
 }

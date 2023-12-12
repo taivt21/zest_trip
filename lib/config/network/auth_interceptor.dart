@@ -9,7 +9,7 @@ class AuthInterceptor extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final accessToken = await getAccessToken();
-    print("accessToken $accessToken");
+    print("accessToken request $accessToken");
     if (options.path == '/tour') {
       return handler.next(options);
     }
@@ -34,10 +34,18 @@ class AuthInterceptor extends Interceptor {
 
     // tạm
     if (accessToken == null) {
+      await deleteAccessToken();
       return handler.next(options);
     }
     options.headers['Authorization'] = "Bearer $accessToken";
 
+    // Kiểm tra nếu đường dẫn là '/users/me/avatar' thì thêm header Content-Type
+    // if (options.path == '/users/me/avatar') {
+    //   options.headers['Content-Type'] = 'multipart/form-data';
+    // } else {
+    //   // Nếu không phải '/users/me/avatar', giữ nguyên header 'Content-Type' là 'application/json'
+    //   options.headers['Content-Type'] = 'application/json';
+    // }
     return handler.next(options);
   }
 

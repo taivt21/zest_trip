@@ -18,7 +18,8 @@ class LoginScreen extends StatelessWidget {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          state.user!.isRecommendRracked!
+          // print("state : ${state.user?.isRecommendRracked}");
+          state.user!.isRecommendRracked ?? false
               ? Navigator.of(context).pushReplacementNamed(AppRoutes.home)
               : Navigator.of(context).pushReplacementNamed(AppRoutes.hobby);
         }
@@ -72,8 +73,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 onPressed: () async {
                   const secureStorage = FlutterSecureStorage();
-                  await secureStorage.delete(key: 'access_token');
-                  await secureStorage.delete(key: 'refresh_token');
+                  await secureStorage.deleteAll();
                   Navigator.of(context).pushNamed(AppRoutes.home);
                 },
               ),

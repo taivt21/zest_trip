@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
+import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_event.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -26,6 +28,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     "Female": Icons.female,
     "Other": Icons.transgender,
   };
+
   @override
   void dispose() {
     dateController.dispose();
@@ -37,164 +40,200 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         return Scaffold(
-          resizeToAvoidBottomInset: true,
+          // resizeToAvoidBottomInset: true,
           appBar: AppBar(
             scrolledUnderElevation: 0,
             title: const Text("Edit profile"),
           ),
-          body: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    // -- IMAGE with ICON
-                    Stack(
+          body: BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is UserUploadFail) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Upload fail"),
+                  ),
+                );
+              }
+            },
+            child: RefreshIndicator(
+              onRefresh: () async {
+                final authBloc = BlocProvider.of<AuthBloc>(context);
+                authBloc.add(CheckUserLoginEvent());
+              },
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
                       children: [
-                        SizedBox(
-                          width: 120,
-                          height: 120,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: CachedNetworkImage(
-                              imageUrl: state.user?.avatarImageUrl ??
-                                  "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
-                              placeholder: (context, url) => Container(
-                                height: 60,
-                                width: 60,
-                                decoration:
-                                    BoxDecoration(color: colorLightGrey),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                height: 60,
-                                width: 60,
-                                decoration:
-                                    BoxDecoration(color: colorLightGrey),
+                        // -- IMAGE with ICON
+                        Stack(
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                final picker = ImagePicker();
+
+                                try {
+                                  // Chọn ảnh từ thư viện
+                                  final XFile? pickedFile = await picker
+                                      .pickImage(source: ImageSource.gallery);
+
+                                  if (pickedFile != null) {
+                                    // File file = File(pickedFile.path);
+                                    // print("file: $file");
+                                    // Kiểm tra và xử lý file ảnh tại đây
+                                    context
+                                        .read<AuthBloc>()
+                                        .add(UploadImageEvent(pickedFile));
+                                  } else {
+                                    // Người dùng đã hủy chọn ảnh
+                                    // Có thể bạn muốn thực hiện một số hành động khác ở đây
+                                    // print('User canceled image picking');
+                                  }
+                                } catch (e) {
+                                  // Xử lý lỗi khi chọn ảnh
+                                  // debugPrint('Error picking image: $e');
+                                }
+                              },
+                              child: SizedBox(
+                                width: 120,
+                                height: 120,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  radius: 100,
+                                  backgroundImage: CachedNetworkImageProvider(
+                                    state.user?.avatarImageUrl ??
+                                        "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                width: 35,
+                                height: 35,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: primaryColor,
+                                ),
+                                child: const Icon(Icons.edit,
+                                    color: whiteColor, size: 20),
+                              ),
+                            ),
+                          ],
                         ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            width: 35,
-                            height: 35,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                              color: primaryColor,
+                        const SizedBox(height: 50),
+
+                        // -- Form Fields
+                        Column(
+                          children: [
+                            _buildTextField(
+                              initialValue: (state is AuthSuccess)
+                                  ? "${state.user?.email}".split('@').first
+                                  : "",
+                              label: "Full name",
+                              icon: Icons.person,
+                              onChanged: (value) {
+                                setState(() {
+                                  _name = value;
+                                });
+                              },
                             ),
-                            child: const Icon(Icons.edit,
-                                color: whiteColor, size: 20),
-                          ),
+                            const SizedBox(height: 20),
+
+                            _buildTextField(
+                              initialValue: (state is AuthSuccess)
+                                  ? state.user?.phoneNumber ?? ''
+                                  : "",
+                              label: "Phone number",
+                              icon: Icons.phone,
+                              onChanged: (value) {
+                                setState(() {
+                                  _phone = value;
+                                });
+                              },
+                            ),
+                            const SizedBox(height: 20),
+
+                            _buildDateField(context),
+                            const SizedBox(height: 20),
+                            _buildTextFieldGender(
+                              label: "Gender",
+                              icon:
+                                  genderIcons[_selectedGender] ?? Icons.person,
+                              options: ["Male", "Female", "Other"],
+                              selectedValue: _selectedGender,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedGender = value!;
+                                });
+                              },
+                            ),
+                            const SizedBox(height: 20),
+
+                            const SizedBox(height: 16),
+
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     Text.rich(
+                            //       TextSpan(
+                            //         text: "Joined ",
+                            //         style: Theme.of(context).textTheme.bodyMedium,
+                            //         children: [
+                            //           TextSpan(
+                            //               text: (state is AuthSuccess)
+                            //                   ? DateFormat("dd MMM yyyy")
+                            //                       .format(state.user!.createdAt!)
+                            //                   : DateFormat("dd MMM yyyy")
+                            //                       .format(DateTime.now()),
+                            //               style: Theme.of(context)
+                            //                   .textTheme
+                            //                   .bodyMedium
+                            //                   ?.copyWith(
+                            //                       fontWeight: FontWeight.w500))
+                            //         ],
+                            //       ),
+                            //     ),
+                            //     ElevatedButton(
+                            //       onPressed: () {},
+                            //       style: ElevatedButton.styleFrom(
+                            //         backgroundColor:
+                            //             Colors.redAccent.withOpacity(0.1),
+                            //         elevation: 0,
+                            //         foregroundColor: Colors.red,
+                            //         shape: const StadiumBorder(),
+                            //         side: BorderSide.none,
+                            //       ),
+                            //       child: const Text("Delete"),
+                            //     ),
+                            //   ],
+                            // )
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 50),
-
-                    // -- Form Fields
-                    Column(
-                      children: [
-                        _buildTextField(
-                          initialValue: (state is AuthSuccess)
-                              ? "${state.user?.email}".split('@').first
-                              : "",
-                          label: "Full name",
-                          icon: Icons.person,
-                          onChanged: (value) {
-                            setState(() {
-                              _name = value;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 20),
-
-                        _buildTextField(
-                          initialValue: (state is AuthSuccess)
-                              ? state.user?.phoneNumber ?? ''
-                              : "",
-                          label: "Phone number",
-                          icon: Icons.phone,
-                          onChanged: (value) {
-                            setState(() {
-                              _phone = value;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 20),
-
-                        _buildDateField(context),
-                        const SizedBox(height: 20),
-                        _buildTextFieldGender(
-                          label: "Gender",
-                          icon: genderIcons[_selectedGender] ?? Icons.person,
-                          options: ["Male", "Female", "Other"],
-                          selectedValue: _selectedGender,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedGender = value!;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 20),
-
-                        // -- Form Submit Button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButtonCustom(
-                            onPressed: () {
-                              if (_formKey.currentState?.validate() == true) {
-                                // The form is valid, proceed with saving data
-                                _saveProfile();
-                              }
-                            },
-                            text: "Edit profile",
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //   children: [
-                        //     Text.rich(
-                        //       TextSpan(
-                        //         text: "Joined ",
-                        //         style: Theme.of(context).textTheme.bodyMedium,
-                        //         children: [
-                        //           TextSpan(
-                        //               text: (state is AuthSuccess)
-                        //                   ? DateFormat("dd MMM yyyy")
-                        //                       .format(state.user!.createdAt!)
-                        //                   : DateFormat("dd MMM yyyy")
-                        //                       .format(DateTime.now()),
-                        //               style: Theme.of(context)
-                        //                   .textTheme
-                        //                   .bodyMedium
-                        //                   ?.copyWith(
-                        //                       fontWeight: FontWeight.w500))
-                        //         ],
-                        //       ),
-                        //     ),
-                        //     ElevatedButton(
-                        //       onPressed: () {},
-                        //       style: ElevatedButton.styleFrom(
-                        //         backgroundColor:
-                        //             Colors.redAccent.withOpacity(0.1),
-                        //         elevation: 0,
-                        //         foregroundColor: Colors.red,
-                        //         shape: const StadiumBorder(),
-                        //         side: BorderSide.none,
-                        //       ),
-                        //       child: const Text("Delete"),
-                        //     ),
-                        //   ],
-                        // )
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
               ),
+            ),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: Container(
+            padding: const EdgeInsets.all(16),
+            width: double.infinity,
+            child: ElevatedButtonCustom(
+              onPressed: () {
+                if (_formKey.currentState?.validate() == true) {
+                  // The form is valid, proceed with saving data
+                  _saveProfile();
+                }
+              },
+              text: "Edit profile",
             ),
           ),
         );

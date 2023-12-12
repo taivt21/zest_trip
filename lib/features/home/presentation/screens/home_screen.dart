@@ -30,6 +30,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreen extends State<HomeScreen> {
   @override
   void dispose() {
+    // print("dispose homescreen");
     super.dispose();
   }
 

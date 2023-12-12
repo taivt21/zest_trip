@@ -2,6 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
+		<key>NSCameraUsageDescription</key>
+		<string>Used to demonstrate capture image picker plugin</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Used to demonstrate image picker plugin</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Used to demonstrate audio for image picker plugin</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>This app uses location to show your current location on the map.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>This app uses location to show your current location on the map, even when the app is not in use.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>This app uses location to show your current location on the map, even if the app isn't running..</string>
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
@@ -24,18 +36,6 @@
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
-		<key>NSCameraUsageDescription</key>
-		<string>Used to demonstrate capture image picker plugin</string>
-		<key>NSPhotoLibraryUsageDescription</key>
-		<string>Used to demonstrate image picker plugin</string>
-		<key>NSMicrophoneUsageDescription</key>
-		<string>Used to demonstrate audio for image picker plugin</string>
-		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>This app uses location to show your current location on the map.</string>
-		<key>NSLocationAlwaysUsageDescription</key>
-		<string>This app uses location to show your current location on the map, even when the app is not in use.</string>
-		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>This app uses location to show your current location on the map, even if the app isn't running..</string>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>

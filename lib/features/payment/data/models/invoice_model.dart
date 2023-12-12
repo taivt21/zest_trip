@@ -23,6 +23,7 @@ class InvoiceModel extends InvoiceEntity {
     String? refundImage,
     List<TicketOnBookingModel>? ticketOnBooking,
     TourModel? tour,
+    bool? isReviewed,
     // Map<String, dynamic>? provider,
   }) : super(
           id: id,
@@ -44,6 +45,7 @@ class InvoiceModel extends InvoiceEntity {
           refundImage: refundImage,
           ticketOnBooking: ticketOnBooking,
           tour: tour,
+          isReviewed: isReviewed,
           // provider: provider,
         );
 
@@ -73,7 +75,7 @@ class InvoiceModel extends InvoiceEntity {
       tour: json.containsKey('BookingOnTour')
           ? TourModel.fromJson(json['BookingOnTour'])
           : null,
-
+      isReviewed: json['is_tour_reviewed'],
       // provider: json['Provider'] != null
       //     ? (json['Provider'] as Map<String, dynamic>).map(
       //         (key, value) {

@@ -45,6 +45,9 @@ final class UserUploading extends AuthState {
   List<Object> get props => [image];
 }
 
-final class UserUploadFail extends AuthState {}
+final class UserUploadFail extends AuthState {
+  final DioException e;
+  const UserUploadFail(this.e);
+}
 
 final class UserUploadSuccess extends AuthState {}

@@ -4,6 +4,7 @@ import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/dimension_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/config/utils/constants/text_constant.dart';
+import 'package:zest_trip/features/authentication/presentation/screens/forget_password_confirm_screen.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -83,6 +84,13 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           child: ElevatedButton(
                             onPressed: () {
                               //naviagate to otpscreen
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ForgetPasswordConfirmScreen(),
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primaryColor,

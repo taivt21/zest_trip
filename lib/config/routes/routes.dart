@@ -4,6 +4,7 @@ import 'package:zest_trip/features/authentication/presentation/screens/login_scr
 import 'package:zest_trip/features/authentication/presentation/screens/signup_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/main_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/secondary_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/select_hobby_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/wishlist_screen.dart';
@@ -18,6 +19,7 @@ class AppRoutes {
 
   static const String logout = '/logout';
   static const String wishlist = '/wishlist';
+  static const String manageReview = '/manageReview';
   static const String order = '/order';
   static const String chat = '/chat';
   static const String otp = '/otp';
@@ -53,6 +55,10 @@ class AppRoutes {
       case wishlist:
         return _materialRoute(
           const WishlistScreen(),
+        );
+      case manageReview:
+        return _materialRoute(
+          const ManageReviewScreen(),
         );
 
       case forgetPassword:

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
+import 'package:zest_trip/features/home/presentation/screens/edit_profile_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/webview.dart';
@@ -61,50 +62,25 @@ class ProfileScreen extends StatelessWidget {
                                   ),
                           ),
                         ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                color: primaryColor),
-                            child: IconButton(
-                              onPressed: () async {
-                                // final picker = ImagePicker();
-
-                                // try {
-                                //   // Chọn ảnh từ thư viện
-                                //   final pickedFile = await picker.pickImage(
-                                //       source: ImageSource.gallery);
-
-                                //   if (pickedFile != null) {
-                                //     File imageFile = File(pickedFile.path);
-
-                                //     context
-                                //         .read<AuthBloc>()
-                                //         .add(UploadImageEvent(imageFile));
-                                //   } else {
-                                //     ScaffoldMessenger.of(context).showSnackBar(
-                                //       const SnackBar(
-                                //         content:
-                                //             Text('Please choose an image.'),
-                                //       ),
-                                //     );
-                                //   }
-                                // } catch (e) {
-                                //   debugPrint('Error picking image: $e');
-                                // }
-                              },
-                              icon: const Icon(
-                                Icons.edit,
-                                color: whiteColor,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ),
+                        // Positioned(
+                        //   bottom: 0,
+                        //   right: 0,
+                        //   child: Container(
+                        //     width: 30,
+                        //     height: 30,
+                        //     decoration: BoxDecoration(
+                        //         borderRadius: BorderRadius.circular(100),
+                        //         color: primaryColor),
+                        //     child: IconButton(
+                        //       onPressed: () async {},
+                        //       icon: const Icon(
+                        //         Icons.edit,
+                        //         color: whiteColor,
+                        //         size: 16,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -121,11 +97,12 @@ class ProfileScreen extends StatelessWidget {
                       width: 160,
                       child: ElevatedButton(
                         onPressed: () => {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) =>
-                          //             const EditProfileScreen()))
+                          context.read<AuthBloc>().add(CheckUserLoginEvent()),
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const EditProfileScreen()))
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,

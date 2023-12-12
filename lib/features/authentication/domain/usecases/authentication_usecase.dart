@@ -36,7 +36,7 @@ class SignInWithGoogleUseCase {
 
   SignInWithGoogleUseCase(this._authRepository);
 
-  Future<DataState<AuthUser>> call(String accessToken) async {
+  Future<DataState<String>> call(String accessToken) async {
     try {
       return await _authRepository.signInWithGoogle(accessToken);
     } on DioException catch (e) {

@@ -2,16 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:zest_trip/config/routes/routes.dart';
 
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/resources/confirm_dialog.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
-import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour.dart';
-import 'package:zest_trip/features/payment/presentation/bloc/booking/booking_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/my_review/my_review_bloc.dart';
-import 'package:zest_trip/get_it.dart';
 
 class ReviewScreen extends StatefulWidget {
   final String tourId;
@@ -103,17 +101,14 @@ class ReviewScreenState extends State<ReviewScreen> {
             }
             if (state is ReviewSuccess) {
               // context.read<MyReviewBloc>().add(GetMyReview());
-              sl<BookingBloc>().add(const GetBookings());
+              // sl<BookingBloc>().add(const GetBookings());
               Fluttertoast.showToast(
                 msg: "Review success!",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.CENTER,
               );
 
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ManageReviewScreen()));
+              Navigator.pushReplacementNamed(context, AppRoutes.manageReview);
             }
           },
           child: SingleChildScrollView(

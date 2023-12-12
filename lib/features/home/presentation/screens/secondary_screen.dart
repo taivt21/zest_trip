@@ -102,92 +102,42 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
           create: (context) => sl()..add(const GetTourVehicles()),
         ),
       ],
-      child: Scaffold(
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          automaticallyImplyLeading: false,
-          flexibleSpace: Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SearchAnchor(
-                    builder:
-                        (BuildContext context, SearchController controller) {
-                      return SearchBar(
-                          elevation: const MaterialStatePropertyAll(0.6),
-                          hintText: search.isEmpty ? "Search tour..." : search,
-                          controller: controller,
-                          onTap: () async {
-                            final searchQuery = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SearchQueryScreen(),
-                              ),
-                            );
-
-                            if (searchQuery != null) {
-                              setState(() {
-                                search = searchQuery;
-                              });
-                              final remoteTourBloc =
-                                  BlocProvider.of<RemoteTourBloc>(context);
-                              remoteTourBloc.add(const ClearTour());
-                              remoteTourBloc.add(GetTours(
-                                page: currentPage,
-                                limit: limit,
-                                tags: tagIds,
-                                search: search,
-                                province: province,
-                                district: district,
-                              ));
-                            }
-                          },
-                          trailing: [
-                            IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
-                                setState(() {
-                                  currentPage = 1;
-                                  tagIds = {};
-                                  vehicleIds = {};
-                                  province = "";
-                                  district = "";
-                                  search = "";
-                                });
-                                final remoteTourBloc =
-                                    BlocProvider.of<RemoteTourBloc>(context);
-                                remoteTourBloc.add(const ClearTour());
-                                remoteTourBloc.add(GetTours(
-                                  page: currentPage,
-                                  limit: limit,
-                                  tags: tagIds,
-                                  search: search,
-                                  province: province,
-                                  district: district,
-                                ));
-                              },
-                            ),
-                          ],
-                          leading: GestureDetector(
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            scrolledUnderElevation: 0,
+            automaticallyImplyLeading: false,
+            flexibleSpace: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SearchAnchor(
+                      builder:
+                          (BuildContext context, SearchController controller) {
+                        return SearchBar(
+                            elevation: const MaterialStatePropertyAll(0.6),
+                            hintText:
+                                search.isEmpty ? "Search tour..." : search,
+                            controller: controller,
                             onTap: () async {
-                              final selectedLocation = await Navigator.push(
+                              final searchQuery = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const SearchLocationScreen(),
+                                      const SearchQueryScreen(),
                                 ),
                               );
 
-                              if (selectedLocation != null) {
+                              if (searchQuery != null) {
                                 setState(() {
-                                  province = selectedLocation;
+                                  search = searchQuery;
                                 });
                                 final remoteTourBloc =
                                     BlocProvider.of<RemoteTourBloc>(context);
@@ -202,156 +152,214 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                                 ));
                               }
                             },
-                            child: Chip(
-                              padding: const EdgeInsets.all(4),
-                              shape: const StadiumBorder(),
-                              label: Row(
-                                children: [
-                                  Text(province == "" ? "Location" : province),
-                                  const Icon(Icons.arrow_drop_down),
-                                ],
+                            trailing: [
+                              IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  setState(() {
+                                    currentPage = 1;
+                                    tagIds = {};
+                                    vehicleIds = {};
+                                    province = "";
+                                    district = "";
+                                    search = "";
+                                  });
+                                  final remoteTourBloc =
+                                      BlocProvider.of<RemoteTourBloc>(context);
+                                  remoteTourBloc.add(const ClearTour());
+                                  remoteTourBloc.add(GetTours(
+                                    page: currentPage,
+                                    limit: limit,
+                                    tags: tagIds,
+                                    search: search,
+                                    province: province,
+                                    district: district,
+                                  ));
+                                },
                               ),
-                            ),
-                          ));
-                    },
-                    suggestionsBuilder:
-                        (BuildContext context, SearchController controller) {
-                      return List<ListTile>.generate(5, (int index) {
-                        final String item = 'item $index';
-                        return ListTile(
-                          title: Text(item),
-                          onTap: () {
-                            setState(() {
-                              controller.closeView(item);
-                            });
-                          },
-                        );
-                      });
-                    },
+                            ],
+                            leading: GestureDetector(
+                              onTap: () async {
+                                final selectedLocation = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SearchLocationScreen(),
+                                  ),
+                                );
+
+                                if (selectedLocation != null) {
+                                  setState(() {
+                                    province = selectedLocation;
+                                  });
+                                  final remoteTourBloc =
+                                      BlocProvider.of<RemoteTourBloc>(context);
+                                  remoteTourBloc.add(const ClearTour());
+                                  remoteTourBloc.add(GetTours(
+                                    page: currentPage,
+                                    limit: limit,
+                                    tags: tagIds,
+                                    search: search,
+                                    province: province,
+                                    district: district,
+                                  ));
+                                }
+                              },
+                              child: Chip(
+                                padding: const EdgeInsets.all(4),
+                                shape: const StadiumBorder(),
+                                label: Row(
+                                  children: [
+                                    Text(
+                                        province == "" ? "Location" : province),
+                                    const Icon(Icons.arrow_drop_down),
+                                  ],
+                                ),
+                              ),
+                            ));
+                      },
+                      suggestionsBuilder:
+                          (BuildContext context, SearchController controller) {
+                        return List<ListTile>.generate(5, (int index) {
+                          final String item = 'item $index';
+                          return ListTile(
+                            title: Text(item),
+                            onTap: () {
+                              setState(() {
+                                controller.closeView(item);
+                              });
+                            },
+                          );
+                        });
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        body: BlocBuilder<RemoteTourBloc, RemoteTourState>(
-          buildWhen: (previous, current) => previous.tours != current.tours,
-          builder: (context, tourState) {
-            if (tourState is RemoteTourLoading) {
-              return const TourShimmer();
-            }
-            if (tourState is RemoteTourDone) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildTag(),
-                  Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        final remoteTourBloc =
-                            BlocProvider.of<RemoteTourBloc>(context);
-                        remoteTourBloc.add(const ClearTour());
-                        setState(() {
-                          currentPage = 1;
-                          tagIds = {};
-                          search = "";
-                          province = "";
-                          district = "";
-                          _isLoading = true;
-                        });
-                        remoteTourBloc.add(
-                          GetTours(
-                            page: currentPage,
-                            limit: limit,
-                            tags: tagIds,
-                            search: search,
-                            province: province,
-                            district: district,
-                          ),
-                        );
-                      },
-                      child: NotificationListener<ScrollNotification>(
-                        onNotification: (ScrollNotification scrollInfo) {
-                          if (scrollInfo is ScrollEndNotification &&
-                              _scrollController.position.extentAfter == 0) {
-                            setState(() {
-                              currentPage++;
-                            });
-
-                            BlocProvider.of<RemoteTourBloc>(context).add(
-                              GetTours(
-                                page: currentPage,
-                                limit: limit,
-                                tags: tagIds,
-                                search: search,
-                                province: province,
-                                district: district,
-                              ),
-                            );
-                          }
-                          return false;
+          body: BlocBuilder<RemoteTourBloc, RemoteTourState>(
+            buildWhen: (previous, current) => previous.tours != current.tours,
+            builder: (context, tourState) {
+              if (tourState is RemoteTourLoading) {
+                return const TourShimmer();
+              }
+              if (tourState is RemoteTourDone) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTag(),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: () async {
+                          final remoteTourBloc =
+                              BlocProvider.of<RemoteTourBloc>(context);
+                          remoteTourBloc.add(const ClearTour());
+                          setState(() {
+                            currentPage = 1;
+                            tagIds = {};
+                            search = "";
+                            province = "";
+                            district = "";
+                            _isLoading = true;
+                          });
+                          remoteTourBloc.add(
+                            GetTours(
+                              page: currentPage,
+                              limit: limit,
+                              tags: tagIds,
+                              search: search,
+                              province: province,
+                              district: district,
+                            ),
+                          );
                         },
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          itemCount: tourState.tours!.isEmpty
-                              ? 1
-                              : tourState.tours!.length +
-                                  (tourState.hasMore! ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (tourState.tours!.isEmpty) {
-                              return const Center(
-                                child: EmptyWidget(
-                                  imageSvg: travelSvg,
-                                  title: "No tour found",
-                                  subtitle:
-                                      "Please try searching for other keywords",
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (ScrollNotification scrollInfo) {
+                            if (scrollInfo is ScrollEndNotification &&
+                                _scrollController.position.extentAfter == 0) {
+                              setState(() {
+                                currentPage++;
+                              });
+
+                              BlocProvider.of<RemoteTourBloc>(context).add(
+                                GetTours(
+                                  page: currentPage,
+                                  limit: limit,
+                                  tags: tagIds,
+                                  search: search,
+                                  province: province,
+                                  district: district,
+                                  lowPrice: fromPrice,
+                                  highPrice: toPrice,
                                 ),
-                                // child: CircularProgressIndicator(),
-                              );
-                            } else if (index < tourState.tours!.length) {
-                              final tour = tourState.tours![index];
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => TourDetailScreen(
-                                        tourId: tour.id!,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: TourItemWidget(tour: tour),
-                              );
-                            } else {
-                              return Center(
-                                child: _isLoading
-                                    ? const CircularProgressIndicator()
-                                    : Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 16),
-                                        child: const Text("No more to load")),
                               );
                             }
+                            return false;
                           },
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            itemCount: tourState.tours!.isEmpty
+                                ? 1
+                                : tourState.tours!.length +
+                                    (tourState.hasMore! ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (tourState.tours!.isEmpty) {
+                                return const Center(
+                                  child: EmptyWidget(
+                                    imageSvg: travelSvg,
+                                    title: "No tour found",
+                                    subtitle:
+                                        "Please try searching for other keywords",
+                                  ),
+                                  // child: CircularProgressIndicator(),
+                                );
+                              } else if (index < tourState.tours!.length) {
+                                final tour = tourState.tours![index];
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => TourDetailScreen(
+                                          tourId: tour.id!,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: TourItemWidget(tour: tour),
+                                );
+                              } else {
+                                return Center(
+                                  child: _isLoading
+                                      ? const CircularProgressIndicator()
+                                      : Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              vertical: 16),
+                                          child: const Text("No more to load")),
+                                );
+                              }
+                            },
+                          ),
                         ),
                       ),
                     ),
+                  ],
+                );
+              } else if (tourState is RemoteTourError) {
+                return Center(
+                  child: Text(
+                    '${tourState.error?.response?.data['message']}',
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ],
-              );
-            } else if (tourState is RemoteTourError) {
-              return Center(
-                child: Text(
-                  '${tourState.error?.response?.data['message']}',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              );
-            } else {
-              return SnackBar(
-                content: Text("${tourState.error?.response?.data['message']}"),
-              );
-            }
-          },
+                );
+              } else {
+                return SnackBar(
+                  content:
+                      Text("${tourState.error?.response?.data['message']}"),
+                );
+              }
+            },
+          ),
         ),
       ),
     );

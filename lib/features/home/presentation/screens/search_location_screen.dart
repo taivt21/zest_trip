@@ -15,6 +15,19 @@ class SearchLocationScreen extends StatefulWidget {
 
 class _SearchLocationScreenState extends State<SearchLocationScreen> {
   TextEditingController searchController = TextEditingController();
+  // List<String> allLocationNames = []; // Danh sách tất cả các tên địa điểm
+  // List<String> filteredNames = []; // Danh sách tên địa điểm được lọc
+  @override
+  void initState() {
+    // allLocationNames = BlocProvider.of<ProvinceBloc>(context)
+    //         .state
+    //         .provinces
+    //         ?.map((province) => province.name ?? "")
+    //         .toList() ??
+    //     [];
+    super.initState();
+  }
+
   @override
   void dispose() {
     searchController.dispose();
@@ -26,7 +39,9 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
     double widthScreen = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(scrolledUnderElevation: 0,
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
           automaticallyImplyLeading: false,
           flexibleSpace: Row(children: [
             IconButton(
@@ -61,71 +76,73 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
             ),
           ]),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BlocBuilder<LocationPopularBloc, LocationPopularState>(
-                builder: (context, state) {
-                  return Wrap(
-                    spacing: 12,
-                    children: (state.locations ?? []).map((location) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context, location);
-                        },
-                        child: Chip(
-                          padding: const EdgeInsets.all(8),
-                          shape: const StadiumBorder(),
-                          label: Text(location),
-                        ),
-                      );
-                    }).toList(),
-                  );
-                },
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Text(
-                "Tours are highly sought after",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontSize: 18),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              BlocBuilder<TourRecommendSearchBloc, TourRecommendSearchState>(
-                builder: (context, state) {
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: List.generate(
-                        state.tours?.length ?? 0,
-                        (index) => GestureDetector(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BlocBuilder<LocationPopularBloc, LocationPopularState>(
+                  builder: (context, state) {
+                    return Wrap(
+                      spacing: 12,
+                      children: (state.locations ?? []).map((location) {
+                        return GestureDetector(
                           onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => TourDetailScreen(
-                                  tourId: state.tours![index].id!,
-                                ),
-                              ),
-                            );
+                            Navigator.pop(context, location);
                           },
-                          child: CardRecommendLocation(
-                            tour: state.tours![index],
-                            width: widthScreen * 0.35,
+                          child: Chip(
+                            padding: const EdgeInsets.all(8),
+                            shape: const StadiumBorder(),
+                            label: Text(location),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  "Tours are highly sought after",
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(fontSize: 18),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                BlocBuilder<TourRecommendSearchBloc, TourRecommendSearchState>(
+                  builder: (context, state) {
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: List.generate(
+                          state.tours?.length ?? 0,
+                          (index) => GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => TourDetailScreen(
+                                    tourId: state.tours![index].id!,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: CardRecommendLocation(
+                              tour: state.tours![index],
+                              width: widthScreen * 0.35,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

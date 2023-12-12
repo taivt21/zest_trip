@@ -33,22 +33,22 @@ class MyWebViewState extends State<MyWebView> {
         NavigationDelegate(
           onProgress: (int progress) {
             // Update loading bar.
-            debugPrint('WebView is loading (progress : $progress%)');
+            // debugPrint('WebView is loading (progress : $progress%)');
           },
           onPageStarted: (String url) {
-            debugPrint('Page started loading: $url');
+            // debugPrint('Page started loading: $url');
           },
           onPageFinished: (String url) {
-            debugPrint('Page finished loading: $url');
+            // debugPrint('Page finished loading: $url');
           },
           onWebResourceError: (WebResourceError error) {
-            debugPrint('''
-                Page resource error:
-                code: ${error.errorCode}
-                description: ${error.description}
-                errorType: ${error.errorType}
-                isForMainFrame: ${error.isForMainFrame}
-          ''');
+            //   debugPrint('''
+            //       Page resource error:
+            //       code: ${error.errorCode}
+            //       description: ${error.description}
+            //       errorType: ${error.errorType}
+            //       isForMainFrame: ${error.isForMainFrame}
+            // ''');
           },
           onNavigationRequest: (NavigationRequest request) {
             if (request.url.startsWith('https://google.com')) {

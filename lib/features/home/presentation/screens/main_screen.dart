@@ -7,7 +7,6 @@ import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
-import 'package:zest_trip/features/authentication/presentation/screens/forget_password_confirm_screen.dart';
 import 'package:zest_trip/features/home/presentation/blocs/banner/banner_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
@@ -341,34 +340,6 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-// class LocationRecommend extends StatelessWidget {
-//   const LocationRecommend({
-//     super.key,
-//     required this.widthScreen,
-//   });
-
-//   final double widthScreen;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SingleChildScrollView(
-//       scrollDirection: Axis.horizontal,
-//       child: Row(
-//         children: List.generate(
-//           5,
-//           (index) => CardRecommendLocation(
-//             width: widthScreen * 0.35,
-//             imageUrl:
-//                 "https://baoanhdatmui.vn/wp-content/uploads/2023/02/du-lich-da-nang.jpg",
-//             title: "Da Nang",
-//             numberOfActivities: 100,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class SearchMainScreen extends StatelessWidget {
   const SearchMainScreen({
     super.key,
@@ -479,7 +450,7 @@ class HeaderMainScreen extends StatelessWidget {
                 Text(
                   authState is AuthSuccess
                       ? authState.user?.fullName ??
-                          "${authState.user?.email!.split('@')[0]}"
+                        "${authState.user?.email!.split('@')[0]}"
                       : "Guest",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
@@ -491,20 +462,15 @@ class HeaderMainScreen extends StatelessWidget {
               ],
             ),
             const Expanded(child: SizedBox()),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ForgetPasswordConfirmScreen(),
-                  ),
-                );
-              },
-              child: const Icon(
-                Icons.notifications_outlined,
-                size: 32,
-              ),
-            ),
+            // GestureDetector(
+            //   onTap: () {
+
+            //   },
+            //   child: const Icon(
+            //     Icons.notifications_outlined,
+            //     size: 32,
+            //   ),
+            // ),
           ],
         );
       },

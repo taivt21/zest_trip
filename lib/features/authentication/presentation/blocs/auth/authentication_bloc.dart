@@ -72,6 +72,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<SignInWithGoogleEvent>((event, emit) async {
       emit(AuthLoading());
+      const secureStorage = FlutterSecureStorage();
+      await secureStorage.deleteAll();
       final GoogleSignIn googleSignIn = GoogleSignIn();
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
@@ -91,11 +93,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 .user;
         if (firebaseUser != null) {
           String? accessToken = await firebaseUser.getIdToken();
-          const secureStorage = FlutterSecureStorage();
-          await secureStorage.delete(key: 'access_token');
-          final result = await _signInWithGoogleUseCase.call(accessToken ?? "");
-          if (result is DataSuccess<AuthUser>) {
-            emit(AuthSuccess(result.data!));
+          // const secureStorage = FlutterSecureStorage();
+          // await secureStorage.delete(key: 'access_token');
+          final result = await _signInWithGoogleUseCase.call(accessToken!);
+          if (result is DataSuccess) {
+            // secureStorage.read(key: "access_token");
+            final res = await _getUserUseCase.call();
+            if (res is DataSuccess) {
+              emit(AuthSuccess(res.data!));
+            }
           } else if (result is DataFailed) {
             emit(AuthFailure(result.error!));
           }
@@ -114,8 +120,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthSuccess(result.data!));
         } else {
           emit(AuthLoggedOut());
-          await secureStorage.delete(key: 'access_token');
-          await secureStorage.delete(key: 'refresh_token');
+          await secureStorage.deleteAll();
         }
       }
     });
@@ -123,8 +128,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutEvent>((event, emit) async {
       emit(AuthLoading());
       const secureStorage = FlutterSecureStorage();
-      await secureStorage.delete(key: 'access_token');
-      await secureStorage.delete(key: 'refresh_token');
+      await secureStorage.deleteAll();
       final result = await _logoutUseCase.call();
       if (result is DataSuccess) {
         emit(AuthLoggedOut());
@@ -139,10 +143,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result =
           await _signInWithPhoneNumberUseCase.call(event.phoneNumber);
 
-      if (result is DataSuccess<AuthUser>) {
-        emit(AuthSuccess(result.data!));
+      if (result is DataSuccess) {
+        final results = await _getUserUseCase.call();
+        emit(AuthSuccess(results.data!));
       } else if (result is DataFailed) {
         emit(AuthFailure(result.error!));
+        emit(AuthLoggedOut());
       }
     });
 
@@ -151,11 +157,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
         emit(UserUploadSuccess());
-        // emit(AuthSuccess(user))
+        // final result = await _getUserUseCase.call();
+        // emit(AuthSuccess(result.data!));
       }
       if (dataState is DataFailed) {
-        // emit(RemoteTourTagError(dataState.error!));
+        emit(UserUploadFail(dataState.error!));
       }
+      final result = await _getUserUseCase.call();
+      emit(AuthSuccess(result.data!));
     });
   }
 }

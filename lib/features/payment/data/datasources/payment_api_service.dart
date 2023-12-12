@@ -36,11 +36,11 @@ class PaymentApiServiceImpl implements PaymentApiService {
         "children": children,
         "date": DateFormat('yyyy-MM-dd').format(date),
       };
-      print("data check booking $data");
+      // print("data check booking $data");
       final response =
           await DioHelper.dio.post('/booking/bookingCheck/$tourId', data: data);
       if (response.statusCode == 200) {
-        print("check: ${response.data["data"]}");
+        // print("check: ${response.data["data"]}");
         return DataSuccess(response.data["data"]["data"]);
       } else {
         return DataFailed(DioException(
@@ -129,7 +129,11 @@ class PaymentApiServiceImpl implements PaymentApiService {
     Map<String, dynamic> payload = Jwt.parseJwt(accessToken);
     final String userId = payload['id'] as String;
     try {
-      final data = {"user_id": userId, "select": "399"};
+      final data = {
+        "user_id": userId,
+        "select": "399",
+        "order_by": "created_at",
+      };
       final response = await DioHelper.dio.post('/booking/owned', data: data);
       List<InvoiceModel> bookings = [];
 

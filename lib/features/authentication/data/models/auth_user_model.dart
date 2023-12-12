@@ -36,18 +36,15 @@ class AuthUserModel extends AuthUser {
       id: json.containsKey('id') ? json['id'] : "",
       roleId: json.containsKey('role_id') ? json['role_id'] : 1,
       countryCode: json.containsKey('country_code') ? json['country_code'] : "",
-      fullName: json.containsKey('full_name') ? json['full_name'] : "Username",
+      fullName: json.containsKey('full_name') ? json['full_name'] : null,
       dob: json.containsKey('dob') ? json['dob'] : "",
       email: json.containsKey('email') ? json['email'] : "",
       gender: json.containsKey('gender') ? json['gender'] as String? : null,
       phoneNumber: json.containsKey('phone_number') ? json['phone_number'] : "",
-      avatarImageUrl: json['avatar_image_url'] ??
-          "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
+      avatarImageUrl: json['avatar_image_url'],
       bannerImageUrl: json['banner_image_url'] ??
           "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
-      isRecommendRracked: json.containsKey('is_recommend_tracked')
-          ? json['is_recommend_tracked']
-          : null,
+      isRecommendRracked: json['is_recommend_tracked'],
       // createdAt: DateTime.tryParse(json['created_at']),
       // updatedAt: DateTime.tryParse(json['updated_at']),
       status: json.containsKey('status') ? json['status'] : "",

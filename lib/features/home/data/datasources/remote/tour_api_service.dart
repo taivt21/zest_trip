@@ -105,6 +105,7 @@ class TourApiServiceImpl implements TourApiService {
       if (lowPrice != null && lowPrice != -1) "lower": lowPrice,
       if (highPrice != null && highPrice != -1) "higher": highPrice,
     };
+    // print("query tour: $queries");
     try {
       final response =
           await DioHelper.dio.get('/tour/v2', queryParameters: queries);

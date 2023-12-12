@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
+
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/payment/domain/entities/ticket_on_booking_enitity.dart';
 
@@ -21,6 +22,7 @@ class InvoiceEntity extends Equatable {
   final String? refundReason;
   final String? refundAmount;
   final String? refundImage;
+  final bool? isReviewed;
 
   final List<TicketOnBookingEntity>? ticketOnBooking;
   final TourEntity? tour;
@@ -29,22 +31,23 @@ class InvoiceEntity extends Equatable {
 
   const InvoiceEntity({
     this.id,
-    this.userId,
-    this.tourId,
-    this.timeSlot,
-    this.bookerName,
-    this.bookerEmail,
-    this.bookerPhone,
     this.note,
+    this.tourId,
+    this.userId,
+    this.bookerName,
+    this.bookerPhone,
+    this.bookerEmail,
     this.paidPrice,
     this.originalPrice,
     this.createdAt,
     this.updatedAt,
     this.bookedDate,
     this.status,
+    this.timeSlot,
     this.refundReason,
     this.refundAmount,
     this.refundImage,
+    this.isReviewed,
     this.ticketOnBooking,
     this.tour,
     this.provider,
@@ -72,5 +75,6 @@ class InvoiceEntity extends Equatable {
         ticketOnBooking,
         tour,
         provider,
+        isReviewed,
       ];
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/report_provider/report_provider_bloc.dart';
 
 class ReportModal extends StatefulWidget {
@@ -43,20 +42,38 @@ class _ReportModalState extends State<ReportModal> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
-            scrolledUnderElevation: 0,
-            title: const Text("Report"),
-            automaticallyImplyLeading: false,
-            flexibleSpace: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            )),
+          scrolledUnderElevation: 0,
+          title: const Text("Report"),
+          automaticallyImplyLeading: false,
+          flexibleSpace: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.read<ReportProviderBloc>().add(ReportProvider(
+                      providerId: widget.providerId,
+                      reason: reasonController.text,
+                      type: _selectedType,
+                    ));
+              },
+              child: const Text(
+                "Send",
+                style: TextStyle(
+                    decoration: TextDecoration.underline, fontSize: 15),
+              ),
+            )
+          ],
+        ),
         body: SizedBox(
           height: MediaQuery.of(context).size.height * 0.8,
           child: Stack(
@@ -97,24 +114,24 @@ class _ReportModalState extends State<ReportModal> {
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 16,
-                left: 0,
-                right: 0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ElevatedButtonCustom(
-                    onPressed: () {
-                      context.read<ReportProviderBloc>().add(ReportProvider(
-                            providerId: widget.providerId,
-                            reason: reasonController.text,
-                            type: _selectedType,
-                          ));
-                    },
-                    text: "Report",
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   bottom: 16,
+              //   left: 0,
+              //   right: 0,
+              //   child: Padding(
+              //     padding: const EdgeInsets.symmetric(horizontal: 16),
+              //     child: ElevatedButtonCustom(
+              //       onPressed: () {
+              //         context.read<ReportProviderBloc>().add(ReportProvider(
+              //               providerId: widget.providerId,
+              //               reason: reasonController.text,
+              //               type: _selectedType,
+              //             ));
+              //       },
+              //       text: "Report",
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

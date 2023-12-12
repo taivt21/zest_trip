@@ -43,9 +43,9 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     selectedDate = DateTime.now();
     returnDate = selectedDate.add(Duration(days: widget.tour.durationDay!));
     _initializeSelectedDate();
-    print("selectedDate $selectedDate");
+    // print("selectedDate $selectedDate");
     adultTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 1);
-    print("adultTicket $adultTicket");
+    // print("adultTicket $adultTicket");
     childrenTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 2);
     _totalPriceAdult = calculateTotalPrice(adultTicket, _adult) * _adult;
     super.initState();
@@ -102,6 +102,8 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                         Expanded(
                           child: Text(
                             "${widget.tour.name}",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
@@ -240,7 +242,9 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                                     onTap: () {
                                       List<PricingTicketEntity> list = [];
                                       list.add(adultTicket);
-                                      if (childrenTicket != null) {
+                                      if (childrenTicket != null &&
+                                          childrenTicket !=
+                                              const PricingTicketModel()) {
                                         list.add(childrenTicket!);
                                       }
                                       showPricingInfoDialog(list);
@@ -358,6 +362,9 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                     ),
                   ],
                 ),
+              ),
+              Container(
+                height: 100,
               ),
               _buttonCheck(context),
             ],
@@ -733,13 +740,10 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
       right: 0,
       bottom: 0,
       child: Container(
-        color: whiteColor,
+        // color: whiteColor,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Divider(
-              color: colorPlaceHolder,
-            ),
             Row(
               children: [
                 const Text("Total: "),

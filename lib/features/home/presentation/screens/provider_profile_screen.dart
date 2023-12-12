@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/resources/date_format.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_of_provider/tour_of_provider_bloc.dart';
+import 'package:zest_trip/features/home/presentation/screens/photo_zoom_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/search_query_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/gridview_tour.dart';
 import 'package:zest_trip/features/home/presentation/widgets/report_provider_modal.dart';
@@ -61,49 +62,76 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                         pinned: true,
                         backgroundColor: primaryColor,
                         flexibleSpace: FlexibleSpaceBar(
-                          background: Container(
-                            decoration: BoxDecoration(
-                              color: colorBoldGrey!.withOpacity(0.9),
-                              image: DecorationImage(
-                                opacity: 0.5,
-                                image: CachedNetworkImageProvider(
-                                  state.providerEntity!.bannerImageUrl!,
+                          background: GestureDetector(
+                            onTap: () {
+                              List<String> url = [];
+                              url.add(state.providerEntity?.bannerImageUrl ??
+                                  "https://cdn.pixabay.com/photo/2017/08/20/10/47/grey-2661270_1280.png");
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PhotoZoomScreen(
+                                    imageUrls: url,
+                                    initialIndex: 1,
+                                  ),
                                 ),
-                                fit: BoxFit.cover,
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: colorBoldGrey!.withOpacity(0.9),
+                                image: DecorationImage(
+                                  opacity: 0.5,
+                                  image: CachedNetworkImageProvider(
+                                    state.providerEntity!.bannerImageUrl!,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                            child: Stack(
-                              children: [
-                                Positioned.fill(
-                                  bottom: 15,
-                                  left: 15,
-                                  child: Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: SizedBox(
-                                      width: double.infinity,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 24,
-                                                backgroundImage:
-                                                    CachedNetworkImageProvider(
-                                                  state.providerEntity!
-                                                      .avatarImageUrl!,
+                              child: Stack(
+                                children: [
+                                  Positioned.fill(
+                                    bottom: 15,
+                                    left: 15,
+                                    child: Align(
+                                      alignment: Alignment.bottomLeft,
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 24,
+                                                  backgroundImage:
+                                                      CachedNetworkImageProvider(
+                                                    state.providerEntity!
+                                                        .avatarImageUrl!,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
+                                                const SizedBox(width: 8),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
+                                                      // const Row(
+                                                      //   children: [
+                                                      // const SizedBox(
+                                                      //   width: 8,
+                                                      // ),
+                                                      // const Icon(
+                                                      //   Icons.arrow_forward_ios,
+                                                      //   size: 16,
+                                                      //   color: whiteColor,
+                                                      // )
+                                                      //   ],
+                                                      // ),
                                                       Text(
                                                         "${state.providerEntity?.companyName}",
                                                         style: textTheme
@@ -112,35 +140,11 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                                                                 fontSize: 18,
                                                                 color:
                                                                     whiteColor),
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 8,
-                                                      ),
-                                                      const Icon(
-                                                        Icons.arrow_forward_ios,
-                                                        size: 16,
-                                                        color: whiteColor,
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Text(
-                                                    "${state.providerEntity?.addressProvince}",
-                                                    style: textTheme.bodyMedium
-                                                        ?.copyWith(
-                                                            color: whiteColor,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      const Icon(
-                                                        Icons.star_rounded,
-                                                        size: 16,
-                                                        color: Colors.amber,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                       ),
                                                       Text(
-                                                        " ${state.providerEntity?.avgRating}/5.0",
+                                                        "${state.providerEntity?.addressProvince}",
                                                         style: textTheme
                                                             .bodyMedium
                                                             ?.copyWith(
@@ -150,18 +154,38 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                                                                     FontWeight
                                                                         .w500),
                                                       ),
+                                                      Row(
+                                                        children: [
+                                                          const Icon(
+                                                            Icons.star_rounded,
+                                                            size: 16,
+                                                            color: Colors.amber,
+                                                          ),
+                                                          Text(
+                                                            " ${state.providerEntity?.avgRating}/5.0",
+                                                            style: textTheme
+                                                                .bodyMedium
+                                                                ?.copyWith(
+                                                                    color:
+                                                                        whiteColor,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500),
+                                                          ),
+                                                        ],
+                                                      )
                                                     ],
-                                                  )
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -230,7 +254,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                                   ),
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
                                   context: context,
-                                  builder: (BuildContext context) {
+                                  builder: (context) {
                                     return SizedBox(
                                       height:
                                           MediaQuery.of(context).size.height *
@@ -267,9 +291,27 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                                       height: 12,
                                     ),
                                     buildTextWithIcon(
+                                      Icons.house_rounded,
+                                      "Company name",
+                                      state.providerEntity?.companyName ?? "",
+                                      textTheme,
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    buildTextWithIcon(
                                       Icons.travel_explore,
                                       "Service type",
                                       state.providerEntity?.serviceType ?? "",
+                                      textTheme,
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    buildTextWithIcon(
+                                      Icons.location_on_rounded,
+                                      "Address",
+                                      "${state.providerEntity?.addressName}, ${state.providerEntity?.addressWard}, ${state.providerEntity?.addressDistrict}, ${state.providerEntity?.addressProvince}",
                                       textTheme,
                                     ),
                                     const SizedBox(
@@ -288,15 +330,6 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                                       Icons.phone,
                                       "Phone",
                                       state.providerEntity?.phone ?? "",
-                                      textTheme,
-                                    ),
-                                    const SizedBox(
-                                      height: 12,
-                                    ),
-                                    buildTextWithIcon(
-                                      Icons.location_on_rounded,
-                                      "Address",
-                                      "${state.providerEntity?.addressName}, ${state.providerEntity?.addressWard}, ${state.providerEntity?.addressDistrict}, ${state.providerEntity?.addressProvince}",
                                       textTheme,
                                     ),
                                     const SizedBox(

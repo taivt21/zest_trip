@@ -30,13 +30,16 @@ class _PhotoZoomScreenState extends State<PhotoZoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(scrolledUnderElevation: 0,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
         foregroundColor: whiteColor,
         backgroundColor: Colors.black,
-        title: Text(
-          '$_currentPage/${widget.imageUrls.length}',
-          style: const TextStyle(color: whiteColor),
-        ),
+        title: widget.imageUrls.length > 1
+            ? Text(
+                '$_currentPage/${widget.imageUrls.length}',
+                style: const TextStyle(color: whiteColor),
+              )
+            : const SizedBox.shrink(),
       ),
       body: PhotoViewGallery.builder(
         itemCount: widget.imageUrls.length,
