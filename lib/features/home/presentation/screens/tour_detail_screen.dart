@@ -65,26 +65,8 @@ class TourDetailScreenState extends State<TourDetailScreen> {
 
   @override
   void initState() {
-    // print(
-    //     "init state----------------------------------------------------------------");
     super.initState();
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   print(
-  //       "didChangeDependencies"); // Gọi các thao tác liên quan đến InheritedWidget ở đây
-  //   if (context.watch<TourWishlistBloc>().state.tours != null) {
-  //     isFavorited = context.watch<TourWishlistBloc>().state.tours!.any(
-  //               (tour) => tour.id == widget.tourId,
-  //             )
-  //         ? true
-  //         : false;
-  //   }
-
-  //   print("isFavorited $isFavorited");
-  //   super.didChangeDependencies();
-  // }
 
   @override
   Widget build(BuildContext context) {

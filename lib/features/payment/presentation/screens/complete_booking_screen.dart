@@ -237,16 +237,21 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                           onTap: () async {
                             Map<String, String>? result =
                                 await showModalBottomSheet(
+                              isScrollControlled: true,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               context: context,
                               builder: (context) {
-                                return ParticipantBottomSheet(
-                                    fullname: fullname,
-                                    email: email,
-                                    phone: phone);
+                                return SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.9,
+                                  child: ParticipantBottomSheet(
+                                      fullname: fullname,
+                                      email: email,
+                                      phone: phone),
+                                );
                               },
                             );
 
@@ -415,7 +420,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                   children: [
                     Text(
                       "Paid:",
-                    style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                     Text(
                       " ${NumberFormatter.format(discountedAmount)} ₫",

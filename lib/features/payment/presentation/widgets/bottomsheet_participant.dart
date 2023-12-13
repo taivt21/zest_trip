@@ -48,112 +48,128 @@ class _ParticipantBottomSheetState extends State<ParticipantBottomSheet> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      'Add information details',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(fontSize: 18),
-                    ),
-                    const SizedBox(height: 8.0),
-                    TextFormField(
-                      keyboardType: TextInputType.name,
-                      controller: fullNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Full Name',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your full name';
-                        } else if (value.length <= 5) {
-                          return 'Full name must be longer than 5 characters';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 8.0),
-                    Row(
-                      children: [
-                        Flexible(
-                          flex: 2,
-                          child: TextFormField(
-                            readOnly: true,
-                            controller: countryCodeController,
-                            decoration: const InputDecoration(
-                              labelText: 'Country code',
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Flexible(
-                          flex: 8,
-                          child: TextFormField(
-                            keyboardType: TextInputType.phone,
-                            controller: phoneNumberController,
-                            decoration: const InputDecoration(
-                              labelText: 'Phone',
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your phone number';
-                              } else if (value.length < 9 ||
-                                  value.length > 11) {
-                                return 'Phone number must be between 9 and 11 digits';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8.0),
-                    TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        } else if (!RegExp(
-                                r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+')
-                            .hasMatch(value)) {
-                          return 'Please enter a valid email address';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 8.0),
-                    TextFormField(
-                      controller: noteController,
-                      decoration: const InputDecoration(
-                        labelText: 'Note',
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 32,
-                ),
-                ElevatedButtonCustom(
-                  onPressed: () {
-                    _handleSaveButtonPress(context);
-                  },
-                  text: "Save",
-                ),
-              ],
+      appBar: AppBar(
+        title: const Text("Add information details"),
+        automaticallyImplyLeading: false,
+        flexibleSpace: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              _handleSaveButtonPress(context);
+            },
+            child: const Text(
+              "Send",
+              style:
+                  TextStyle(decoration: TextDecoration.underline, fontSize: 15),
+            ),
+          )
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        keyboardType: TextInputType.name,
+                        controller: fullNameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Full Name',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your full name';
+                          } else if (value.length <= 5) {
+                            return 'Full name must be longer than 5 characters';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 8.0),
+                      Row(
+                        children: [
+                          Flexible(
+                            flex: 2,
+                            child: TextFormField(
+                              readOnly: true,
+                              controller: countryCodeController,
+                              decoration: const InputDecoration(
+                                labelText: 'Country code',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8.0),
+                          Flexible(
+                            flex: 8,
+                            child: TextFormField(
+                              keyboardType: TextInputType.phone,
+                              controller: phoneNumberController,
+                              decoration: const InputDecoration(
+                                labelText: 'Phone',
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your phone number';
+                                } else if (value.length < 9 ||
+                                    value.length > 11) {
+                                  return 'Phone number must be between 9 and 11 digits';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8.0),
+                      TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        controller: emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          } else if (!RegExp(
+                                  r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+')
+                              .hasMatch(value)) {
+                            return 'Please enter a valid email address';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 8.0),
+                      TextFormField(
+                        controller: noteController,
+                        decoration: const InputDecoration(
+                          labelText: 'Note',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              ElevatedButtonCustom(
+                onPressed: () {
+                  _handleSaveButtonPress(context);
+                },
+                text: "Save",
+              ),
+            ],
           ),
         ),
       ),

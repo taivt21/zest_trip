@@ -256,7 +256,8 @@ class TourApiServiceImpl implements TourApiService {
   Future<DataState<bool>> reportProvider(
       String providerId, String reason, String type) async {
     try {
-      final data = {'description': reason, type: type.toUpperCase()};
+      final data = {'description': reason, "reportType": type.toUpperCase()};
+      print("data report: $data");
       final response =
           await DioHelper.dio.post('/report/provider/$providerId', data: data);
       if (response.statusCode == 201) {

@@ -202,12 +202,14 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                               setState(() {
                                 search = searchLocation;
                               });
-                              final tourProvider =
-                                  BlocProvider.of<TourProviderBloc>(context);
-                              tourProvider.add(const ClearTourProvider());
-                              tourProvider.add(GetTourProvider(
-                                  widget.providerId,
-                                  search: searchLocation));
+                              if (mounted) {
+                                final tourProvider =
+                                    BlocProvider.of<TourProviderBloc>(context);
+                                tourProvider.add(const ClearTourProvider());
+                                tourProvider.add(GetTourProvider(
+                                    widget.providerId,
+                                    search: searchLocation));
+                              }
                             }
                           },
                           child: Container(
@@ -249,6 +251,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                             child: IconButton(
                               onPressed: () {
                                 showModalBottomSheet(
+                                  isScrollControlled: true,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),

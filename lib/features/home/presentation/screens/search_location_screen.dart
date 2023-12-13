@@ -64,7 +64,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(32)),
                   height: MediaQuery.of(context).size.height * 0.5,
-                  margin: const EdgeInsets.only(top: 8, right: 8),
+                  margin: const EdgeInsets.only(top: 8, right: 16),
                   child: BlocBuilder<ProvinceBloc, ProvinceState>(
                     builder: (context, state) {
                       allLocationNames = state.provinces

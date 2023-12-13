@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/report_provider/report_provider_bloc.dart';
+import 'package:zest_trip/get_it.dart';
 
 class ReportModal extends StatefulWidget {
   final String providerId;
@@ -85,6 +86,9 @@ class _ReportModalState extends State<ReportModal> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
+                          autofocus: true,
+                          minLines: 4,
+                          maxLines: 8,
                           controller: reasonController,
                           decoration: const InputDecoration(
                             labelText: "Reason",
