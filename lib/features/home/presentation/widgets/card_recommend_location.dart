@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/config/utils/resources/formatter.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 
 class CardRecommendLocation extends StatelessWidget {
@@ -84,17 +85,17 @@ class CardRecommendLocation extends StatelessWidget {
                       ),
                     ],
                   ),
-                Text(
-                  "${tour.count?["Booking"]} booked",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w400, color: colorBlack),
-                ),
-                // if (tour.pricingTicket?[0].fromPrice != null)
                 // Text(
-                //   "${NumberFormatter.format(num.parse(tour.pricingTicket![0].fromPrice!))} ₫",
-                //   style: Theme.of(context).textTheme.titleMedium,
-                //   overflow: TextOverflow.ellipsis,
+                //   "${tour.count?["Booking"]} booked",
+                //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                //       fontWeight: FontWeight.w400, color: colorBlack),
                 // ),
+                if (tour.pricingTicket?[0].fromPrice != null)
+                  Text(
+                    "From ${NumberFormatter.format(num.parse(tour.pricingTicket![0].fromPrice!))} ₫",
+                    style: Theme.of(context).textTheme.titleMedium,
+                    overflow: TextOverflow.ellipsis,
+                  ),
               ],
             ),
           ),

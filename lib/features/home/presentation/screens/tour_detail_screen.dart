@@ -1,8 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:readmore/readmore.dart';
 import 'package:shimmer/shimmer.dart';
@@ -117,10 +119,20 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                       return IconButton(
                         onPressed: () {
                           if (isFavorited) {
+                            Fluttertoast.showToast(
+                              msg: "Removed!",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                            );
                             context.read<TourWishlistBloc>().add(
                                   RemoveWishlist(widget.tourId),
                                 );
                           } else {
+                            Fluttertoast.showToast(
+                              msg: "Added wishlist",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                            );
                             context.read<TourWishlistBloc>().add(
                                   AddWishlist(widget.tourId),
                                 );
@@ -416,7 +428,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                           ),
                           const SizedBox(height: 8),
                           const Titles(
-                            title: "Centralized location",
+                            title: "Convetrate places",
                           ),
 
                           const SizedBox(
@@ -430,12 +442,40 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                     ?.asMap()
                                     .entries
                                     .map(
-                                      (location) => Text(
-                                        '${location.key + 1}.  ${location.value?["deparute"]} - at ${location.value?["time"]}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(fontSize: 16),
+                                      (location) => GestureDetector(
+                                        onLongPress: () {
+                                          Clipboard.setData(ClipboardData(
+                                              text:
+                                                  '${location.value?["deparute"]}'));
+                                          Fluttertoast.showToast(
+                                            msg: "Text copied to clipboard!",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.CENTER,
+                                          );
+                                        },
+                                        child: RichText(
+                                          text: TextSpan(
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  fontSize: 16,
+                                                ),
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    '•  Place ${location.key + 1}:',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ' ${location.value?["deparute"]} - at ${location.value?["time"]}',
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     )
                                     .toList() ??
@@ -469,9 +509,11 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                               );
                             },
                             child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16)),
                               margin: const EdgeInsets.all(8),
                               width: double.infinity,
-                              height: 150,
+                              height: 240,
                               child: GoogleMap(
                                 zoomGesturesEnabled: false,
                                 initialCameraPosition: CameraPosition(

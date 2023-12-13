@@ -38,66 +38,21 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthBloc>(
           create: (context) => sl()..add(CheckUserLoginEvent()),
         ),
-        // BlocProvider<TourVehicleBloc>(
-        //   create: (context) => sl(),
-        // ),
         BlocProvider<PaymentBloc>(
           create: (context) => sl(),
         ),
         BlocProvider<ReportProviderBloc>(
           create: (context) => sl(),
         ),
-        // BlocProvider<RemoteTourBloc>(
-        //   create: (context) => sl(),
-        // ),
-        // BlocProvider<TourDetailBloc>(
-        //   create: (context) => sl(),
-        // ),
-        // BlocProvider<TourTagBloc>(
-        //   create: (context) => sl(),
-        // ),
-        // BlocProvider<DistrictBloc>(
-        //   create: (context) => sl(),
-        // ),
         BlocProvider<RefundBloc>(
           create: (context) => sl(),
         ),
-        // BlocProvider<BookingBloc>(
-        //   create: (context) => sl(),
-        // ),
-        // BlocProvider<VoucherBloc>(
-        //   create: (context) => sl(),
-        // ),
-        // BlocProvider<TourRecommendLocationBloc>(
-        //   create: (context) => sl(),
-        // ),
-        // BlocProvider<TourRecommendTagBloc>(
-        //   create: (context) => sl(),
-        // ),
-        // BlocProvider<LocationPopularBloc>(
-        //   create: (context) => sl()..add(const GetPopularLocation()),
-        // ),
-        // BlocProvider<TourSponsoreBloc>(
-        //   create: (context) => sl(),
-        // ),
         BlocProvider<MyReviewBloc>(
           create: (context) => sl(),
         ),
-        // BlocProvider<TourProviderBloc>(
-        //   create: (context) => sl(),
-        // ),
-        // BlocProvider<TourWishlistBloc>(
-        //   create: (context) => sl(),
-        // ),
-        // BlocProvider<ReportProviderBloc>(
-        //   create: (context) => sl(),
-        // ),
         BlocProvider<CheckingTourBloc>(
           create: (context) => sl(),
         ),
-        // BlocProvider<ProvinceBloc>(
-        //   create: (context) => sl(),
-        // ),
       ],
       child: MaterialApp(
         onGenerateRoute: AppRoutes.onGenerateRoute,

@@ -43,9 +43,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     selectedDate = DateTime.now();
     returnDate = selectedDate.add(Duration(days: widget.tour.durationDay!));
     _initializeSelectedDate();
-    // print("selectedDate $selectedDate");
     adultTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 1);
-    // print("adultTicket $adultTicket");
     childrenTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 2);
     _totalPriceAdult = calculateTotalPrice(adultTicket, _adult) * _adult;
     super.initState();

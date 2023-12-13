@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:zest_trip/config/routes/routes.dart';
@@ -53,6 +54,11 @@ class MyWebViewState extends State<MyWebView> {
           onNavigationRequest: (NavigationRequest request) {
             if (request.url.startsWith('https://google.com')) {
               debugPrint('blocking navigation to ${request.url}');
+              Fluttertoast.showToast(
+                msg: "Booking success!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+              );
               Navigator.pushNamedAndRemoveUntil(
                   context, AppRoutes.thanksBooking, (route) => false);
               return NavigationDecision.prevent;
