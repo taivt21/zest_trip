@@ -38,17 +38,21 @@ class _SelectHobbyScreenState extends State<SelectHobbyScreen> {
     );
 
     if (confirmed == true) {
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+      if (mounted) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+      }
     } else {
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
-      context.read<TourRecommendLocationBloc>().add(
-            AnalyticLocation(locations: listProvince),
-          );
-      context.read<TourRecommendTagBloc>().add(
-            AnalyticTag(tags: listTag),
-          );
+      if (mounted) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+        context.read<TourRecommendLocationBloc>().add(
+              AnalyticLocation(locations: listProvince),
+            );
+        context.read<TourRecommendTagBloc>().add(
+              AnalyticTag(tags: listTag),
+            );
+      }
     }
   }
 

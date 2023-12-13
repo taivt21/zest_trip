@@ -133,6 +133,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
         "user_id": userId,
         "select": "399",
         "order_by": "created_at",
+        "sort_by": "asc"
       };
       final response = await DioHelper.dio.post('/booking/owned', data: data);
       List<InvoiceModel> bookings = [];

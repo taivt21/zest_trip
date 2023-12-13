@@ -380,7 +380,7 @@ class SearchMainScreen extends StatelessWidget {
           children: [
             const Icon(Icons.location_on),
             const SizedBox(width: 8),
-            Text("Search location...",
+            Text("Search by provinces...",
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -450,7 +450,7 @@ class HeaderMainScreen extends StatelessWidget {
                 Text(
                   authState is AuthSuccess
                       ? authState.user?.fullName ??
-                        "${authState.user?.email!.split('@')[0]}"
+                          "${authState.user?.email!.split('@')[0]}"
                       : "Guest",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),

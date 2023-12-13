@@ -8,7 +8,6 @@ import 'package:zest_trip/config/utils/resources/confirm_dialog.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
 import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/card_tour.dart';
-import 'package:zest_trip/features/payment/presentation/bloc/booking/booking_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/refund/refund_bloc.dart';
 
 class RefundScreen extends StatefulWidget {
@@ -102,8 +101,6 @@ class RefundScreenState extends State<RefundScreen> {
               );
             }
             if (state is RequestRefundSuccess) {
-              // BlocProvider.of<MyReviewBloc>(context).add(GetMyReview());
-              BlocProvider.of<BookingBloc>(context).add(const GetBookings());
               Fluttertoast.showToast(
                 msg: "Request refund success!",
                 toastLength: Toast.LENGTH_SHORT,
@@ -111,7 +108,7 @@ class RefundScreenState extends State<RefundScreen> {
               );
 
               Navigator.pushAndRemoveUntil(
-                context,
+                  context,
                   MaterialPageRoute(
                       builder: (context) =>
                           const HomeScreen(initialPageIndex: 2)),

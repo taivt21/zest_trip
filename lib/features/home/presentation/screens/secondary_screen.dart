@@ -139,17 +139,19 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                                 setState(() {
                                   search = searchQuery;
                                 });
-                                final remoteTourBloc =
-                                    BlocProvider.of<RemoteTourBloc>(context);
-                                remoteTourBloc.add(const ClearTour());
-                                remoteTourBloc.add(GetTours(
-                                  page: currentPage,
-                                  limit: limit,
-                                  tags: tagIds,
-                                  search: search,
-                                  province: province,
-                                  district: district,
-                                ));
+                                if (mounted) {
+                                  final remoteTourBloc =
+                                      BlocProvider.of<RemoteTourBloc>(context);
+                                  remoteTourBloc.add(const ClearTour());
+                                  remoteTourBloc.add(GetTours(
+                                    page: currentPage,
+                                    limit: limit,
+                                    tags: tagIds,
+                                    search: search,
+                                    province: province,
+                                    district: district,
+                                  ));
+                                }
                               }
                             },
                             trailing: [
@@ -192,17 +194,20 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                                   setState(() {
                                     province = selectedLocation;
                                   });
-                                  final remoteTourBloc =
-                                      BlocProvider.of<RemoteTourBloc>(context);
-                                  remoteTourBloc.add(const ClearTour());
-                                  remoteTourBloc.add(GetTours(
-                                    page: currentPage,
-                                    limit: limit,
-                                    tags: tagIds,
-                                    search: search,
-                                    province: province,
-                                    district: district,
-                                  ));
+                                  if (mounted) {
+                                    final remoteTourBloc =
+                                        BlocProvider.of<RemoteTourBloc>(
+                                            context);
+                                    remoteTourBloc.add(const ClearTour());
+                                    remoteTourBloc.add(GetTours(
+                                      page: currentPage,
+                                      limit: limit,
+                                      tags: tagIds,
+                                      search: search,
+                                      province: province,
+                                      district: district,
+                                    ));
+                                  }
                                 }
                               },
                               child: Chip(
@@ -411,21 +416,23 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                             fromPrice = result['selectedFrom'];
                             toPrice = result['selectedTo'];
                           });
-                          final remoteTourBloc =
-                              BlocProvider.of<RemoteTourBloc>(context);
-                          remoteTourBloc.add(const ClearTour());
-                          remoteTourBloc.add(
-                            GetTours(
-                              page: 1,
-                              limit: limit,
-                              tags: tagIds,
-                              search: search,
-                              province: province,
-                              district: district,
-                              lowPrice: fromPrice,
-                              highPrice: toPrice,
-                            ),
-                          );
+                          if (mounted) {
+                            final remoteTourBloc =
+                                BlocProvider.of<RemoteTourBloc>(context);
+                            remoteTourBloc.add(const ClearTour());
+                            remoteTourBloc.add(
+                              GetTours(
+                                page: 1,
+                                limit: limit,
+                                tags: tagIds,
+                                search: search,
+                                province: province,
+                                district: district,
+                                lowPrice: fromPrice,
+                                highPrice: toPrice,
+                              ),
+                            );
+                          }
                         }
                       },
                       child: Container(
