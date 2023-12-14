@@ -38,27 +38,24 @@ class ProfileScreen extends StatelessWidget {
                     // -- IMAGE
                     Stack(
                       children: [
-                        SizedBox(
-                          width: 80,
-                          height: 80,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: state.user?.avatarImageUrl != null
-                                ? CachedNetworkImage(
-                                    imageUrl: state.user!.avatarImageUrl!,
-                                    progressIndicatorBuilder:
-                                        (context, url, downloadProgress) =>
-                                            Center(
-                                      child: CircularProgressIndicator(
-                                          value: downloadProgress.progress),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                    fit: BoxFit.cover,
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: primaryColor,
+                              width: 1.0,
+                            ),
+                          ),
+                          width: 120,
+                          height: 120,
+                          child: CircleAvatar(
+                            radius: 24,
+                            backgroundImage: state.user?.avatarImageUrl != null
+                                ? CachedNetworkImageProvider(
+                                    state.user!.avatarImageUrl!,
                                   )
-                                : CachedNetworkImage(
-                                    imageUrl:
-                                        "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
+                                : const CachedNetworkImageProvider(
+                                    "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
                                   ),
                           ),
                         ),

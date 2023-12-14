@@ -53,7 +53,7 @@ class MyWebViewState extends State<MyWebView> {
           },
           onNavigationRequest: (NavigationRequest request) {
             if (request.url.startsWith('https://google.com')) {
-              debugPrint('blocking navigation to ${request.url}');
+              // debugPrint('blocking navigation to ${request.url}');
               Fluttertoast.showToast(
                 msg: "Booking success!",
                 toastLength: Toast.LENGTH_SHORT,

@@ -18,6 +18,7 @@ const String forgotSvg = "assets/images/forgot.svg";
 const String locationSvg = "assets/images/location.svg";
 const String travelSvg = "assets/images/travel.svg";
 const String adsSvg = "assets/images/ads.svg";
+const String emptyBookingSvg = "assets/images/emptyBooking.svg";
 
 const String loginPng = "assets/images/login-png.png";
 const String registerPng = "assets/images/register-png.png";

@@ -9,7 +9,6 @@ class AuthInterceptor extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final accessToken = await getAccessToken();
-    print("accessToken request $accessToken");
     if (options.path == '/tour') {
       return handler.next(options);
     }

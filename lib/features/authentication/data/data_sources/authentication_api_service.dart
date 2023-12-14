@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mime/mime.dart';
 import 'package:zest_trip/config/network/dio_helper.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/data/models/auth_user_model.dart';
@@ -203,26 +203,13 @@ class AuthApiServiceImpl implements AuthApiService {
     }
   }
 
-  String getMimeType(File file) {
-    final fileType = lookupMimeType(file.path);
-    return fileType ?? 'application/octet-stream';
-  }
-
   @override
   Future<DataState<bool>> uploadImage(XFile xFile) async {
     try {
       File file = File(xFile.path);
-      // print("xFile path: ${xFile.path}");
-      // print("file path: ${file.path}");
-      // print("file length: ${file.lengthSync()} bytes");
-
-      // String mimeType = getMimeType(file);
-      // print('File MIME type: $mimeType');
-
       FormData formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(
-          file.path,
-        ),
+        'file': await MultipartFile.fromFile(file.path,
+            contentType: MediaType.parse("image/png")),
       });
       Options options = Options(
         headers: {'Content-Type': 'multipart/form-data'},
@@ -232,9 +219,6 @@ class AuthApiServiceImpl implements AuthApiService {
         options: options,
         data: formData,
       );
-
-      // print("Response status code: ${response.statusCode}");
-      // print("Response data: ${response.data}");
       if (response.statusCode == 200) {
         return DataSuccess(true);
       } else {
@@ -247,7 +231,6 @@ class AuthApiServiceImpl implements AuthApiService {
         ));
       }
     } on DioException catch (e) {
-      // print("image error: ${e.response?.data?["message"]}");
       return DataFailed(e);
     }
   }

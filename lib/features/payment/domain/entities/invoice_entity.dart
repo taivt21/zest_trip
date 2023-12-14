@@ -26,7 +26,7 @@ class InvoiceEntity extends Equatable {
 
   final List<TicketOnBookingEntity>? ticketOnBooking;
   final TourEntity? tour;
-  final Map<String, dynamic>? provider;
+  // final Map<String, dynamic>? provider;
   // final BookingOnTourEntity? bookingOnTour;
 
   const InvoiceEntity({
@@ -50,7 +50,7 @@ class InvoiceEntity extends Equatable {
     this.isReviewed,
     this.ticketOnBooking,
     this.tour,
-    this.provider,
+    // this.provider,
   });
 
   @override
@@ -74,7 +74,7 @@ class InvoiceEntity extends Equatable {
         refundImage,
         ticketOnBooking,
         tour,
-        provider,
+        // provider,
         isReviewed,
       ];
 }

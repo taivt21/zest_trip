@@ -96,16 +96,14 @@ class ReviewScreenState extends State<ReviewScreen> {
               Fluttertoast.showToast(
                 msg: "${{state.error?.response?.data['message']}}",
                 toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
+                gravity: ToastGravity.TOP,
               );
             }
             if (state is ReviewSuccess) {
-              // context.read<MyReviewBloc>().add(GetMyReview());
-              // sl<BookingBloc>().add(const GetBookings());
               Fluttertoast.showToast(
                 msg: "Review success!",
                 toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
+                gravity: ToastGravity.TOP,
               );
 
               Navigator.pushReplacementNamed(context, AppRoutes.manageReview);

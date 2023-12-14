@@ -1,13 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
+import 'package:zest_trip/features/authentication/domain/usecases/upload_image_usecase.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_event.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
+import 'package:zest_trip/features/home/presentation/screens/photo_zoom_screen.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -40,7 +43,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
         return Scaffold(
-          // resizeToAvoidBottomInset: true,
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             scrolledUnderElevation: 0,
             title: const Text("Edit profile"),
@@ -48,10 +51,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           body: BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
               if (state is UserUploadFail) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Upload fail"),
-                  ),
+                Fluttertoast.showToast(
+                  msg: "Upload failed",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.TOP,
+                );
+              }
+              if (state is UploadImageUseCase) {
+                Fluttertoast.showToast(
+                  msg: "Change",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.TOP,
                 );
               }
             },
@@ -67,44 +77,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        // -- IMAGE with ICON
                         Stack(
                           children: [
                             GestureDetector(
                               onTap: () async {
-                                final picker = ImagePicker();
-
-                                try {
-                                  // Chọn ảnh từ thư viện
-                                  final XFile? pickedFile = await picker
-                                      .pickImage(source: ImageSource.gallery);
-
-                                  if (pickedFile != null) {
-                                    // File file = File(pickedFile.path);
-                                    // print("file: $file");
-                                    // Kiểm tra và xử lý file ảnh tại đây
-                                    context
-                                        .read<AuthBloc>()
-                                        .add(UploadImageEvent(pickedFile));
-                                  } else {
-                                    // Người dùng đã hủy chọn ảnh
-                                    // Có thể bạn muốn thực hiện một số hành động khác ở đây
-                                    // print('User canceled image picking');
-                                  }
-                                } catch (e) {
-                                  // Xử lý lỗi khi chọn ảnh
-                                  // debugPrint('Error picking image: $e');
-                                }
+                                List<String> url = [];
+                                url.add(state.user?.avatarImageUrl ??
+                                    "https://cdn.pixabay.com/photo/2017/08/20/10/47/grey-2661270_1280.png");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PhotoZoomScreen(
+                                            imageUrls: url, initialIndex: 1)));
                               },
-                              child: SizedBox(
+                              child: Container(
                                 width: 120,
                                 height: 120,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: primaryColor,
+                                    width: 1.0, // Độ dày của border
+                                  ),
+                                ),
                                 child: CircleAvatar(
                                   backgroundColor: Colors.transparent,
-                                  radius: 100,
+                                  radius: 24,
                                   backgroundImage: CachedNetworkImageProvider(
                                     state.user?.avatarImageUrl ??
-                                        "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
+                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBjUp5SKzh4Za73MnliUAnk7RXINX8_mUC3g&usqp=CAU",
                                   ),
                                 ),
                               ),
@@ -112,15 +113,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             Positioned(
                               bottom: 0,
                               right: 0,
-                              child: Container(
-                                width: 35,
-                                height: 35,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  color: primaryColor,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  final picker = ImagePicker();
+
+                                  try {
+                                    // Chọn ảnh từ thư viện
+                                    final XFile? pickedFile = await picker
+                                        .pickImage(source: ImageSource.gallery);
+
+                                    if (pickedFile != null && mounted) {
+                                      // Kiểm tra và xử lý file ảnh tại đây
+                                      context
+                                          .read<AuthBloc>()
+                                          .add(UploadImageEvent(pickedFile));
+                                    } else {
+                                      // Người dùng đã hủy chọn ảnh
+                                      // Có thể bạn muốn thực hiện một số hành động khác ở đây
+                                      // print('User canceled image picking');
+                                    }
+                                  } catch (e) {
+                                    // Xử lý lỗi khi chọn ảnh
+                                    // debugPrint('Error picking image: $e');
+                                  }
+                                },
+                                child: Container(
+                                  width: 35,
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: primaryColor,
+                                  ),
+                                  child: const Icon(Icons.edit,
+                                      color: whiteColor, size: 20),
                                 ),
-                                child: const Icon(Icons.edit,
-                                    color: whiteColor, size: 20),
                               ),
                             ),
                           ],
@@ -143,7 +169,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               },
                             ),
                             const SizedBox(height: 20),
-
                             _buildTextField(
                               initialValue: (state is AuthSuccess)
                                   ? state.user?.phoneNumber ?? ''
@@ -157,7 +182,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               },
                             ),
                             const SizedBox(height: 20),
-
                             _buildDateField(context),
                             const SizedBox(height: 20),
                             _buildTextFieldGender(
@@ -173,45 +197,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               },
                             ),
                             const SizedBox(height: 20),
-
                             const SizedBox(height: 16),
-
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //   children: [
-                            //     Text.rich(
-                            //       TextSpan(
-                            //         text: "Joined ",
-                            //         style: Theme.of(context).textTheme.bodyMedium,
-                            //         children: [
-                            //           TextSpan(
-                            //               text: (state is AuthSuccess)
-                            //                   ? DateFormat("dd MMM yyyy")
-                            //                       .format(state.user!.createdAt!)
-                            //                   : DateFormat("dd MMM yyyy")
-                            //                       .format(DateTime.now()),
-                            //               style: Theme.of(context)
-                            //                   .textTheme
-                            //                   .bodyMedium
-                            //                   ?.copyWith(
-                            //                       fontWeight: FontWeight.w500))
-                            //         ],
-                            //       ),
-                            //     ),
-                            //     ElevatedButton(
-                            //       onPressed: () {},
-                            //       style: ElevatedButton.styleFrom(
-                            //         backgroundColor:
-                            //             Colors.redAccent.withOpacity(0.1),
-                            //         elevation: 0,
-                            //         foregroundColor: Colors.red,
-                            //         shape: const StadiumBorder(),
-                            //         side: BorderSide.none,
-                            //       ),
-                            //       child: const Text("Delete"),
-                            //     ),
-                            //   ],
-                            // )
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text.rich(
+                                  TextSpan(
+                                    text: "Joined ",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    children: [
+                                      TextSpan(
+                                          text: (state is AuthSuccess)
+                                              ? DateFormat("dd MMM yyyy")
+                                                  .format(
+                                                      state.user?.createdAt ??
+                                                          DateTime.now())
+                                              : DateFormat("dd MMM yyyy")
+                                                  .format(DateTime.now()),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                  fontWeight: FontWeight.w500))
+                                    ],
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: colorSuccessSecondary,
+                                    elevation: 0,
+                                    foregroundColor: colorSuccess,
+                                    shape: const StadiumBorder(),
+                                    side: BorderSide.none,
+                                  ),
+                                  child: const Text("Active"),
+                                ),
+                              ],
+                            )
                           ],
                         ),
                       ],
@@ -344,7 +368,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _saveProfile() {
-    print(
-        "Saving profile: Name=$_name, Phone=$_phone, DateOfBirth=$_selectedDate, Gender=$_selectedGender");
+    // print(
+    //     "Saving profile: Name=$_name, Phone=$_phone, DateOfBirth=$_selectedDate, Gender=$_selectedGender");
   }
 }

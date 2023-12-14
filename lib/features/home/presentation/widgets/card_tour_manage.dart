@@ -1,15 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
 import 'package:zest_trip/features/home/presentation/screens/photo_zoom_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/provider_profile_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/refund_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/review_screen.dart';
+import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.dart';
 import 'package:zest_trip/features/payment/domain/entities/invoice_entity.dart';
 
 class CardTourManage extends StatelessWidget {
@@ -32,23 +36,50 @@ class CardTourManage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    homeSvg,
-                    height: 20,
-                    width: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    "${invoice.tour?.provider?.companyName} ",
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                ],
+              GestureDetector(
+                onTap: () {
+                  invoice.tour!.providerId != null
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProviderProfileScreen(
+                                    providerId: invoice.tour!.providerId!,
+                                  )))
+                      : null;
+                },
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      homeSvg,
+                      height: 20,
+                      width: 20,
+                      // ignore: deprecated_member_use
+                      color: secondaryColor,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      "${invoice.tour?.provider?.companyName} ",
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                invoice.status!.replaceAll('_', ' '),
-                style: const TextStyle(color: colorSuccess),
+              GestureDetector(
+                onLongPress: () {
+                  Clipboard.setData(ClipboardData(text: '${invoice.id}'));
+                  Fluttertoast.showToast(
+                    msg: "Invoice id copied to clipboard!",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.TOP,
+                  );
+                },
+                child: Text(
+                  // invoice.status!.replaceAll('_', ' '),
+                  // style: const TextStyle(
+                  //   color: colorSuccess,
+                  // ),
+                  "#${invoice.id}",
+                ),
               )
             ],
           ),
@@ -97,16 +128,27 @@ class CardTourManage extends StatelessWidget {
               ),
               Expanded(
                 flex: 3,
-                child: Container(
-                  margin: const EdgeInsets.only(left: 8),
-                  height: 80,
-                  width: 80,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(
-                          "${invoice.tour?.tourImages?.first}"),
+                child: GestureDetector(
+                  onTap: () {
+                    invoice.tour!.id != null
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TourDetailScreen(
+                                    tourId: invoice.tour!.id!)))
+                        : null;
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    height: 80,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: CachedNetworkImageProvider(
+                            "${invoice.tour?.tourImages?.first}"),
+                      ),
                     ),
                   ),
                 ),

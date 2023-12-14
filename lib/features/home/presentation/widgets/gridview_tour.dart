@@ -2,19 +2,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/resources/confirm_dialog.dart';
 import 'package:zest_trip/config/utils/resources/formatter.dart';
-
 import 'package:zest_trip/features/home/domain/entities/tour_entity.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_wishlist/tour_wishlist_bloc.dart';
 import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.dart';
 
 class GridViewTour extends StatefulWidget {
   final List<TourEntity> tours;
+  final bool hasFavourite;
   const GridViewTour({
     Key? key,
     required this.tours,
+    required this.hasFavourite,
   }) : super(key: key);
 
   @override
@@ -86,38 +88,41 @@ class _GridViewTourState extends State<GridViewTour> {
                               ),
                             ),
                           ),
-                          Positioned(
-                            // top: 12,
-                            right: 0,
-                            child: IconButton(
-                              onPressed: () async {
-                                bool? confirmed =
-                                    await DialogUtils.showConfirmDialog(
-                                  context,
-                                  content:
-                                      'Do you want to remove this tour from wishlist?',
-                                );
-
-                                if (confirmed == true && mounted) {
-                                  context.read<TourWishlistBloc>().add(
-                                        RemoveWishlist(widget.tours[index].id!),
+                          widget.hasFavourite == true
+                              ? Positioned(
+                                  // top: 12,
+                                  right: 0,
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      bool? confirmed =
+                                          await DialogUtils.showConfirmDialog(
+                                        context,
+                                        content:
+                                            'Do you want to remove this tour from wishlist?',
                                       );
-                                }
-                              },
-                              icon: CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                child: isFavorited
-                                    ? const Icon(
-                                        Icons.favorite,
-                                        color: Colors.red,
-                                      )
-                                    : const Icon(
-                                        Icons.favorite_border,
-                                        color: Colors.black,
-                                      ),
-                              ),
-                            ),
-                          ),
+
+                                      if (confirmed == true && mounted) {
+                                        context.read<TourWishlistBloc>().add(
+                                              RemoveWishlist(
+                                                  widget.tours[index].id!),
+                                            );
+                                      }
+                                    },
+                                    icon: CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      child: isFavorited
+                                          ? const Icon(
+                                              Icons.favorite,
+                                              color: Colors.red,
+                                            )
+                                          : const Icon(
+                                              Icons.favorite_border,
+                                              color: Colors.black,
+                                            ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
                         ],
                       ),
                       Container(

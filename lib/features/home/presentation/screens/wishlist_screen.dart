@@ -36,7 +36,10 @@ class WishlistScreen extends StatelessWidget {
                       );
                     } else if (state is GetToursWishlistSuccess) {
                       return state.tours!.isNotEmpty && state.tours != null
-                          ? GridViewTour(tours: state.tours!)
+                          ? GridViewTour(
+                              tours: state.tours!,
+                              hasFavourite: true,
+                            )
                           : const EmptyWidget(
                               imageSvg: travelSvg, title: "No wishlist found");
                     } else {

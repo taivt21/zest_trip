@@ -155,7 +155,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<UploadImageEvent>((event, emit) async {
       final dataState = await _uploadImageUseCase.call(event.file);
 
-      if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
+      if (dataState is DataSuccess) {
         emit(UserUploadSuccess());
         // final result = await _getUserUseCase.call();
         // emit(AuthSuccess(result.data!));

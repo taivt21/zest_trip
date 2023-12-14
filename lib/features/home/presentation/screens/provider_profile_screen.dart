@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/resources/date_format.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_of_provider/tour_of_provider_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_wishlist/tour_wishlist_bloc.dart';
 import 'package:zest_trip/features/home/presentation/screens/photo_zoom_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/search_query_screen.dart';
 import 'package:zest_trip/features/home/presentation/widgets/gridview_tour.dart';
@@ -45,6 +46,9 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
           BlocProvider<TourProviderBloc>(
             create: (context) =>
                 sl()..add(GetTourProvider(widget.providerId, search: search)),
+          ),
+          BlocProvider<TourWishlistBloc>(
+            create: (context) => sl(),
           ),
         ],
         child: BlocBuilder<TourProviderBloc, TourProviderState>(
@@ -356,6 +360,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                               ),
                               GridViewTour(
                                 tours: tourState.tours ?? [],
+                                hasFavourite: false,
                               )
                             ],
                           ),

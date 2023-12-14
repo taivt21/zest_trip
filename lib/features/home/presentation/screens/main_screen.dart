@@ -340,11 +340,16 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-class SearchMainScreen extends StatelessWidget {
+class SearchMainScreen extends StatefulWidget {
   const SearchMainScreen({
     super.key,
   });
 
+  @override
+  State<SearchMainScreen> createState() => _SearchMainScreenState();
+}
+
+class _SearchMainScreenState extends State<SearchMainScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -356,7 +361,7 @@ class SearchMainScreen extends StatelessWidget {
           ),
         );
 
-        if (searchLocation != null) {
+        if (searchLocation != null && mounted) {
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -418,30 +423,25 @@ class HeaderMainScreen extends StatelessWidget {
       builder: (context, authState) {
         return Row(
           children: [
-            SizedBox(
-              height: 60,
+            Container(
               width: 60,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(32),
-                  child: CachedNetworkImage(
-                    imageUrl: authState.user?.avatarImageUrl ??
-                        "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
-                    placeholder: (context, url) => Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                          color: colorLightGrey,
-                          borderRadius: BorderRadius.circular(100)),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                          color: colorLightGrey,
-                          borderRadius: BorderRadius.circular(100)),
-                    ),
-                  )),
+              height: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.transparent,
+                  width: 1.0,
+                ),
+              ),
+              child: CircleAvatar(
+                radius: 24,
+                backgroundImage: CachedNetworkImageProvider(
+                  authState.user?.avatarImageUrl ??
+                      "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
+                ),
+              ),
             ),
+
             const SizedBox(width: 16),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,

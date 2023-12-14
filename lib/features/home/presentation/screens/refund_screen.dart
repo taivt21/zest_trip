@@ -96,15 +96,15 @@ class RefundScreenState extends State<RefundScreen> {
             if (state is RequestRefundFail) {
               Fluttertoast.showToast(
                 msg: "${{state.error?.response?.data['message']}}",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.TOP,
               );
             }
             if (state is RequestRefundSuccess) {
               Fluttertoast.showToast(
                 msg: "Request refund success!",
                 toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
+                gravity: ToastGravity.TOP,
               );
 
               Navigator.pushAndRemoveUntil(

@@ -131,7 +131,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
     try {
       final data = {
         "user_id": userId,
-        "select": "399",
+        "select": "100",
         "order_by": "created_at",
         "sort_by": "asc"
       };

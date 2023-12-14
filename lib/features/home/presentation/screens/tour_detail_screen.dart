@@ -122,7 +122,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                             Fluttertoast.showToast(
                               msg: "Removed!",
                               toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
+                              gravity: ToastGravity.TOP,
                             );
                             context.read<TourWishlistBloc>().add(
                                   RemoveWishlist(widget.tourId),
@@ -131,7 +131,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                             Fluttertoast.showToast(
                               msg: "Added wishlist",
                               toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
+                              gravity: ToastGravity.TOP,
                             );
                             context.read<TourWishlistBloc>().add(
                                   AddWishlist(widget.tourId),
@@ -448,7 +448,8 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                               text:
                                                   '${location.value?["deparute"]}'));
                                           Fluttertoast.showToast(
-                                            msg: "Text copied to clipboard!",
+                                            msg:
+                                                "Location copied to clipboard!",
                                             toastLength: Toast.LENGTH_SHORT,
                                             gravity: ToastGravity.CENTER,
                                           );

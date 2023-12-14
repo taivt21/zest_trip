@@ -153,7 +153,7 @@ class _TripsScreenState extends State<TripsScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const EmptyWidget(
-                  imageSvg: travelSvg,
+                  imageSvg: emptyBookingSvg,
                   title: "There are no bookings yet",
                   // subtitle: "Please leave your review for future bookings"
                 ),
