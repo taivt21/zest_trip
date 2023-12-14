@@ -27,7 +27,8 @@ class _UserReviewState extends State<UserReview> {
             children: [
               CircleAvatar(
                 backgroundImage: CachedNetworkImageProvider(
-                  widget.tourReview.user!.avatarImageUrl!,
+                  widget.tourReview.user?.avatarImageUrl ??
+                      "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
                 ),
                 backgroundColor: whiteColor,
                 radius: 20.0,

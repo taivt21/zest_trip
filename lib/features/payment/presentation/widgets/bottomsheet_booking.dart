@@ -78,7 +78,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
         } else if (state is CheckFail) {
           Fluttertoast.showToast(
             msg: "${state.error?.response?.data['message']}",
-            toastLength: Toast.LENGTH_SHORT,
+            toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.CENTER,
           );
         }

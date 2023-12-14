@@ -149,12 +149,14 @@ class _SelectHobbyScreenState extends State<SelectHobbyScreen> {
                         )
                       : FilledButton(
                           onPressed: () {
-                            context.read<TourRecommendLocationBloc>().add(
-                                  AnalyticLocation(locations: listProvince),
-                                );
-                            context.read<TourRecommendTagBloc>().add(
-                                  AnalyticTag(tags: listTag),
-                                );
+                            BlocProvider.of<TourRecommendLocationBloc>(context)
+                                .add(
+                              AnalyticLocation(locations: listProvince),
+                            );
+                            BlocProvider.of<TourRecommendTagBloc>(context).add(
+                              AnalyticTag(tags: listTag),
+                            );
+
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 AppRoutes.home, (route) => false);
                           },

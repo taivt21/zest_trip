@@ -5,6 +5,8 @@ import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_event.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/checking_tour/checking_tour_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/my_review/my_review_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/payment/payment_bloc.dart';
@@ -53,6 +55,12 @@ class MyApp extends StatelessWidget {
         BlocProvider<CheckingTourBloc>(
           create: (context) => sl(),
         ),
+        BlocProvider<TourRecommendLocationBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<TourRecommendTagBloc>(
+          create: (context) => sl(),
+        ),
       ],
       child: MaterialApp(
         onGenerateRoute: AppRoutes.onGenerateRoute,
@@ -61,7 +69,7 @@ class MyApp extends StatelessWidget {
             TargetPlatform.android: CupertinoPageTransitionsBuilder()
           }),
           colorScheme: const ColorScheme.light(primary: primaryColor),
-          fontFamily: 'SFCompact',
+          fontFamily: 'Airbnb',
           useMaterial3: true,
           scaffoldBackgroundColor: bgColor,
           appBarTheme: AppBarTheme(

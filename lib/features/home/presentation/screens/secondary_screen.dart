@@ -388,6 +388,10 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                         Map<String, dynamic>? result =
                             await showModalBottomSheet(
                           isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
                           context: context,
                           builder: (context) {
                             return SizedBox(

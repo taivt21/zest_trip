@@ -129,12 +129,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       const secureStorage = FlutterSecureStorage();
       await secureStorage.deleteAll();
-      final result = await _logoutUseCase.call();
-      if (result is DataSuccess) {
-        emit(AuthLoggedOut());
-      } else if (result is DataFailed) {
-        emit(AuthFailure(result.error!));
+      // Kiểm tra xem người dùng có đăng nhập bằng Google hay không
+      final googleSignIn = GoogleSignIn();
+      if (await googleSignIn.isSignedIn()) {
+        // Nếu đăng nhập bằng Google, thực hiện đăng xuất Google trước
+        await googleSignIn.signOut();
       }
+      // Sau đó, thực hiện đăng xuất Firebase
+      await FirebaseAuth.instance.signOut();
+      // final result = await _logoutUseCase.call();
+      // if (result is DataSuccess) {
+      emit(AuthLoggedOut());
+      // } else if (result is DataFailed) {
+      //   emit(AuthFailure(result.error!));
+      // }
     });
 
     on<LoginWithPhoneNumberEvent>((event, emit) async {

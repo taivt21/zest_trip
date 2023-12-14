@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:zest_trip/features/home/data/models/district_model.dart';
 import 'package:zest_trip/features/home/data/models/province_model.dart';
@@ -186,7 +184,6 @@ class TourApiServiceImpl implements TourApiService {
       final tags = (response.data['data'] as List)
           .map((e) => TourTag.fromJson(e))
           .toList();
-      log("call api tags: $tags");
       if (response.statusCode == 200) {
         return DataSuccess(tags);
       } else {

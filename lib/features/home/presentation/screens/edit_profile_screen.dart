@@ -83,7 +83,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               onTap: () async {
                                 List<String> url = [];
                                 url.add(state.user?.avatarImageUrl ??
-                                    "https://cdn.pixabay.com/photo/2017/08/20/10/47/grey-2661270_1280.png");
+                                    "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1");
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

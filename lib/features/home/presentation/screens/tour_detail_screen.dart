@@ -44,7 +44,6 @@ class TourDetailScreen extends StatefulWidget {
 
 class TourDetailScreenState extends State<TourDetailScreen> {
   bool isExpanded = false;
-  // bool isFavorited = false;
   final int maxLines = 10;
 
   int _currentPage = 0;
@@ -636,7 +635,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                           const SizedBox(height: 4),
                                           Text(
                                               tourDetailState.tour?.provider
-                                                      ?.addressDistrict ??
+                                                      ?.addressProvince ??
                                                   "",
                                               style: Theme.of(context)
                                                   .textTheme
@@ -707,6 +706,9 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                             ),
                                         ],
                                       ),
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
                                     ),
                                     SizedBox(
                                       width: double.infinity,

@@ -21,7 +21,7 @@ class CardRecommendLocation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 240,
+      height: 260,
       margin: const EdgeInsets.only(right: 8),
       decoration: BoxDecoration(
         color: whiteColor,
@@ -91,9 +91,23 @@ class CardRecommendLocation extends StatelessWidget {
                 //       fontWeight: FontWeight.w400, color: colorBlack),
                 // ),
                 if (tour.pricingTicket?[0].fromPrice != null)
-                  Text(
-                    "From ${NumberFormatter.format(num.parse(tour.pricingTicket![0].fromPrice!))} ₫",
-                    style: Theme.of(context).textTheme.titleMedium,
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: 'From ',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text:
+                              '${NumberFormatter.format(num.parse(tour.pricingTicket![0].fromPrice!))} ₫',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
               ],

@@ -34,51 +34,69 @@ class CardTourManage extends StatelessWidget {
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: () {
-                  invoice.tour!.providerId != null
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProviderProfileScreen(
-                                    providerId: invoice.tour!.providerId!,
-                                  )))
-                      : null;
-                },
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      homeSvg,
-                      height: 20,
-                      width: 20,
-                      // ignore: deprecated_member_use
-                      color: secondaryColor,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      "${invoice.tour?.provider?.companyName} ",
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ],
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    invoice.tour!.providerId != null
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProviderProfileScreen(
+                                      providerId: invoice.tour!.providerId!,
+                                    )))
+                        : null;
+                  },
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(
+                        homeSvg,
+                        height: 20,
+                        width: 20,
+                        // ignore: deprecated_member_use
+                        color: secondaryColor,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          "${invoice.tour?.provider?.companyName} ",
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              GestureDetector(
-                onLongPress: () {
-                  Clipboard.setData(ClipboardData(text: '${invoice.id}'));
-                  Fluttertoast.showToast(
-                    msg: "Invoice id copied to clipboard!",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.TOP,
-                  );
-                },
-                child: Text(
-                  // invoice.status!.replaceAll('_', ' '),
-                  // style: const TextStyle(
-                  //   color: colorSuccess,
-                  // ),
-                  "#${invoice.id}",
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: '${invoice.id}'));
+                    Fluttertoast.showToast(
+                      msg: "Invoice id copied to clipboard!",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.TOP,
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          // invoice.status!.replaceAll('_', ' '),
+                          // style: const TextStyle(
+                          //   color: colorSuccess,
+                          // ),
+                          "#${invoice.id}",
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const Icon(
+                        Icons.copy,
+                        size: 16,
+                      ),
+                    ],
+                  ),
                 ),
               )
             ],
