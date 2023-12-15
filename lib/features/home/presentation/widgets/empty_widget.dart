@@ -33,13 +33,13 @@ class EmptyWidget extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w500, fontSize: 22)),
+                    ?.copyWith(fontWeight: FontWeight.w500, fontSize: 20)),
             const SizedBox(height: 8),
             Text(subtitle ?? "",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w500, color: colorHint)),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: colorHint,
+                    fontSize: 15)),
           ],
         ),
       ),

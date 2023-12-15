@@ -23,9 +23,9 @@ class PaymentRepositoryImpl extends PaymentRepository {
 
   @override
   Future<DataState> createBooking(
-      BookingEntity bookingEntity, String redirectUrl, int voucherId) async {
+      BookingEntity bookingEntity, String redirectUrl, int voucherId, String location) async {
     return await _paymentApiService.creatBooking(
-        bookingEntity, redirectUrl, voucherId);
+        bookingEntity, redirectUrl, voucherId, location);
   }
 
   @override

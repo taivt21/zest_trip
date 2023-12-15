@@ -17,6 +17,7 @@ class RefundScreen extends StatefulWidget {
   final String location;
   final String paid;
   final String refundAmount;
+  final String commissionRate;
   const RefundScreen({
     Key? key,
     required this.bookingId,
@@ -25,6 +26,7 @@ class RefundScreen extends StatefulWidget {
     required this.location,
     required this.paid,
     required this.refundAmount,
+    required this.commissionRate,
   }) : super(key: key);
 
   @override
@@ -133,14 +135,14 @@ class RefundScreenState extends State<RefundScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Refund amount (70%):",
+                        "Refund amount (${100 - double.parse(widget.commissionRate) * 100}%):",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
                             ?.copyWith(fontSize: 16),
                       ),
                       Text(
-                          "${NumberFormatter.format(num.parse(widget.paid) * 70 / 100)} ₫",
+                          "${NumberFormatter.format(num.parse(widget.paid) * (1 - double.parse(widget.commissionRate)))} ₫",
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium

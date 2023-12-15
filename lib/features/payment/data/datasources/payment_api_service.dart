@@ -14,8 +14,8 @@ import 'package:zest_trip/features/payment/domain/entities/booking_entity.dart';
 abstract class PaymentApiService {
   Future<DataState<dynamic>> checkAvailable(
       String tourId, int adult, int children, DateTime date);
-  Future<DataState<dynamic>> creatBooking(
-      BookingEntity bookingModel, String redirectUrl, int voucherId);
+  Future<DataState<dynamic>> creatBooking(BookingEntity bookingModel,
+      String redirectUrl, int voucherId, String location);
   Future<DataState<dynamic>> requestRefund(String bookingId, String reason);
   Future<DataState<bool>> postReview(String content, int rating, String tourId);
 
@@ -29,7 +29,7 @@ abstract class PaymentApiService {
 class PaymentApiServiceImpl implements PaymentApiService {
   @override
   Future<DataState<dynamic>> checkAvailable(
-      String tourId, int adult, int children, DateTime date) async {
+      tourId, adult, children, date) async {
     try {
       final data = {
         "adult": adult,
@@ -57,7 +57,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
 
   @override
   Future<DataState<dynamic>> creatBooking(
-      BookingEntity bookingModel, String redirectUrl, voucherId) async {
+      bookingModel, redirectUrl, voucherId, location) async {
     try {
       final Map<String, dynamic> data = {
         "booker_name": bookingModel.bookerName,
@@ -70,11 +70,13 @@ class PaymentApiServiceImpl implements PaymentApiService {
         "selected_date": bookingModel.selectedDate.toString(),
         "tour_id": bookingModel.tourId,
         "redirectUrl": "https://google.com",
+        "departure_location": location,
       };
 
       if (voucherId != -1) {
         data["voucher_id"] = voucherId;
       }
+      print("data create: $data");
       final response =
           await DioHelper.dio.post('/booking/bookTour', data: data);
       if (response.statusCode == 201) {
@@ -93,8 +95,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
   }
 
   @override
-  Future<DataState<bool>> postReview(
-      String content, int rating, String tourId) async {
+  Future<DataState<bool>> postReview(content, rating, tourId) async {
     try {
       final data = {'content': content, 'rating': rating};
 
@@ -116,7 +117,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
   }
 
   @override
-  Future<DataState<List<InvoiceModel>>> getOwnBooking(String userId) async {
+  Future<DataState<List<InvoiceModel>>> getOwnBooking(userId) async {
     const secureStorage = FlutterSecureStorage();
     final accessToken = await secureStorage.read(key: 'access_token');
 
@@ -161,7 +162,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
   }
 
   @override
-  Future<DataState<ProviderModel>> getInfoProvider(String providerId) async {
+  Future<DataState<ProviderModel>> getInfoProvider(providerId) async {
     try {
       final response = await DioHelper.dio.get(
         '/provider/detail/$providerId',
@@ -224,8 +225,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
   }
 
   @override
-  Future<DataState<dynamic>> requestRefund(
-      String bookingId, String reason) async {
+  Future<DataState<dynamic>> requestRefund(bookingId, reason) async {
     try {
       final data = {
         "booking_id": bookingId,
@@ -251,7 +251,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
   }
 
   @override
-  Future<DataState<List<TourVoucherModel>>> getVoucher(String tourId) async {
+  Future<DataState<List<TourVoucherModel>>> getVoucher(tourId) async {
     try {
       final query = {"tour": tourId};
       List<TourVoucherModel> vouchers = [];
@@ -280,8 +280,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
   }
 
   @override
-  Future<DataState<TourCheckBookingModel>> getCheckingTour(
-      String tourId) async {
+  Future<DataState<TourCheckBookingModel>> getCheckingTour(tourId) async {
     try {
       final response = await DioHelper.dio.get('/pricing/byTour/$tourId');
 

@@ -12,6 +12,7 @@ class BookingModel extends BookingEntity {
     DateTime? selectedDate,
     DateTime? returnDate,
     String? timeSlot,
+    String? commissionRate,
     //booking return
     String? userId,
     String? bookingId,
@@ -39,6 +40,7 @@ class BookingModel extends BookingEntity {
           selectedDate: selectedDate,
           returnDate: returnDate,
           timeSlot: timeSlot,
+          commissionRate: commissionRate,
           //booking return
           userId: userId,
           bookingId: bookingId,
@@ -69,6 +71,7 @@ class BookingModel extends BookingEntity {
       selectedDate: DateTime.parse(json['selected_date']),
       returnDate: DateTime.parse(json['return_date']),
       timeSlot: json['timeSlot'] ?? "time_slot",
+      // commissionRate: json['commission_rate'],
       //booking return
       userId: json['user_id'] ?? "userId",
       bookerName: json['booker_name'] ?? "bookerName",

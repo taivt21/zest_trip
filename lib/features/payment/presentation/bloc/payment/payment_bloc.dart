@@ -32,7 +32,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     });
     on<CreateBooking>((event, emit) async {
       final dataState = await _createBookingUseCase.call(
-          event.bookingEntity, event.redirectUrl ?? "", event.voucherId ?? -1);
+          event.bookingEntity, event.redirectUrl ?? "", event.voucherId ?? -1, event.location ?? "");
       if (dataState is DataSuccess) {
         emit(BookTourSuccess(dataState.data));
       } else if (dataState is DataFailed) {

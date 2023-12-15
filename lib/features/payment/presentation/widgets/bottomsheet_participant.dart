@@ -67,7 +67,7 @@ class _ParticipantBottomSheetState extends State<ParticipantBottomSheet> {
               _handleSaveButtonPress(context);
             },
             child: const Text(
-              "Send",
+              "Save",
               style:
                   TextStyle(decoration: TextDecoration.underline, fontSize: 15),
             ),

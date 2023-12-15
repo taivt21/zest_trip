@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/report_provider/report_provider_bloc.dart';
-import 'package:zest_trip/get_it.dart';
 
 class ReportModal extends StatefulWidget {
   final String providerId;
@@ -31,14 +30,14 @@ class _ReportModalState extends State<ReportModal> {
           Fluttertoast.showToast(
             msg: "Report provider success",
             toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
+            gravity: ToastGravity.TOP,
           );
           Navigator.pop(context);
         } else if (state is ReportProviderFail) {
           Fluttertoast.showToast(
             msg: "${state.error?.response?.data?["message"]}",
             toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
+            gravity: ToastGravity.TOP,
           );
         }
       },
@@ -61,11 +60,19 @@ class _ReportModalState extends State<ReportModal> {
           actions: [
             TextButton(
               onPressed: () {
-                context.read<ReportProviderBloc>().add(ReportProvider(
-                      providerId: widget.providerId,
-                      reason: reasonController.text,
-                      type: _selectedType,
-                    ));
+                _selectedType.isNotEmpty || _selectedType != ""
+                    ? context.read<ReportProviderBloc>().add(ReportProvider(
+                          providerId: widget.providerId,
+                          reason: reasonController.text,
+                          type: _selectedType,
+                        ))
+                    : ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Please select a type report!',
+                          ),
+                        ),
+                      );
               },
               child: const Text(
                 "Send",

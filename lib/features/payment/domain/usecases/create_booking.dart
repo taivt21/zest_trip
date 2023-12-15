@@ -7,9 +7,9 @@ class CreateBookingUseCase {
 
   CreateBookingUseCase(this._repository);
 
-  Future<DataState<dynamic>> call(
-      BookingEntity bookingEntity, String redirectUrl, int voucherId) async {
+  Future<DataState<dynamic>> call(BookingEntity bookingEntity,
+      String redirectUrl, int voucherId, String location) async {
     return await _repository.createBooking(
-        bookingEntity, redirectUrl, voucherId);
+        bookingEntity, redirectUrl, voucherId, location);
   }
 }

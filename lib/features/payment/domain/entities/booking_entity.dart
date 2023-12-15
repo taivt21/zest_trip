@@ -15,6 +15,7 @@ class BookingEntity extends Equatable {
   final String? refundImage;
   final String? refundReason;
   final String? timeSlot;
+  final String? commissionRate;
 
   final String? bookingId;
   final String? userId;
@@ -41,6 +42,7 @@ class BookingEntity extends Equatable {
     this.selectedDate,
     this.returnDate,
     this.timeSlot,
+    this.commissionRate,
     //booking return
     this.userId,
     this.bookingId,
@@ -73,6 +75,7 @@ class BookingEntity extends Equatable {
         timeSlot,
         refundAmount,
         refundImage,
-        refundReason
+        refundReason,
+        commissionRate
       ];
 }

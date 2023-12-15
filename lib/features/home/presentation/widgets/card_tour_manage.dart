@@ -231,6 +231,7 @@ class CardTourManage extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => RefundScreen(
+                                    commissionRate: invoice.commissionRate!,
                                     refundAmount:
                                         invoice.refundAmount ?? "refundAmount",
                                     bookingId: invoice.id!,
@@ -319,8 +320,7 @@ bool canReview(InvoiceEntity invoice) {
   bookDate = DateTime(bookDate.year, bookDate.month, bookDate.day);
   // print("now: $now, bookDate: $bookDate");
 
-  return now.isAfter(bookDate) ||
-      now.isAtSameMomentAs(bookDate) &&
-          invoice.status?.toLowerCase() == "accepted" &&
-          !invoice.isReviewed!;
+  return (now.isAfter(bookDate) || now.isAtSameMomentAs(bookDate)) &&
+      invoice.status?.toLowerCase() == "accepted" &&
+      invoice.isReviewed! == false;
 }

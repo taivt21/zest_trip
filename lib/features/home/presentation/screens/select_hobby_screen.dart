@@ -284,7 +284,7 @@ class _SelectHobbyScreenState extends State<SelectHobbyScreen> {
                         if (listProvince.length < 5) {
                           listProvince.add(province.name!);
                         } else {
-                          // Hiển thị thông báo hoặc xử lý khi đạt đến giới hạn
+                        
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(

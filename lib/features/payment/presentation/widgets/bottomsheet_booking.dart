@@ -63,6 +63,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                         totalChildren: state.payment!["customerPayment"]
                             ["children_price"],
                         refundBefore: widget.tour.refundBefore!,
+                        locations: widget.tour.departureLocation?["location"]!,
                         orderEntity: BookingEntity(
                           tourId: widget.tour.id!,
                           tourName: widget.tour.name!,
@@ -561,20 +562,24 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
 
     if (tourAvailability != null && tourAvailability.isNotEmpty) {
       for (var availability in tourAvailability) {
-        DateTime startDate = availability.validityDateRangeFrom!;
-        DateTime endDate = availability.validityDateRangeTo!;
-        for (var date = startDate;
-            date.isBefore(endDate.add(const Duration(days: 1)));
-            date = date.add(const Duration(days: 1))) {
-          if (availability.weekdays!.any((weekday) =>
-                  date.weekday ==
-                      convertApiWeekdayToFlutterWeekday(weekday.day!) &&
-                  (date.isAfter(currentDate) ||
-                      date.isAtSameMomentAs(currentDate))) &&
-              (widget.tour.blockDate == null ||
-                  !widget.tour.blockDate!.contains(date))) {
-            validDates.add(date);
+        if (availability.status?.toUpperCase() == "ACTIVE") {
+          DateTime startDate = availability.validityDateRangeFrom!;
+          DateTime endDate = availability.validityDateRangeTo!;
+          for (var date = startDate;
+              date.isBefore(endDate.add(const Duration(days: 1)));
+              date = date.add(const Duration(days: 1))) {
+            if (availability.weekdays!.any((weekday) =>
+                    date.weekday ==
+                        convertApiWeekdayToFlutterWeekday(weekday.day!) &&
+                    (date.isAfter(currentDate) ||
+                        date.isAtSameMomentAs(currentDate))) &&
+                (widget.tour.blockDate == null ||
+                    !widget.tour.blockDate!.contains(date))) {
+              validDates.add(date);
+            }
           }
+        } else {
+          return validDates;
         }
       }
     }

@@ -427,7 +427,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                           ),
                           const SizedBox(height: 8),
                           const Titles(
-                            title: "Convetrate places",
+                            title: "Departure location",
                           ),
 
                           const SizedBox(
@@ -457,10 +457,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                           text: TextSpan(
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyMedium
-                                                ?.copyWith(
-                                                  fontSize: 16,
-                                                ),
+                                                .bodyMedium,
                                             children: [
                                               TextSpan(
                                                 text:
@@ -471,7 +468,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                               ),
                                               TextSpan(
                                                 text:
-                                                    ' ${location.value?["deparute"]} - at ${location.value?["time"]}',
+                                                    ' ${location.value?["deparute"]} - at ${location.value?["time"]} ${NumberFormatter.checkAmPm(location.value?["time"])}',
                                               ),
                                             ],
                                           ),

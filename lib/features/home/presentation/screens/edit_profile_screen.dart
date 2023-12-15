@@ -129,7 +129,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                           .add(UploadImageEvent(pickedFile));
                                     } else {
                                       // Người dùng đã hủy chọn ảnh
-                                      // Có thể bạn muốn thực hiện một số hành động khác ở đây
                                       // print('User canceled image picking');
                                     }
                                   } catch (e) {

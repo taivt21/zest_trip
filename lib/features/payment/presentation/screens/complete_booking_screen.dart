@@ -21,12 +21,14 @@ class CompleteBookingScreen extends StatefulWidget {
   final int refundBefore;
   final int totalAdult;
   final int totalChildren;
+  final List<dynamic> locations;
   const CompleteBookingScreen({
     Key? key,
     required this.orderEntity,
     required this.refundBefore,
     required this.totalAdult,
     required this.totalChildren,
+    required this.locations,
   }) : super(key: key);
 
   @override
@@ -44,6 +46,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
   int? paid;
   int? priceAdult;
   int? priceChildren;
+  String? selectedLocation;
 
   @override
   void initState() {
@@ -63,6 +66,12 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
             .payment?["customerPayment"]["children_price"] ??
         0;
     discountedAmount = paid!;
+
+    if (widget.locations.isNotEmpty) {
+      final firstLocation = widget.locations[0];
+      selectedLocation =
+          '${firstLocation["deparute"] ?? ''} - ${firstLocation["time"] ?? ''}';
+    }
     super.initState();
   }
 
@@ -161,61 +170,58 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                     color: colorLightGrey,
                   ),
                   // Start Participant details
+                  _detailPayment(state),
+                  Container(
+                    height: 8,
+                    color: colorLightGrey,
+                  ),
+                  // Start Participant details
                   Container(
                     padding: const EdgeInsets.all(spaceBody / 2),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Titles(title: "Details payment"),
+                        const Titles(title: "Select departure location"),
                         const SizedBox(
                           height: 4,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("x${widget.totalAdult} Adult"),
-                            Text(
-                              state is CheckSuccess
-                                  ? "${NumberFormatter.format(priceAdult!)} ₫"
-                                  : "",
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("x${widget.totalChildren} Children"),
-                            Text(
-                              state is CheckSuccess
-                                  ? "${NumberFormatter.format(priceChildren!)} ₫"
-                                  : "",
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("DISCOUNT voucher"),
-                            Text(
-                                "- ${NumberFormatter.format(totalDiscount)} đ"),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Total amount:"),
-                            Text(
-                                "${NumberFormatter.format(discountedAmount)} ₫"),
-                          ],
+                        Column(
+                          children:
+                              (widget.locations.cast<Map<String, dynamic>>())
+                                  .asMap()
+                                  .entries
+                                  .map((location) {
+                            // final index = location.key;
+                            final combinedValue =
+                                '${location.value["deparute"] ?? ''} - ${location.value["time"] ?? ''}';
+                            final isFirst = location.key == 0;
+                            return RadioListTile<String>(
+                              autofocus: isFirst,
+                              contentPadding: const EdgeInsets.all(0),
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    location.value["deparute"] ?? '',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  Text(
+                                    "At: ${location.value["time"]} ${NumberFormatter.checkAmPm(location.value["time"])}",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ],
+                              ),
+                              value: combinedValue,
+                              groupValue: selectedLocation,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedLocation = value;
+                                });
+                              },
+                            );
+                          }).toList(),
                         ),
                         const SizedBox(
                           height: 4,
@@ -248,9 +254,10 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                                   height:
                                       MediaQuery.of(context).size.height * 0.9,
                                   child: ParticipantBottomSheet(
-                                      fullname: fullname,
-                                      email: email,
-                                      phone: phone),
+                                    fullname: fullname,
+                                    email: email,
+                                    phone: phone,
+                                  ),
                                 );
                               },
                             );
@@ -262,7 +269,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                               color: primaryColor,
                             ),
                             label: Text(
-                              "Add",
+                              "Edit",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -271,7 +278,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                                       fontWeight: FontWeight.bold),
                             ),
                             avatar: const Icon(
-                              Icons.add,
+                              Icons.edit,
                               color: primaryColor,
                               weight: 700,
                             ),
@@ -403,7 +410,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                     ),
                   ),
                   Container(
-                    height: 80,
+                    height: 50,
                   )
                 ],
               ),
@@ -411,12 +418,12 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
           },
         ),
         bottomNavigationBar: BottomAppBar(
-          height: MediaQuery.of(context).size.height * 0.15,
-          child: SizedBox.expand(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          height: MediaQuery.of(context).size.height * 0.12,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Row(
                   children: [
                     Text(
                       "Paid:",
@@ -424,43 +431,103 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                     ),
                     Text(
                       " ${NumberFormatter.format(discountedAmount)} ₫",
-                      style:
-                          Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ],
                 ),
-                ElevatedButtonCustom(
-                  onPressed: () {
-                    if (fullname == "" || phone == "" || email == "") {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content:
-                            Text("Please fill full the information contact!"),
-                      ));
-                    } else {
-                      BookingEntity bookingEntity = BookingEntity(
-                        bookerName: fullname,
-                        bookerPhone: phone,
-                        bookerEmail: email,
-                        adult: widget.orderEntity.adult,
-                        children: widget.orderEntity.children ?? 0,
-                        selectedDate: widget.orderEntity.selectedDate,
-                        tourId: widget.orderEntity.tourId,
-                      );
+              ),
+              ElevatedButtonCustom(
+                onPressed: () {
+                  if (fullname == "" || phone == "" || email == "") {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content:
+                          Text("Please fill full the information contact!"),
+                    ));
+                  } else {
+                    BookingEntity bookingEntity = BookingEntity(
+                      bookerName: fullname,
+                      bookerPhone: phone,
+                      bookerEmail: email,
+                      adult: widget.orderEntity.adult,
+                      children: widget.orderEntity.children ?? 0,
+                      selectedDate: widget.orderEntity.selectedDate,
+                      tourId: widget.orderEntity.tourId,
+                    );
 
-                      context.read<PaymentBloc>().add(CreateBooking(
-                            bookingEntity: bookingEntity,
-                            voucherId: appliedVoucherId,
-                          ));
-                    }
-                  },
-                  text: "Go to payment",
-                ),
-              ],
-            ),
+                    context.read<PaymentBloc>().add(CreateBooking(
+                          bookingEntity: bookingEntity,
+                          voucherId: appliedVoucherId,
+                          location: selectedLocation,
+                        ));
+                  }
+                },
+                text: "Go to payment",
+              ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+
+  Container _detailPayment(PaymentState state) {
+    return Container(
+      padding: const EdgeInsets.all(spaceBody / 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Titles(title: "Details payment"),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("x${widget.totalAdult} Adult"),
+              Text(
+                state is CheckSuccess
+                    ? "${NumberFormatter.format(priceAdult!)} ₫"
+                    : "",
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("x${widget.totalChildren} Children"),
+              Text(
+                state is CheckSuccess
+                    ? "${NumberFormatter.format(priceChildren!)} ₫"
+                    : "",
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("DISCOUNT voucher"),
+              Text("- ${NumberFormatter.format(totalDiscount)} đ"),
+            ],
+          ),
+          const SizedBox(
+            height: 4,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text("Total amount:"),
+              Text("${NumberFormatter.format(discountedAmount)} ₫"),
+            ],
+          ),
+        ],
       ),
     );
   } // Hàm hiển thị thông tin người tham gia lên UI

@@ -22,10 +22,12 @@ class CreateBooking extends PaymentEvent {
 
   final String? redirectUrl;
   final int? voucherId;
+  final String? location;
 
   const CreateBooking({
     required this.bookingEntity,
     this.redirectUrl,
     this.voucherId,
+    this.location,
   });
 }

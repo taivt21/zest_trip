@@ -34,7 +34,7 @@ class _CouponWidgetState extends State<CouponWidget> {
         ),
         child: Container(
           decoration: BoxDecoration(
-            color: fourthColor,
+            color: const Color(0xffFFC436),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
@@ -117,8 +117,7 @@ class _CouponWidgetState extends State<CouponWidget> {
                         Text(
                           // Used ${_calculatePercentageUsed()}%,
                           "Date expired: ${_formatDate(widget.voucher.expiredDate)}",
-                          style: textTheme.titleSmall!
-                              .copyWith(color: colorWarning),
+                          style: textTheme.titleSmall!,
                         ),
                         _buildVoucherStatus(),
                       ],
@@ -143,20 +142,38 @@ class _CouponWidgetState extends State<CouponWidget> {
             ?.copyWith(color: Colors.grey),
       );
     } else if (DateTime.now().isAfter(widget.voucher.expiredDate!)) {
-      return Text(
-        "Out of date",
-        style: Theme.of(context)
-            .textTheme
-            .titleSmall
-            ?.copyWith(color: Colors.grey),
+      return Row(
+        children: [
+          const Icon(
+            Icons.info_outline,
+            color: colorError,
+            size: 14,
+          ),
+          Text(
+            "Out of date",
+            style: Theme.of(context)
+                .textTheme
+                .titleSmall
+                ?.copyWith(color: colorError),
+          ),
+        ],
       );
     } else if (widget.paid < widget.voucher.applyConditions?["minimum_price"]) {
-      return Text(
-        "The minimum booking value is not enough",
-        style: Theme.of(context)
-            .textTheme
-            .titleSmall
-            ?.copyWith(color: Colors.grey),
+      return Row(
+        children: [
+          const Icon(
+            Icons.info_outline,
+            color: colorError,
+            size: 14,
+          ),
+          Text(
+            " The minimum booking value is not enough",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: colorError),
+          ),
+        ],
       );
     } else {
       return const SizedBox.shrink();
