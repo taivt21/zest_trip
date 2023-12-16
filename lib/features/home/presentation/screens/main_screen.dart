@@ -8,6 +8,7 @@ import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
 import 'package:zest_trip/features/home/presentation/blocs/banner/banner_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tag_popular/tag_popular_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_sponsore/tour_sponsore_bloc.dart';
@@ -27,6 +28,9 @@ class MainScreen extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
+        BlocProvider<BannerBloc>(
+          create: (context) => sl()..add(const GetBanner()),
+        ),
         BlocProvider<TourRecommendLocationBloc>(
           create: (context) => sl()..add(const GetToursRcmLocation()),
         ),
@@ -36,8 +40,8 @@ class MainScreen extends StatelessWidget {
         BlocProvider<TourSponsoreBloc>(
           create: (context) => sl()..add(const GetToursSponsore()),
         ),
-        BlocProvider<BannerBloc>(
-          create: (context) => sl()..add(const GetBanner()),
+        BlocProvider<TagPopularBloc>(
+          create: (context) => sl()..add(const GetPopularTag()),
         ),
       ],
       child: Scaffold(
@@ -207,27 +211,27 @@ class MainScreen extends StatelessWidget {
                         ],
                       ),
                       BlocBuilder<TourRecommendTagBloc, TourRecommendTagState>(
-                        builder: (context, state) {
-                          if (state is GetToursRcmTagSuccess) {
+                        builder: (context, rcmTagState) {
+                          if (rcmTagState is GetToursRcmTagSuccess) {
                             return SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: List.generate(
-                                  state.tours?.length ?? 0,
+                                  rcmTagState.tours?.length ?? 0,
                                   (index) => GestureDetector(
                                     onTap: () {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               TourDetailScreen(
-                                                  tourId:
-                                                      state.tours![index].id!),
+                                                  tourId: rcmTagState
+                                                      .tours![index].id!),
                                         ),
                                       );
                                     },
                                     child: CardRecommendLocation(
-                                      tour: state.tours![index],
+                                      tour: rcmTagState.tours![index],
                                       width: widthScreen * 0.35,
                                     ),
                                   ),
@@ -283,27 +287,27 @@ class MainScreen extends StatelessWidget {
                         ],
                       ),
                       BlocBuilder<TourSponsoreBloc, TourSponsoreState>(
-                        builder: (context, state) {
-                          if (state is GetToursSponsoreSuccess) {
+                        builder: (context, sponsoreState) {
+                          if (sponsoreState is GetToursSponsoreSuccess) {
                             return SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: List.generate(
-                                  state.tours?.length ?? 0,
+                                  sponsoreState.tours?.length ?? 0,
                                   (index) => GestureDetector(
                                     onTap: () {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               TourDetailScreen(
-                                                  tourId:
-                                                      state.tours![index].id!),
+                                                  tourId: sponsoreState
+                                                      .tours![index].id!),
                                         ),
                                       );
                                     },
                                     child: CardRecommendLocation(
-                                      tour: state.tours![index],
+                                      tour: sponsoreState.tours![index],
                                       width: widthScreen * 0.35,
                                     ),
                                   ),

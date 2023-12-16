@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/domain/entities/auth_user.dart';
 import 'package:zest_trip/features/authentication/domain/usecases/authentication_usecase.dart';
+import 'package:zest_trip/features/authentication/domain/usecases/update_profile_usecase.dart';
 import 'package:zest_trip/features/authentication/domain/usecases/upload_image_usecase.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_event.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_state.dart';
@@ -19,6 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final VerificationEmailUseCase _verificationEmailUseCase;
   final GetUserUseCase _getUserUseCase;
   final UploadImageUseCase _uploadImageUseCase;
+  final UpdateProfileUseCase _uploadProfileUseCase;
 
   AuthBloc(
     this._logoutUseCase,
@@ -29,6 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._verificationEmailUseCase,
     this._getUserUseCase,
     this._uploadImageUseCase,
+    this._uploadProfileUseCase,
   ) : super(AuthLoading()) {
     on<LoginWithEmailAndPasswordEvent>((event, emit) async {
       emit(AuthLoading());
@@ -134,9 +137,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (await googleSignIn.isSignedIn()) {
         // Nếu đăng nhập bằng Google, thực hiện đăng xuất Google trước
         await googleSignIn.signOut();
+        await FirebaseAuth.instance.signOut();
       }
       // Sau đó, thực hiện đăng xuất Firebase
-      await FirebaseAuth.instance.signOut();
+
       // final result = await _logoutUseCase.call();
       // if (result is DataSuccess) {
       emit(AuthLoggedOut());
@@ -167,6 +171,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(UserUploadSuccess());
         // final result = await _getUserUseCase.call();
         // emit(AuthSuccess(result.data!));
+      }
+      if (dataState is DataFailed) {
+        emit(UserUploadFail(dataState.error!));
+      }
+      final result = await _getUserUseCase.call();
+      emit(AuthSuccess(result.data!));
+    });
+    on<UpdateProfileEvent>((event, emit) async {
+      final dataState = await _uploadProfileUseCase.call(
+          event.fullname!, event.phone!, event.dob!, event.gender!);
+
+      if (dataState is DataSuccess) {
+        emit(UserUploadSuccess());
+       
       }
       if (dataState is DataFailed) {
         emit(UserUploadFail(dataState.error!));

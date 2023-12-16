@@ -116,7 +116,7 @@ class _ParticipantBottomSheetState extends State<ParticipantBottomSheet> {
                           Flexible(
                             flex: 8,
                             child: TextFormField(
-                              keyboardType: TextInputType.phone,
+                              keyboardType: TextInputType.number,
                               controller: phoneNumberController,
                               decoration: const InputDecoration(
                                 labelText: 'Phone',

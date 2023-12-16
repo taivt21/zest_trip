@@ -24,6 +24,7 @@ class InvoiceEntity extends Equatable {
   final String? refundImage;
   final bool? isReviewed;
   final String? commissionRate;
+  final String? departureLocation;
 
   final List<TicketOnBookingEntity>? ticketOnBooking;
   final TourEntity? tour;
@@ -52,6 +53,7 @@ class InvoiceEntity extends Equatable {
     this.ticketOnBooking,
     this.tour,
     this.commissionRate,
+    this.departureLocation,
     // this.provider,
   });
 
@@ -78,6 +80,6 @@ class InvoiceEntity extends Equatable {
         tour,
         // provider,
         isReviewed,
-        commissionRate,
+        commissionRate, departureLocation,
       ];
 }

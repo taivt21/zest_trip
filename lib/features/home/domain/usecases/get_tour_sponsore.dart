@@ -8,17 +8,7 @@ class GetTourSponsoreUseCase {
 
   GetTourSponsoreUseCase(this._tourRepository);
 
-  Future<DataState<List<TourEntity>>> call(
-      {String? search,
-      int? page,
-      int? limit,
-      String? orderBy,
-      Set<int>? tagIds}) {
-    return _tourRepository.getAllToursSponsore(
-        limit: limit,
-        search: search,
-        page: page,
-        orderBy: orderBy,
-        tagIds: tagIds);
+  Future<DataState<List<TourEntity>>> call() {
+    return _tourRepository.getAllToursSponsore();
   }
 }

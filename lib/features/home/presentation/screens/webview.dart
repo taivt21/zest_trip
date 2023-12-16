@@ -52,16 +52,29 @@ class MyWebViewState extends State<MyWebView> {
             // ''');
           },
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://google.com')) {
-              // debugPrint('blocking navigation to ${request.url}');
-              Fluttertoast.showToast(
-                msg: "Booking success!",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-              );
-              Navigator.pushNamedAndRemoveUntil(
-                  context, AppRoutes.thanksBooking, (route) => false);
-              return NavigationDecision.prevent;
+            if (request.url.startsWith('https://www.google.com')) {
+              Uri uri = Uri.parse(request.url);
+              String responseCode = uri.queryParameters['vnp_ResponseCode']!;
+
+              if (responseCode == '24') {
+                Fluttertoast.showToast(
+                  msg: "Booking fail!",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                );
+                Navigator.pushNamedAndRemoveUntil(
+                    context, AppRoutes.failBooking, (route) => false);
+                return NavigationDecision.prevent;
+              } else {
+                Fluttertoast.showToast(
+                  msg: "Booking success!",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                );
+                Navigator.pushNamedAndRemoveUntil(
+                    context, AppRoutes.thanksBooking, (route) => false);
+                return NavigationDecision.prevent;
+              }
             }
             return NavigationDecision.navigate;
           },
@@ -82,21 +95,21 @@ class MyWebViewState extends State<MyWebView> {
       child: Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () async {
-                bool? confirmExit = await DialogUtils.showConfirmDialog(
-                  context,
-                  title: 'Confirm exit',
-                  content: 'Your booking will be cancelled!',
-                  noText: 'Cancel',
-                  yesText: 'Confirm',
-                );
-                if (confirmExit != null && confirmExit) {
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
+            // leading: IconButton(
+            //   icon: const Icon(Icons.arrow_back),
+            //   onPressed: () async {
+            //     bool? confirmExit = await DialogUtils.showConfirmDialog(
+            //       context,
+            //       title: 'Confirm exit',
+            //       content: 'Your booking will be cancelled!',
+            //       noText: 'Cancel',
+            //       yesText: 'Confirm',
+            //     );
+            //     if (confirmExit != null && confirmExit && mounted) {
+            //       Navigator.of(context).pop();
+            //     }
+            //   },
+            // ),
             automaticallyImplyLeading: false,
             title: Text(widget.title),
             actions: const [],

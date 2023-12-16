@@ -54,6 +54,14 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     return BlocListener<PaymentBloc, PaymentState>(
       listener: (context, state) {
         if (state is CheckSuccess) {
+          if (_totalPriceAdult + _totalPriceChildren !=
+              state.payment!["customerPayment"]["paid_price"]) {
+            Fluttertoast.showToast(
+              msg: "Price ticket has changed by provider",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.TOP,
+            );
+          }
           Navigator.push(
               context,
               MaterialPageRoute(

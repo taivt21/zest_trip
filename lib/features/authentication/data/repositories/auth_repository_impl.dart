@@ -49,7 +49,6 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return DataSuccess<void>(null);
     } on DioException catch (e) {
-      // Nếu xảy ra lỗi trong quá trình đăng xuất, trả về DataFailed với thông báo lỗi
       return DataFailed(e);
     }
   }
@@ -67,5 +66,11 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<DataState<void>> uploadImage(XFile file) {
     return _authApiService.uploadImage(file);
+  }
+
+  @override
+  Future<DataState<bool>> uploadProfile(
+      String fullname, String phone, DateTime dob, String gender) {
+    return _authApiService.uploadProfile(fullname, phone, dob, gender);
   }
 }

@@ -1,6 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+
 import 'package:zest_trip/config/routes/routes.dart';
 import 'package:zest_trip/config/theme/custom_elevated_button.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
@@ -8,15 +10,33 @@ import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
 
 class ThankYouPage extends StatefulWidget {
-  const ThankYouPage({Key? key, required this.title}) : super(key: key);
+  const ThankYouPage({
+    Key? key,
+    required this.title,
+    required this.isFail,
+  }) : super(key: key);
 
   final String title;
+  final bool isFail;
 
   @override
   State<ThankYouPage> createState() => _ThankYouPageState();
 }
 
 class _ThankYouPageState extends State<ThankYouPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(const Duration(seconds: 10), () {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.home,
+        (route) => false,
+      );
+    });
+  }
+
   double screenWidth = 600;
   double screenHeight = 400;
 
@@ -42,7 +62,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
                   ),
                 ),
                 Text(
-                  "Thank You!",
+                  widget.title,
                   style: TextStyle(
                     color: secondaryColor,
                     fontWeight: FontWeight.w600,
@@ -51,7 +71,9 @@ class _ThankYouPageState extends State<ThankYouPage> {
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 Text(
-                  "Payment successfully!",
+                  widget.isFail
+                      ? "Thank you and see you next time!"
+                      : "Payment successfully!",
                   style: TextStyle(
                     color: Colors.black87,
                     fontWeight: FontWeight.w400,
@@ -69,26 +91,28 @@ class _ThankYouPageState extends State<ThankYouPage> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.06),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              HomeScreen(initialPageIndex: 2)),
-                      (route) => false,
-                    );
-                  },
-                  child: Text(
-                    'View your booking',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: primaryColor,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
+                !widget.isFail
+                    ? TextButton(
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    HomeScreen(initialPageIndex: 2)),
+                            (route) => false,
+                          );
+                        },
+                        child: Text(
+                          'View your booking',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: primaryColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                        ),
+                      )
+                    : SizedBox.shrink(),
                 ElevatedButtonCustom(
                   backgroundColor: primaryColor,
                   text: 'Home',

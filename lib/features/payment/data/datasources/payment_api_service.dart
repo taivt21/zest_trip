@@ -67,16 +67,17 @@ class PaymentApiServiceImpl implements PaymentApiService {
           "adult": bookingModel.adult,
           "children": bookingModel.children,
         },
-        "selected_date": bookingModel.selectedDate.toString(),
+        "selected_date": DateFormat('yyyy-MM-dd')
+            .format(bookingModel.selectedDate!)
+            .toString(),
         "tour_id": bookingModel.tourId,
         "redirectUrl": "https://google.com",
         "departure_location": location,
       };
-
+      print("create booking: $data");
       if (voucherId != -1) {
         data["voucher_id"] = voucherId;
       }
-      print("data create: $data");
       final response =
           await DioHelper.dio.post('/booking/bookTour', data: data);
       if (response.statusCode == 201) {

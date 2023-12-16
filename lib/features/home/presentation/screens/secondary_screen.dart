@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/home/data/models/tour_tag.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tag_popular/tag_popular_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/district/district_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/province/province_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_resource/tags/tour_tag_bloc.dart';
@@ -101,6 +102,9 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
         BlocProvider<TourVehicleBloc>(
           create: (context) => sl()..add(const GetTourVehicles()),
         ),
+        BlocProvider<TagPopularBloc>(
+          create: (context) => sl()..add(const GetPopularTag()),
+        ),
       ],
       child: SafeArea(
         child: Scaffold(
@@ -144,8 +148,8 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
                                       BlocProvider.of<RemoteTourBloc>(context);
                                   remoteTourBloc.add(const ClearTour());
                                   remoteTourBloc.add(GetTours(
-                                    page: currentPage,
-                                    limit: limit,
+                                    // page: currentPage,
+                                    // limit: limit,
                                     tags: tagIds,
                                     search: search,
                                     province: province,
@@ -380,167 +384,183 @@ class _SecondaryScreenState extends State<SecondaryScreen> {
           builder: (context, tourTagState) {
             return BlocBuilder<TourVehicleBloc, TourVehicleState>(
               builder: (context, tourVehicleState) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    InkWell(
-                      onTap: () async {
-                        Map<String, dynamic>? result =
-                            await showModalBottomSheet(
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                return BlocBuilder<TagPopularBloc, TagPopularState>(
+                  builder: (context, tagPopularState) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            Map<String, dynamic>? result =
+                                await showModalBottomSheet(
+                              isScrollControlled: true,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              context: context,
+                              builder: (context) {
+                                return SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.9,
+                                  child: FilterBottomSheet(
+                                    listTags: tourTagState.tourTags ?? [],
+                                    listVehicle:
+                                        tourVehicleState.tourVehicles ?? [],
+                                    province: province,
+                                    district: district,
+                                    tagIds: tagIds,
+                                    vehicleIds: vehicleIds,
+                                    fromPrice: fromPrice,
+                                    toPrice: toPrice,
+                                  ),
+                                );
+                              },
+                            );
+
+                            if (result != null) {
+                              setState(() {
+                                tagIds = Set.from(result['selectedTags']);
+                                vehicleIds =
+                                    Set.from(result['selectedVehicles']);
+                                province = result['selectedProvince'];
+                                district = result['selectedDistrict'];
+                                fromPrice = result['selectedFrom'];
+                                toPrice = result['selectedTo'];
+                              });
+                              if (mounted) {
+                                final remoteTourBloc =
+                                    BlocProvider.of<RemoteTourBloc>(context);
+                                remoteTourBloc.add(const ClearTour());
+                                remoteTourBloc.add(
+                                  GetTours(
+                                    page: 1,
+                                    limit: limit,
+                                    tags: tagIds,
+                                    search: search,
+                                    province: province,
+                                    district: district,
+                                    lowPrice: fromPrice,
+                                    highPrice: toPrice,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: colorBackground,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.all(8.0),
+                            margin: const EdgeInsets.all(4),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.filter_alt_outlined,
+                                  color: colorBlack,
+                                ),
+                                Text(
+                                    "•${totalFilters(tagIds, vehicleIds, province, district)}")
+                              ],
+                            ),
                           ),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          context: context,
-                          builder: (context) {
-                            return SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.9,
-                              child: FilterBottomSheet(
-                                listTags: tourTagState.tourTags ?? [],
-                                listVehicle:
-                                    tourVehicleState.tourVehicles ?? [],
-                                province: province,
-                                district: district,
-                                tagIds: tagIds,
-                                vehicleIds: vehicleIds,
-                                fromPrice: fromPrice,
-                                toPrice: toPrice,
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: tourTagState.tourTags?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final TourTag tag = tourTagState.tourTags![index];
+                            final int tagId = tag.id!;
+                            String iconName = tag.name ?? 'default_icon';
+
+                            String iconAssetPath =
+                                'assets/icons/tags/$iconName.svg';
+
+                            List<dynamic> tags = tagPopularState.tags ?? [];
+                            List<int> highlightedIds = tags
+                                .map((dynamic value) => value as int)
+                                .toList();
+                            bool isHighlighted = highlightedIds.contains(tagId);
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4),
+                              child: FilterChip(
+                                backgroundColor: isHighlighted
+                                    ? Colors.amber[200]
+                                    : whiteColor,
+                                side: BorderSide(
+                                  color: tagIds.contains(tagId)
+                                      ? primaryColor
+                                      : colorBoldGrey!,
+                                  width: tagIds.contains(tagId) ? 2.5 : 1.0,
+                                ),
+                                selectedColor: isHighlighted
+                                    ? Colors.amber[50]
+                                    : whiteColor,
+                                showCheckmark: false,
+                                avatar: CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  child: SvgPicture.asset(
+                                    iconAssetPath,
+                                    height: 24,
+                                    width: 24,
+                                  ),
+                                ),
+                                // selectedColor: fourthColor,
+                                shape: const StadiumBorder(
+                                    side: BorderSide(
+                                  color: colorPlaceHolder,
+                                )),
+                                label: Text(tag.name ?? ""),
+                                selected: tagIds.contains(tagId),
+                                onSelected: (bool selected) {
+                                  final remoteTourBloc =
+                                      BlocProvider.of<RemoteTourBloc>(context);
+                                  setState(() {
+                                    if (selected) {
+                                      currentPage = 1;
+                                      tagIds.add(tagId);
+                                      remoteTourBloc.add(
+                                        const ClearTour(),
+                                      );
+                                      remoteTourBloc.add(
+                                        GetTours(
+                                          page: currentPage,
+                                          limit: limit,
+                                          tags: tagIds,
+                                          search: search,
+                                          province: province,
+                                          district: district,
+                                        ),
+                                      );
+                                    } else {
+                                      currentPage = 1;
+                                      tagIds.remove(tagId);
+                                      remoteTourBloc.add(
+                                        const ClearTour(),
+                                      );
+                                      remoteTourBloc.add(
+                                        GetTours(
+                                          page: currentPage,
+                                          limit: limit,
+                                          tags: tagIds,
+                                          search: search,
+                                          province: province,
+                                          district: district,
+                                        ),
+                                      );
+                                    }
+                                  });
+                                },
                               ),
                             );
                           },
-                        );
-
-                        if (result != null) {
-                          setState(() {
-                            tagIds = Set.from(result['selectedTags']);
-                            vehicleIds = Set.from(result['selectedVehicles']);
-                            province = result['selectedProvince'];
-                            district = result['selectedDistrict'];
-                            fromPrice = result['selectedFrom'];
-                            toPrice = result['selectedTo'];
-                          });
-                          if (mounted) {
-                            final remoteTourBloc =
-                                BlocProvider.of<RemoteTourBloc>(context);
-                            remoteTourBloc.add(const ClearTour());
-                            remoteTourBloc.add(
-                              GetTours(
-                                page: 1,
-                                limit: limit,
-                                tags: tagIds,
-                                search: search,
-                                province: province,
-                                district: district,
-                                lowPrice: fromPrice,
-                                highPrice: toPrice,
-                              ),
-                            );
-                          }
-                        }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: colorBackground,
-                          borderRadius: BorderRadius.circular(8),
                         ),
-                        padding: const EdgeInsets.all(8.0),
-                        margin: const EdgeInsets.all(4),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.filter_alt_outlined,
-                              color: colorBlack,
-                            ),
-                            Text(
-                                "•${totalFilters(tagIds, vehicleIds, province, district)}")
-                          ],
-                        ),
-                      ),
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: tourTagState.tourTags?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final TourTag tag = tourTagState.tourTags![index];
-                        final int tagId = tag.id!;
-                        String iconName = tag.name ?? 'default_icon';
-
-                        String iconAssetPath =
-                            'assets/icons/tags/$iconName.svg';
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: FilterChip(
-                            backgroundColor: whiteColor,
-                            side: BorderSide(
-                              color: tagIds.contains(tagId)
-                                  ? primaryColor
-                                  : colorBoldGrey!,
-                              width: tagIds.contains(tagId) ? 2.5 : 1.0,
-                            ),
-                            selectedColor: whiteColor,
-                            showCheckmark: false,
-                            avatar: CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              child: SvgPicture.asset(
-                                iconAssetPath,
-                                height: 24,
-                                width: 24,
-                              ),
-                            ),
-                            // selectedColor: fourthColor,
-                            shape: const StadiumBorder(
-                                side: BorderSide(
-                              color: colorPlaceHolder,
-                            )),
-                            label: Text(tag.name ?? ""),
-                            selected: tagIds.contains(tagId),
-                            onSelected: (bool selected) {
-                              final remoteTourBloc =
-                                  BlocProvider.of<RemoteTourBloc>(context);
-                              setState(() {
-                                if (selected) {
-                                  currentPage = 1;
-                                  tagIds.add(tagId);
-                                  remoteTourBloc.add(
-                                    const ClearTour(),
-                                  );
-                                  remoteTourBloc.add(
-                                    GetTours(
-                                      page: currentPage,
-                                      limit: limit,
-                                      tags: tagIds,
-                                      search: search,
-                                      province: province,
-                                      district: district,
-                                    ),
-                                  );
-                                } else {
-                                  currentPage = 1;
-                                  tagIds.remove(tagId);
-                                  remoteTourBloc.add(
-                                    const ClearTour(),
-                                  );
-                                  remoteTourBloc.add(
-                                    GetTours(
-                                      page: currentPage,
-                                      limit: limit,
-                                      tags: tagIds,
-                                      search: search,
-                                      province: province,
-                                      district: district,
-                                    ),
-                                  );
-                                }
-                              });
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                      ],
+                    );
+                  },
                 );
               },
             );

@@ -19,6 +19,8 @@ abstract class AuthApiService {
   Future<DataState<AuthUserModel>> getUser();
   Future<DataState<void>> logout();
   Future<DataState<bool>> uploadImage(XFile file);
+  Future<DataState<bool>> uploadProfile(
+      String fullname, String phone, DateTime dob, String gender);
 }
 
 class AuthApiServiceImpl implements AuthApiService {
@@ -228,6 +230,39 @@ class AuthApiServiceImpl implements AuthApiService {
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
           response: response.data,
+        ));
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<bool>> uploadProfile(
+      fullname, phoneNumber, dob, gender) async {
+    try {
+      final Map<String, dynamic> data = {
+        "phoneNumber": phoneNumber,
+        "dob": dob.toIso8601String(),
+        "gender": gender,
+      };
+      if (fullname != "") {
+        data["fullName"] = fullname;
+      }
+      print("data update: $data ");
+      final response = await DioHelper.dio.put(
+        '/users/me/update',
+        data: data,
+      );
+      print("response $response ");
+      if (response.statusCode == 200) {
+        return DataSuccess(true);
+      } else {
+        return DataFailed(DioException(
+          type: DioExceptionType.badResponse,
+          message: 'The request returned an '
+              'invalid status code of ${response.statusCode}.',
+          requestOptions: response.requestOptions,
         ));
       }
     } on DioException catch (e) {

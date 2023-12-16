@@ -28,6 +28,8 @@ abstract class AuthRepository {
   Future<DataState<AuthUser>> getUser();
 
   Future<DataState<void>> uploadImage(XFile file);
+  Future<DataState<bool>> uploadProfile(
+      String fullname, String phone, DateTime dob, String gender);
 }
 
 // This is crucial for the Clean Architecture's goal of separation

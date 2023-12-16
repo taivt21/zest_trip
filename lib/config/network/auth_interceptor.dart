@@ -12,7 +12,6 @@ class AuthInterceptor extends Interceptor {
     if (options.path == '/tour') {
       return handler.next(options);
     }
-
     // if (accessToken == null) {
     //   return handler.next(options);
     // }

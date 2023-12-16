@@ -163,23 +163,18 @@ class TourRepositoryImpl implements TourRepository {
   }
 
   @override
-  Future<DataState<List<TourEntity>>> getAllToursSponsore(
-      {String? search,
-      int? page,
-      int? limit,
-      String? orderBy,
-      Set<int>? tagIds}) async {
-    return await _tourApiService.getAllToursRcmSearch(
-        page: page,
-        limit: limit,
-        search: search,
-        orderBy: orderBy,
-        tagIds: tagIds);
+  Future<DataState<List<TourEntity>>> getAllToursSponsore() async {
+    return await _tourApiService.getAllToursSponsore();
   }
 
   @override
   Future<DataState<List<dynamic>>> getPopularLocation() async {
     return await _tourApiService.getPopularLocation();
+  }
+
+  @override
+  Future<DataState<List<dynamic>>> getPopularTag() async {
+    return await _tourApiService.getPopularTag();
   }
 
   @override
@@ -196,9 +191,9 @@ class TourRepositoryImpl implements TourRepository {
   Future<DataState<TourEntity>> getTourDetail(String tourId) async {
     return await _tourApiService.getTourDetail(tourId);
   }
-  
+
   @override
-  Future<DataState<String>> getBanner()async {
-     return await _tourApiService.getBanner();
+  Future<DataState<String>> getBanner() async {
+    return await _tourApiService.getBanner();
   }
 }

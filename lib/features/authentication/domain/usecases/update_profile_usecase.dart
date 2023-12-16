@@ -1,13 +1,13 @@
-import 'package:image_picker/image_picker.dart';
 import 'package:zest_trip/config/utils/resources/data_state.dart';
 import 'package:zest_trip/features/authentication/domain/repositories/auth_repository.dart';
 
-class UpdateProfileImageUseCase {
+class UpdateProfileUseCase {
   final AuthRepository _userRepository;
 
-  UpdateProfileImageUseCase(this._userRepository);
+  UpdateProfileUseCase(this._userRepository);
 
-  Future<DataState<void>> call(XFile file) async {
-    return await _userRepository.uploadImage(file);
+  Future<DataState<bool>> call(
+      String fullname, String phone, DateTime dob, String gender) async {
+    return await _userRepository.uploadProfile(fullname, phone, dob, gender);
   }
 }

@@ -435,6 +435,7 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                           ),
 
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: (tourDetailState.tour
                                             ?.departureLocation?["location"]
                                         as List?)

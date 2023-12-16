@@ -7,6 +7,7 @@ import 'package:zest_trip/features/authentication/presentation/blocs/auth/authen
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_event.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_tag/tour_recommend_tag_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tour_sponsore/tour_sponsore_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/checking_tour/checking_tour_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/my_review/my_review_bloc.dart';
 import 'package:zest_trip/features/payment/presentation/bloc/payment/payment_bloc.dart';
@@ -59,6 +60,9 @@ class MyApp extends StatelessWidget {
           create: (context) => sl(),
         ),
         BlocProvider<TourRecommendTagBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<TourSponsoreBloc>(
           create: (context) => sl(),
         ),
       ],

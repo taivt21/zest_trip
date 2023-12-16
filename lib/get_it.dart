@@ -3,6 +3,7 @@ import 'package:zest_trip/features/authentication/data/data_sources/authenticati
 import 'package:zest_trip/features/authentication/data/repositories/auth_repository_impl.dart';
 import 'package:zest_trip/features/authentication/domain/repositories/auth_repository.dart';
 import 'package:zest_trip/features/authentication/domain/usecases/authentication_usecase.dart';
+import 'package:zest_trip/features/authentication/domain/usecases/update_profile_usecase.dart';
 import 'package:zest_trip/features/authentication/domain/usecases/upload_image_usecase.dart';
 import 'package:zest_trip/features/authentication/presentation/blocs/auth/authentication_bloc.dart';
 import 'package:zest_trip/features/home/data/datasources/remote/tour_api_service.dart';
@@ -14,6 +15,7 @@ import 'package:zest_trip/features/home/domain/usecases/analytic_tag.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_banner.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_district.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_popular_location.dart';
+import 'package:zest_trip/features/home/domain/usecases/get_popular_tag.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_province.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_reviews_tour.dart';
 import 'package:zest_trip/features/home/domain/usecases/get_tags.dart';
@@ -30,6 +32,7 @@ import 'package:zest_trip/features/home/domain/usecases/remove_wishlist.dart';
 import 'package:zest_trip/features/home/domain/usecases/report_provider.dart';
 import 'package:zest_trip/features/home/presentation/blocs/banner/banner_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/location_popular/location_popular_bloc.dart';
+import 'package:zest_trip/features/home/presentation/blocs/tag_popular/tag_popular_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_of_provider/tour_of_provider_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_location/tour_recommend_location_bloc.dart';
 import 'package:zest_trip/features/home/presentation/blocs/tour_recommend_search/tour_recommend_search_bloc.dart';
@@ -104,6 +107,9 @@ Future<void> initializeDependencies() async {
 
   sl.registerLazySingleton<UploadImageUseCase>(() => UploadImageUseCase(sl()));
 
+  sl.registerLazySingleton<UpdateProfileUseCase>(
+      () => UpdateProfileUseCase(sl()));
+
 //tour usecase
   sl.registerLazySingleton(() => GetTourUseCase(sl()));
 
@@ -169,6 +175,10 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<GetTourSponsoreUseCase>(
     () => GetTourSponsoreUseCase(sl()),
   );
+  sl.registerLazySingleton<GetPopularTagUseCase>(
+    () => GetPopularTagUseCase(sl()),
+  );
+
   sl.registerLazySingleton<GetTourDetailUseCase>(
     () => GetTourDetailUseCase(sl()),
   );
@@ -187,11 +197,13 @@ Future<void> initializeDependencies() async {
 
   //Blocs
   sl.registerFactory(
-      () => AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+      () => AuthBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
 
   sl.registerFactory(() => RemoteTourBloc(sl()));
 
   sl.registerFactory(() => TourWishlistBloc(sl(), sl(), sl()));
+
+  sl.registerFactory(() => TourSponsoreBloc(sl()));
 
   sl.registerFactory(() => TourRecommendTagBloc(sl(), sl()));
 
@@ -199,9 +211,9 @@ Future<void> initializeDependencies() async {
 
   sl.registerFactory(() => TourRecommendSearchBloc(sl()));
 
-  sl.registerFactory(() => TourSponsoreBloc(sl()));
-
   sl.registerFactory(() => LocationPopularBloc(sl()));
+
+  sl.registerFactory(() => TagPopularBloc(sl()));
 
   sl.registerFactory(() => TourTagBloc(sl()));
 

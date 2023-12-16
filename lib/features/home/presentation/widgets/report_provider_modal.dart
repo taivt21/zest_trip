@@ -39,6 +39,7 @@ class _ReportModalState extends State<ReportModal> {
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.TOP,
           );
+          Navigator.pop(context);
         }
       },
       child: Scaffold(

@@ -29,6 +29,7 @@ class AppRoutes {
   static const String forgetPassword = '/forget_password';
   static const String landingScreen = '/landing';
   static const String thanksBooking = '/thanks';
+  static const String failBooking = '/failBooking';
   static const String searchQuery = '/searchQuery';
   static const String searchLocation = '/searchLocation';
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -53,7 +54,17 @@ class AppRoutes {
         );
       case thanksBooking:
         return _materialRoute(
-          const ThankYouPage(title: "Thanks for booking"),
+          const ThankYouPage(
+            title: "Thanks for booking",
+            isFail: false,
+          ),
+        );
+      case failBooking:
+        return _materialRoute(
+          const ThankYouPage(
+            title: "Booking failed",
+            isFail: true,
+          ),
         );
       // case conversation:
       //   return _materialRoute(const ConversationScreen());

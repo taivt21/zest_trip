@@ -108,40 +108,43 @@ class CardTourManage extends StatelessWidget {
             children: [
               Expanded(
                 flex: 7,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${invoice.tour?.name} ",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontSize: 16, fontWeight: FontWeight.w500),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                        "${DateFormat('dd MMM yyyy').format(invoice.bookedDate!)} ${invoice.timeSlot} (Local time)",
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    const SizedBox(height: 4),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: invoice.ticketOnBooking!.map((ticket) {
-                        return Text(
-                          "x${ticket.quantity} ${ticket.ticketTypeId == 1 ? 'Adult' : 'Children'}",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 4),
-                    invoice.note == ""
-                        ? const SizedBox()
-                        : Text(
-                            "Note: ${invoice.note}",
+                child: GestureDetector(
+                  onTap: () {
+                    showBookingDetailsDialog(context, invoice);
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${invoice.tour?.name} ",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                          "${DateFormat('dd MMM yyyy').format(invoice.bookedDate!)} ${invoice.timeSlot} (Local time)",
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      const SizedBox(height: 4),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: invoice.ticketOnBooking!.map((ticket) {
+                          return Text(
+                            "x${ticket.quantity} ${ticket.ticketTypeId == 1 ? 'Adult' : 'Children'}",
                             style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                  ],
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 4),
+                      invoice.note == ""
+                          ? const SizedBox()
+                          : Text(
+                              "Note: ${invoice.note}",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                    ],
+                  ),
                 ),
               ),
               Expanded(
@@ -199,7 +202,8 @@ class CardTourManage extends StatelessWidget {
                       "Paid: ${NumberFormatter.format(num.parse(invoice.paidPrice!))} ₫"),
                 ],
               ),
-              invoice.status == "REFUNDED"
+              invoice.status == "REFUNDED" ||
+                      invoice.status == "PROVIDER_REFUNDED"
                   ? TextButton(
                       onPressed: () {
                         List<String> url = [];
@@ -302,6 +306,70 @@ class CardTourManage extends StatelessWidget {
       ),
     );
   }
+}
+
+void showBookingDetailsDialog(BuildContext context, InvoiceEntity invoice) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Booking Details'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildDetailRow("Name: ", invoice.bookerName!),
+                buildDetailRow("Email: ", invoice.bookerEmail!),
+                buildDetailRow("Phone: ", invoice.bookerPhone!),
+                buildDetailRow("Book date: ",
+                    DateFormat('dd MMMM yyyy').format(invoice.bookedDate!)),
+                buildDetailRow("Paid Price: ",
+                    '${NumberFormatter.format(num.parse(invoice.paidPrice!))} ₫'),
+                buildDetailRow("Original Price: ",
+                    '${NumberFormatter.format(num.parse(invoice.originalPrice!))} ₫'),
+                invoice.departureLocation != ""
+                    ? buildDetailRow(
+                        "Departure location: ", '${invoice.departureLocation}')
+                    : const SizedBox.shrink(),
+                invoice.refundReason != null
+                    ? buildDetailRow("Reason refund:", invoice.refundReason!)
+                    : const SizedBox.shrink()
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Đóng dialog
+            },
+            child: const Text('Close'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Widget buildDetailRow(String label, String value) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+            flex: 3,
+            child: Text(label,
+                style: const TextStyle(fontWeight: FontWeight.bold))),
+        Expanded(
+          flex: 7,
+          child: Text(value),
+        ),
+      ],
+    ),
+  );
 }
 
 bool canRefund(InvoiceEntity invoice) {

@@ -25,6 +25,7 @@ class InvoiceModel extends InvoiceEntity {
     TourModel? tour,
     bool? isReviewed,
     String? commissionRate,
+    String? departureLocation,
     // Map<String, dynamic>? provider,
   }) : super(
           id: id,
@@ -48,6 +49,7 @@ class InvoiceModel extends InvoiceEntity {
           tour: tour,
           isReviewed: isReviewed,
           commissionRate: commissionRate,
+          departureLocation: departureLocation,
           // provider: provider,
         );
 
@@ -67,8 +69,8 @@ class InvoiceModel extends InvoiceEntity {
       bookedDate: DateTime.parse(json['booked_date']),
       status: json['status'],
       timeSlot: json['time_slot'] ?? "time_slot",
-      refundReason: json['refund_reason'] ?? "refund_reason",
-      refundAmount: json['refund_ammount'] ?? "refund_amount",
+      refundReason: json['refund_reason'],
+      refundAmount: json['refund_ammount'],
       refundImage: json['refund_image'] ?? "refund_image",
       ticketOnBooking: json['TicketOnBooking'] != null
           ? List<TicketOnBookingModel>.from(json['TicketOnBooking']
@@ -79,6 +81,8 @@ class InvoiceModel extends InvoiceEntity {
           : null,
       isReviewed: json['is_tour_reviewed'],
       commissionRate: json['commission_rate'],
+      departureLocation: json['departure_location'] ?? "",
+
       // provider: json['Provider'] != null
       //     ? (json['Provider'] as Map<String, dynamic>).map(
       //         (key, value) {

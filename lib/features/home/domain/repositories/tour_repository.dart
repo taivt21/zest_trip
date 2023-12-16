@@ -46,16 +46,12 @@ abstract class TourRepository {
       int? limit,
       String? orderBy,
       Set<int>? tagIds});
-  Future<DataState<List<TourEntity>>> getAllToursSponsore(
-      {String? search,
-      int? page,
-      int? limit,
-      String? orderBy,
-      Set<int>? tagIds});
+  Future<DataState<List<TourEntity>>> getAllToursSponsore();
   Future<DataState<String>> getBanner();
   Future<DataState<List<TourEntity>>> getAllWishlist();
   Future<DataState<TourEntity>> getTourDetail(String tourId);
   Future<DataState<List<dynamic>>> getPopularLocation();
+  Future<DataState<List<dynamic>>> getPopularTag();
   Future<DataState<dynamic>> analyticTag(Set<int> tags);
   Future<DataState<dynamic>> analyticLocation(Set<String> locations);
 

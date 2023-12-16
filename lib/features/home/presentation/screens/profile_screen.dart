@@ -8,7 +8,7 @@ import 'package:zest_trip/config/utils/constants/image_constant.dart';
 import 'package:zest_trip/features/home/presentation/screens/edit_profile_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/home_screen.dart';
 import 'package:zest_trip/features/home/presentation/screens/manage_review_screen.dart';
-import 'package:zest_trip/features/home/presentation/screens/webview.dart';
+import 'package:zest_trip/features/home/presentation/screens/policy_webview.dart';
 import '../../../../config/utils/constants/color_constant.dart';
 import '../../../authentication/presentation/blocs/auth/auth_bloc_ex.dart';
 import '../widgets/card_profile.dart';
@@ -150,10 +150,10 @@ class ProfileScreen extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const MyWebView(
+                              builder: (context) => const PolicyWebView(
                                   title: "Policy's Zest Travel",
                                   urlWeb:
-                                      "https://www.travelperk.com/guides/corporate-travel-policy/"),
+                                      "https://zest-travel-policy.vercel.app/?fbclid=IwAR1wACg-ZXq5daqr3VTUwueqYx_cpPV_bnnU4lhE-JWv0GwEOCdVq8TWJM0"),
                             ));
                       },
                       icon: Icons.policy,
