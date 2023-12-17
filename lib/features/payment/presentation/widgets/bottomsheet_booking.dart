@@ -165,7 +165,6 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                             "Check availability",
                           ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                 child: ListTile(
@@ -706,32 +705,42 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     DateTime currentDate = DateTime.now();
     List<TourAvailabilityEntity>? tourAvailability =
         widget.tour.tourAvailability;
-    List<DateTime> validDates = [];
 
-    if (tourAvailability != null && tourAvailability.isNotEmpty) {
-      for (var availability in tourAvailability) {
-        if (availability.status?.toUpperCase() == "ACTIVE") {
-          DateTime startDate = availability.validityDateRangeFrom!;
-          DateTime endDate = availability.validityDateRangeTo!;
-          for (var date = startDate;
-              date.isBefore(endDate.add(const Duration(days: 1)));
-              date = date.add(const Duration(days: 1))) {
-            if (availability.weekdays!.any((weekday) =>
-                    date.weekday ==
-                        convertApiWeekdayToFlutterWeekday(weekday.day!) &&
-                    (date.isAfter(currentDate) ||
-                        date.isAtSameMomentAs(currentDate))) &&
-                (widget.tour.blockDate == null ||
-                    !widget.tour.blockDate!.contains(date))) {
-              validDates.add(date);
-            }
-          }
-        } else {
-          return validDates;
-        }
-      }
+    if (tourAvailability == null || tourAvailability.isEmpty) {
+      return [];
     }
-    return validDates;
+
+    return tourAvailability
+        .where((availability) => availability.status?.toUpperCase() == "ACTIVE")
+        .expand((availability) {
+      List<DateTime> specialDates = (availability.specialDates ?? [])
+          .where((specialDate) => specialDate.date != null)
+          .where((specialDate) =>
+              specialDate.date!.isAfter(currentDate) ||
+              specialDate.date!.isAtSameMomentAs(currentDate))
+          .map((specialDate) => specialDate.date!)
+          .toList();
+
+      return specialDates.followedBy(
+        List.generate(
+          availability.validityDateRangeTo!
+                  .difference(availability.validityDateRangeFrom!)
+                  .inDays +
+              1,
+          (index) =>
+              availability.validityDateRangeFrom!.add(Duration(days: index)),
+        ).where(
+          (date) =>
+              availability.weekdays!.any((weekday) =>
+                  date.weekday ==
+                      convertApiWeekdayToFlutterWeekday(weekday.day!) &&
+                  (date.isAfter(currentDate) ||
+                      date.isAtSameMomentAs(currentDate))) &&
+              (widget.tour.blockDate == null ||
+                  !widget.tour.blockDate!.contains(date)),
+        ),
+      );
+    }).toList();
   }
 
   String getSelectedTimeSlot(DateTime selectedDate) {

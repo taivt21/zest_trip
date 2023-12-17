@@ -18,7 +18,7 @@ class SpecialDate extends Equatable {
     // DateTime? parsedDate = rawDate != null ? DateTime.tryParse(rawDate) : null;
 
     return SpecialDate(
-      date: DateTime.tryParse(json['date'])?.toUtc(),
+      date: DateTime.tryParse(json['date']),
       timeSlot: json['timeSlot'],
     );
   }
