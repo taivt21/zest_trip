@@ -91,34 +91,34 @@ class _SearchQueryScreenState extends State<SearchQueryScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Popular tag",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontSize: 18),
-                  ),
-                  const SizedBox(
-                    height: 4,
-                  ),
-                  BlocBuilder<TourTagBloc, TourTagState>(
-                    builder: (context, tourTagState) {
-                      if (tourTagState is RemoteTourTagDone) {
-                        return BlocBuilder<TagPopularBloc, TagPopularState>(
-                          builder: (context, tagsState) {
-                            List<dynamic> tags = tagsState.tags ?? [];
-                            List<int> highlightedIds = tags
-                                .map((dynamic value) => value as int)
-                                .toList();
-                            return _buildSelectedTags(
-                                highlightedIds, tourTagState.tourTags!);
-                          },
-                        );
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  ),
+                  // Text(
+                  //   "Popular tag",
+                  //   style: Theme.of(context)
+                  //       .textTheme
+                  //       .titleMedium
+                  //       ?.copyWith(fontSize: 18),
+                  // ),
+                  // const SizedBox(
+                  //   height: 4,
+                  // ),
+                  // BlocBuilder<TourTagBloc, TourTagState>(
+                  //   builder: (context, tourTagState) {
+                  //     if (tourTagState is RemoteTourTagDone) {
+                  //       return BlocBuilder<TagPopularBloc, TagPopularState>(
+                  //         builder: (context, tagsState) {
+                  //           List<dynamic> tags = tagsState.tags ?? [];
+                  //           List<int> highlightedIds = tags
+                  //               .map((dynamic value) => value as int)
+                  //               .toList();
+                  //           return _buildSelectedTags(
+                  //               highlightedIds, tourTagState.tourTags!);
+                  //         },
+                  //       );
+                  //     } else {
+                  //       return const SizedBox.shrink();
+                  //     }
+                  //   },
+                  // ),
                   Text(
                     "Popular location",
                     style: Theme.of(context)

@@ -77,7 +77,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
       const secureStorage = FlutterSecureStorage();
       await secureStorage.deleteAll();
-      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignIn googleSignIn = GoogleSignIn(); 
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
 

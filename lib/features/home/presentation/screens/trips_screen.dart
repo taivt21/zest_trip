@@ -37,7 +37,7 @@ class _TripsScreenState extends State<TripsScreen> {
         builder: (context, state) {
           if (state is AuthSuccess) {
             return DefaultTabController(
-              length: 4,
+              length: 5,
               child: Scaffold(
                   appBar: AppBar(
                     title: const Text("My Bookings"),
@@ -45,8 +45,10 @@ class _TripsScreenState extends State<TripsScreen> {
                     bottom: const TabBar(
                       isScrollable: true,
                       tabs: [
-                        Tab(text: 'Accepted'),
-                        // Tab(text: 'Pending'),
+                        Tab(
+                          text: 'Not started',
+                        ),
+                        Tab(text: 'Finish'),
                         Tab(text: 'Refunded'),
                         Tab(text: 'Refunding'),
                         Tab(text: 'Cancelled by provider'),
@@ -64,6 +66,24 @@ class _TripsScreenState extends State<TripsScreen> {
                       builder: (context, state) {
                         if (state is GetBookingSuccess) {
                           List<InvoiceEntity> invoices = state.bookings!;
+                          DateTime currentDate = DateTime.now();
+
+                          // Tạo danh sách các phần tử có bookdate nhỏ hơn currentDate
+                          List<InvoiceEntity> smallerThanCurrentDateList =
+                              invoices
+                                  .where((invoice) =>
+                                      invoice.bookedDate!.isBefore(currentDate))
+                                  .toList();
+
+                          // Tạo danh sách các phần tử có bookdate lớn hơn hoặc bằng currentDate
+                          List<InvoiceEntity> greaterThanCurrentDateList =
+                              invoices
+                                  .where((invoice) =>
+                                      invoice.bookedDate!
+                                          .isAfter(currentDate) ||
+                                      invoice.bookedDate!
+                                          .isAtSameMomentAs(currentDate))
+                                  .toList();
                           return TabBarView(
                             children: [
                               RefreshIndicator(
@@ -72,17 +92,19 @@ class _TripsScreenState extends State<TripsScreen> {
                                       BlocProvider.of<BookingBloc>(context);
                                   remoteTourBloc.add(const GetBookings());
                                 },
-                                child: _buildTabContent(
-                                    context, invoices, 'accepted'),
+                                child: _buildTabContent(context,
+                                    greaterThanCurrentDateList, 'accepted'),
                               ),
                               // Repeat the same pattern for other tabs
-                              // RefreshIndicator(
-                              //   onRefresh: () async {
-                              //     final remoteTourBloc = BlocProvider.of<BookingBloc>(context);
-                              //     remoteTourBloc.add(const GetBookings());
-                              //   },
-                              //   child: _buildTabContent(context, invoices, 'pending'),
-                              // ),
+                              RefreshIndicator(
+                                onRefresh: () async {
+                                  final remoteTourBloc =
+                                      BlocProvider.of<BookingBloc>(context);
+                                  remoteTourBloc.add(const GetBookings());
+                                },
+                                child: _buildTabContent(context,
+                                    smallerThanCurrentDateList, 'accepted'),
+                              ),
                               RefreshIndicator(
                                 onRefresh: () async {
                                   final remoteTourBloc =
