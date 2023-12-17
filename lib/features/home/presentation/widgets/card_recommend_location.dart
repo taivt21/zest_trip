@@ -68,6 +68,25 @@ class CardRecommendLocation extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on,
+                      color: Colors.grey,
+                      size: 12,
+                    ),
+                    Expanded(
+                      child: Text(
+                        tour.addressProvince ?? "Province",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontSize: 13),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
                 if (tour.avgRating != null && tour.count?["TourReview"] != null)
                   Row(
                     children: [
