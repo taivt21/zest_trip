@@ -467,10 +467,20 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
-                                              TextSpan(
-                                                text:
-                                                    ' ${location.value?["deparute"]} - at ${location.value?["time"]} ${NumberFormatter.checkAmPm(location.value?["time"])}',
-                                              ),
+                                              if (location.value?["deparute"] !=
+                                                  null)
+                                                TextSpan(
+                                                  text:
+                                                      ' ${location.value?["deparute"]} - at ',
+                                                ),
+                                              if (location.value?["time"] !=
+                                                      null &&
+                                                  location.value?["time"]
+                                                      .isNotEmpty)
+                                                TextSpan(
+                                                  text:
+                                                      '${location.value?["time"]} ${NumberFormatter.checkAmPm(location.value?["time"])}',
+                                                ),
                                             ],
                                           ),
                                         ),

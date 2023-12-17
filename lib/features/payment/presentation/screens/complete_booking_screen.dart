@@ -201,16 +201,21 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                               title: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    location.value["deparute"] ?? '',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                  Text(
-                                    "At: ${location.value["time"]} ${NumberFormatter.checkAmPm(location.value["time"])}",
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  ),
+                                  if (location.value["deparute"] != null)
+                                    Text(
+                                      location.value["deparute"],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
+                                  if (location.value["time"] != null &&
+                                      location.value["time"].isNotEmpty)
+                                    Text(
+                                      "At: ${location.value["time"]} ${NumberFormatter.checkAmPm(location.value["time"])}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
                                 ],
                               ),
                               value: combinedValue,

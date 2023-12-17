@@ -45,8 +45,15 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     _initializeSelectedDate();
     adultTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 1);
     childrenTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 2);
-    _adult = adultTicket.minimumBookingQuantity!;
-    _children = childrenTicket!.minimumBookingQuantity!;
+    if (childrenTicket != null &&
+        childrenTicket != const PricingTicketModel()) {
+      _children = childrenTicket!.minimumBookingQuantity!;
+    }
+    if (adultTicket != const PricingTicketModel()) {
+      _adult = adultTicket.minimumBookingQuantity!;
+    }
+    // _adult = adultTicket.minimumBookingQuantity!;
+    // _children = childrenTicket!.minimumBookingQuantity!;
 
     _totalPriceAdult = calculateTotalPrice(adultTicket, _adult) * _adult;
     super.initState();
@@ -302,50 +309,50 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                               indent: 5,
                               endIndent: 5,
                             ),
-
-                            _buildTicket(
-                              context,
-                              pricingTiket: adultTicket,
-                              countTicket: _adult,
-                              totalPrice:
-                                  calculateTotalPrice(adultTicket, _adult),
-                              add: () {
-                                if (_adult <
-                                    adultTicket.maximumBookingQuantity!) {
-                                  setState(() {
-                                    _adult++;
-                                    _totalPriceAdult = calculateTotalPrice(
-                                            adultTicket, _adult) *
-                                        _adult;
-                                  });
-                                } else {
-                                  Fluttertoast.showToast(
-                                    msg:
-                                        "Maximum book is ${adultTicket.maximumBookingQuantity}",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.CENTER,
-                                  );
-                                }
-                              },
-                              sub: () {
-                                if (_adult >
-                                    adultTicket.minimumBookingQuantity!) {
-                                  setState(() {
-                                    _adult--;
-                                    _totalPriceAdult = calculateTotalPrice(
-                                            adultTicket, _adult) *
-                                        _adult;
-                                  });
-                                } else {
-                                  Fluttertoast.showToast(
-                                    msg:
-                                        "Minimum book is ${adultTicket.minimumBookingQuantity}",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.CENTER,
-                                  );
-                                }
-                              },
-                            ),
+                            if ((adultTicket != const PricingTicketModel()))
+                              _buildTicket(
+                                context,
+                                pricingTiket: adultTicket,
+                                countTicket: _adult,
+                                totalPrice:
+                                    calculateTotalPrice(adultTicket, _adult),
+                                add: () {
+                                  if (_adult <
+                                      adultTicket.maximumBookingQuantity!) {
+                                    setState(() {
+                                      _adult++;
+                                      _totalPriceAdult = calculateTotalPrice(
+                                              adultTicket, _adult) *
+                                          _adult;
+                                    });
+                                  } else {
+                                    Fluttertoast.showToast(
+                                      msg:
+                                          "Maximum book is ${adultTicket.maximumBookingQuantity}",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                    );
+                                  }
+                                },
+                                sub: () {
+                                  if (_adult >
+                                      adultTicket.minimumBookingQuantity!) {
+                                    setState(() {
+                                      _adult--;
+                                      _totalPriceAdult = calculateTotalPrice(
+                                              adultTicket, _adult) *
+                                          _adult;
+                                    });
+                                  } else {
+                                    Fluttertoast.showToast(
+                                      msg:
+                                          "Minimum book is ${adultTicket.minimumBookingQuantity}",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                    );
+                                  }
+                                },
+                              ),
 
                             // Kiểm tra xem vé trẻ em có tồn tại không trước khi hiển thị
                             if ((childrenTicket != null &&
