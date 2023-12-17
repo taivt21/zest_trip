@@ -118,7 +118,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -164,7 +164,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -187,7 +187,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -210,7 +210,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -236,7 +236,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -284,7 +284,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -307,7 +307,7 @@ class TourApiServiceImpl implements TourApiService {
             message: 'The request returned an '
                 'invalid status code of ${response.statusCode}.',
             requestOptions: response.requestOptions,
-            response: response.data,
+            response: response,
             error: reviews));
       }
     } on DioException catch (e) {
@@ -330,7 +330,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -353,7 +353,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -381,7 +381,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -414,7 +414,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -447,7 +447,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -480,7 +480,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -508,7 +508,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -522,7 +522,7 @@ class TourApiServiceImpl implements TourApiService {
       final Map<String, dynamic> data = {"locations": locations.toList()};
       final response =
           await DioHelper.dio.post('/analytic/user/location', data: data);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return DataSuccess(true);
       } else {
         return DataFailed(DioException(
@@ -530,7 +530,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -542,11 +542,10 @@ class TourApiServiceImpl implements TourApiService {
   Future<DataState> analyticTag(Set<int> tags) async {
     try {
       final Map<String, dynamic> data = {"tags": tags.toList()};
-
       final response =
           await DioHelper.dio.post('/analytic/user/tag', data: data);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return DataSuccess(true);
       } else {
         return DataFailed(DioException(
@@ -554,7 +553,7 @@ class TourApiServiceImpl implements TourApiService {
           message: 'The request returned an '
               'invalid status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {

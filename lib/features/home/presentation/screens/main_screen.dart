@@ -18,6 +18,7 @@ import 'package:zest_trip/features/home/presentation/screens/tour_detail_screen.
 import 'package:zest_trip/features/home/presentation/widgets/card_recommend_location.dart';
 import 'package:zest_trip/features/home/presentation/widgets/shimmer_card_tour_manage.dart';
 import 'package:zest_trip/get_it.dart';
+import 'package:snowfall/snowfall.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -45,297 +46,303 @@ class MainScreen extends StatelessWidget {
         ),
       ],
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const HeaderMainScreen(),
-                const SizedBox(
-                  height: 16,
-                ),
-                const SearchMainScreen(),
-                const SizedBox(
-                  height: 16,
-                ),
-                // LocationRecommend(widthScreen: widthScreen),
-                // const SizedBox(
-                //   height: 20,
-                // ),
-                BlocBuilder<BannerBloc, BannerState>(
-                  builder: (context, state) {
-                    return ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: CachedNetworkImage(
-                          width: double.infinity,
-                          height: 180,
-                          imageUrl: state.url ?? "",
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: colorPlaceHolder,
+        body: SnowfallWidget(
+          color: Colors.lightBlue,
+          alpha: 50,
+          numberOfSnowflakes: 10,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const HeaderMainScreen(),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  const SearchMainScreen(),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  // LocationRecommend(widthScreen: widthScreen),
+                  // const SizedBox(
+                  //   height: 20,
+                  // ),
+                  BlocBuilder<BannerBloc, BannerState>(
+                    builder: (context, state) {
+                      return ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: CachedNetworkImage(
                             width: double.infinity,
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            color: colorPlaceHolder,
-                            width: double.infinity,
-                          ),
-                        ));
-                  },
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Experience not to be missed",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(fontSize: 20, color: Colors.black),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 0, 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: thirdColor.withOpacity(0.4),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              SvgPicture.asset(locationSvg, height: 28),
-                              Text(
-                                " Popular tour locations",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(fontSize: 18),
-                              ),
-                            ],
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, AppRoutes.landingScreen);
-                            },
-                            child: const Text(
-                              'See all',
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline),
+                            height: 180,
+                            imageUrl: state.url ?? "",
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              color: colorPlaceHolder,
+                              width: double.infinity,
                             ),
-                          ),
-                        ],
-                      ),
-                      BlocBuilder<TourRecommendLocationBloc,
-                          TourRecommendLocationState>(
-                        builder: (context, state) {
-                          if (state is GetToursRcmLocationSuccess) {
-                            return SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: List.generate(
-                                  state.tours?.length ?? 0,
-                                  (index) => GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              TourDetailScreen(
-                                                  tourId:
-                                                      state.tours![index].id!),
-                                        ),
-                                      );
-                                    },
-                                    child: CardRecommendLocation(
-                                      tour: state.tours![index],
-                                      width: widthScreen * 0.35,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return const ShimmerCardTourManage();
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 0, 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: fourthColor,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SvgPicture.asset(travelSvg, height: 28),
-                              Text(
-                                "  Popular types of tours",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(fontSize: 18),
-                              ),
-                            ],
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, AppRoutes.landingScreen);
-                            },
-                            child: const Text(
-                              'See all',
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline),
+                            errorWidget: (context, url, error) => Container(
+                              color: colorPlaceHolder,
+                              width: double.infinity,
                             ),
-                          ),
-                        ],
-                      ),
-                      BlocBuilder<TourRecommendTagBloc, TourRecommendTagState>(
-                        builder: (context, rcmTagState) {
-                          if (rcmTagState is GetToursRcmTagSuccess) {
-                            return SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(
-                                  rcmTagState.tours?.length ?? 0,
-                                  (index) => GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              TourDetailScreen(
-                                                  tourId: rcmTagState
-                                                      .tours![index].id!),
-                                        ),
-                                      );
-                                    },
-                                    child: CardRecommendLocation(
-                                      tour: rcmTagState.tours![index],
-                                      width: widthScreen * 0.35,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return const ShimmerCardTourManage();
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 0, 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: secondaryColor.withOpacity(0.4),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              SvgPicture.asset(adsSvg, height: 24),
-                              Text(
-                                " Trending tours",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(fontSize: 18),
-                              ),
-                            ],
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, AppRoutes.landingScreen);
-                            },
-                            child: const Text(
-                              'See all',
-                              style: TextStyle(
-                                  decoration: TextDecoration.underline),
-                            ),
-                          ),
-                        ],
-                      ),
-                      BlocBuilder<TourSponsoreBloc, TourSponsoreState>(
-                        builder: (context, sponsoreState) {
-                          if (sponsoreState is GetToursSponsoreSuccess) {
-                            return SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(
-                                  sponsoreState.tours?.length ?? 0,
-                                  (index) => GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              TourDetailScreen(
-                                                  tourId: sponsoreState
-                                                      .tours![index].id!),
-                                        ),
-                                      );
-                                    },
-                                    child: CardRecommendLocation(
-                                      tour: sponsoreState.tours![index],
-                                      width: widthScreen * 0.35,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return const ShimmerCardTourManage();
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.landingScreen);
+                          ));
                     },
-                    icon: const Icon(Icons.more_horiz_rounded),
-                    label: const Text("Explore all"),
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    "Experience not to be missed",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontSize: 20, color: Colors.black),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 0, 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: thirdColor.withOpacity(0.4),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SvgPicture.asset(locationSvg, height: 28),
+                                Text(
+                                  " Popular tour locations",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, AppRoutes.landingScreen);
+                              },
+                              child: const Text(
+                                'See all',
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                          ],
+                        ),
+                        BlocBuilder<TourRecommendLocationBloc,
+                            TourRecommendLocationState>(
+                          builder: (context, state) {
+                            if (state is GetToursRcmLocationSuccess) {
+                              return SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: List.generate(
+                                    state.tours?.length ?? 0,
+                                    (index) => GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TourDetailScreen(
+                                                    tourId: state
+                                                        .tours![index].id!),
+                                          ),
+                                        );
+                                      },
+                                      child: CardRecommendLocation(
+                                        tour: state.tours![index],
+                                        width: widthScreen * 0.35,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return const ShimmerCardTourManage();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 0, 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: fourthColor,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SvgPicture.asset(travelSvg, height: 28),
+                                Text(
+                                  "  Popular types of tours",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, AppRoutes.landingScreen);
+                              },
+                              child: const Text(
+                                'See all',
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                          ],
+                        ),
+                        BlocBuilder<TourRecommendTagBloc,
+                            TourRecommendTagState>(
+                          builder: (context, rcmTagState) {
+                            if (rcmTagState is GetToursRcmTagSuccess) {
+                              return SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: List.generate(
+                                    rcmTagState.tours?.length ?? 0,
+                                    (index) => GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TourDetailScreen(
+                                                    tourId: rcmTagState
+                                                        .tours![index].id!),
+                                          ),
+                                        );
+                                      },
+                                      child: CardRecommendLocation(
+                                        tour: rcmTagState.tours![index],
+                                        width: widthScreen * 0.35,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return const ShimmerCardTourManage();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 0, 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: secondaryColor.withOpacity(0.4),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SvgPicture.asset(adsSvg, height: 24),
+                                Text(
+                                  " Trending tours",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, AppRoutes.landingScreen);
+                              },
+                              child: const Text(
+                                'See all',
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                          ],
+                        ),
+                        BlocBuilder<TourSponsoreBloc, TourSponsoreState>(
+                          builder: (context, sponsoreState) {
+                            if (sponsoreState is GetToursSponsoreSuccess) {
+                              return SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: List.generate(
+                                    sponsoreState.tours?.length ?? 0,
+                                    (index) => GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TourDetailScreen(
+                                                    tourId: sponsoreState
+                                                        .tours![index].id!),
+                                          ),
+                                        );
+                                      },
+                                      child: CardRecommendLocation(
+                                        tour: sponsoreState.tours![index],
+                                        width: widthScreen * 0.35,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return const ShimmerCardTourManage();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.landingScreen);
+                      },
+                      icon: const Icon(Icons.more_horiz_rounded),
+                      label: const Text("Explore all"),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

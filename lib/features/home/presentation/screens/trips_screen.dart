@@ -46,9 +46,9 @@ class _TripsScreenState extends State<TripsScreen> {
                       isScrollable: true,
                       tabs: [
                         Tab(
-                          text: 'Not started',
+                          text: 'Not started'
                         ),
-                        Tab(text: 'Finish'),
+                        Tab(text: 'Finished'),
                         Tab(text: 'Refunded'),
                         Tab(text: 'Refunding'),
                         Tab(text: 'Cancelled by provider'),
@@ -68,14 +68,14 @@ class _TripsScreenState extends State<TripsScreen> {
                           List<InvoiceEntity> invoices = state.bookings!;
                           DateTime currentDate = DateTime.now();
 
-                          // Tạo danh sách các phần tử có bookdate nhỏ hơn currentDate
+                          // tour chưa start
                           List<InvoiceEntity> smallerThanCurrentDateList =
                               invoices
                                   .where((invoice) =>
                                       invoice.bookedDate!.isBefore(currentDate))
                                   .toList();
 
-                          // Tạo danh sách các phần tử có bookdate lớn hơn hoặc bằng currentDate
+                          // tour đã start
                           List<InvoiceEntity> greaterThanCurrentDateList =
                               invoices
                                   .where((invoice) =>

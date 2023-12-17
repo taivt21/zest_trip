@@ -69,8 +69,9 @@ dependencies:
   # table_calendar: ^3.0.9
   logger: ^2.0.2+1
   flutter_typeahead: ^4.8.0
-  http_parser:
-    ^4.0.2
+  http_parser: ^4.0.2
+  snowfall:
+    ^0.0.2
 
     #Database
 

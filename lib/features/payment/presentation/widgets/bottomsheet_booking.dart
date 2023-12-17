@@ -27,7 +27,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
   late DateTime returnDate;
   late PricingTicketEntity adultTicket;
   PricingTicketEntity? childrenTicket;
-  int _adult = 1;
+  int _adult = 0;
   int _children = 0;
   int _totalPriceAdult = 0;
   int _totalPriceChildren = 0;
@@ -45,6 +45,9 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     _initializeSelectedDate();
     adultTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 1);
     childrenTicket = filterTicket(widget.tour.pricingTicket!, selectedDate, 2);
+    _adult = adultTicket.minimumBookingQuantity!;
+    _children = childrenTicket!.minimumBookingQuantity!;
+
     _totalPriceAdult = calculateTotalPrice(adultTicket, _adult) * _adult;
     super.initState();
   }
@@ -307,28 +310,46 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                               totalPrice:
                                   calculateTotalPrice(adultTicket, _adult),
                               add: () {
-                                setState(() {
-                                  _adult++;
-                                  _totalPriceAdult =
-                                      calculateTotalPrice(adultTicket, _adult) *
-                                          _adult;
-                                });
+                                if (_adult <
+                                    adultTicket.maximumBookingQuantity!) {
+                                  setState(() {
+                                    _adult++;
+                                    _totalPriceAdult = calculateTotalPrice(
+                                            adultTicket, _adult) *
+                                        _adult;
+                                  });
+                                } else {
+                                  Fluttertoast.showToast(
+                                    msg:
+                                        "Maximum book is ${adultTicket.maximumBookingQuantity}",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                  );
+                                }
                               },
                               sub: () {
-                                setState(() {
-                                  if (_adult > 1) {
+                                if (_adult >
+                                    adultTicket.minimumBookingQuantity!) {
+                                  setState(() {
                                     _adult--;
                                     _totalPriceAdult = calculateTotalPrice(
                                             adultTicket, _adult) *
                                         _adult;
-                                  }
-                                });
+                                  });
+                                } else {
+                                  Fluttertoast.showToast(
+                                    msg:
+                                        "Minimum book is ${adultTicket.minimumBookingQuantity}",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                  );
+                                }
                               },
                             ),
 
                             // Kiểm tra xem vé trẻ em có tồn tại không trước khi hiển thị
-                            if (childrenTicket != null &&
-                                childrenTicket != const PricingTicketModel())
+                            if ((childrenTicket != null &&
+                                childrenTicket != const PricingTicketModel()))
                               _buildTicket(
                                 context,
                                 pricingTiket: childrenTicket!,
@@ -337,17 +358,29 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                                     childrenTicket!, _children),
                                 add: () {
                                   setState(() {
-                                    _children++;
-                                    if (_children > 0) {
+                                    if (_children <
+                                        childrenTicket!
+                                            .maximumBookingQuantity!) {
+                                      _children++;
+
                                       _totalPriceChildren = calculateTotalPrice(
                                               childrenTicket!, _children) *
                                           _children;
+                                    } else {
+                                      Fluttertoast.showToast(
+                                        msg:
+                                            "Maximum book is ${childrenTicket!.maximumBookingQuantity!} ",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                      );
                                     }
                                   });
                                 },
                                 sub: () {
                                   setState(() {
-                                    if (_children > 0) {
+                                    if (_children >
+                                        childrenTicket!
+                                            .minimumBookingQuantity!) {
                                       _children--;
                                       _children == 0
                                           ? _totalPriceChildren = 0
@@ -356,6 +389,13 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                                                       childrenTicket!,
                                                       _children) *
                                                   _children;
+                                    } else {
+                                      Fluttertoast.showToast(
+                                        msg:
+                                            "Minimum book is ${childrenTicket!.minimumBookingQuantity!} ",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                      );
                                     }
                                   });
                                 },
@@ -401,62 +441,153 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     required Function() add,
     required Function() sub,
   }) {
-    return ListTile(
-      title: Row(
-        children: [
-          Text(
-            pricingTiket.ticket?.name ?? "ticket name",
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          Text(
-            " (${pricingTiket.fromAge} - ${pricingTiket.toAge})",
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall
-                ?.copyWith(fontWeight: FontWeight.w400),
-          )
-        ],
-      ),
-      subtitle: totalPrice > 0
-          ? Row(
-              children: [
-                Text(
-                  "${NumberFormatter.format(totalPrice)}₫ ",
-                ),
-                const Text(
-                  "/person",
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                ),
-              ],
+    if (pricingTiket.ticketTypeId == 1) {
+      return ListTile(
+        title: Row(
+          children: [
+            Text(
+              pricingTiket.ticket?.name ?? "ticket name",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Text(
+              " (${pricingTiket.fromAge} - ${pricingTiket.toAge})",
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(fontWeight: FontWeight.w400),
             )
-          : Text(
-              "From ${NumberFormatter.format(num.parse(pricingTiket.fromPrice!))}₫",
+          ],
+        ),
+        subtitle: totalPrice > 0
+            ? Row(
+                children: [
+                  Text(
+                    "${NumberFormatter.format(totalPrice)}₫ ",
+                  ),
+                  const Text(
+                    "/person",
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              )
+            : (pricingTiket.pricingTypeId == 2)
+                ? Text(
+                    "${NumberFormatter.format(num.parse(pricingTiket.fromPrice!))}₫ (Free ticket required)",
+                  )
+                : Text(
+                    "From ${NumberFormatter.format(num.parse(pricingTiket.fromPrice!))}₫",
+                  ),
+        trailing: pricingTiket.pricingTypeId != 3
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.remove,
+                      size: 16,
+                    ),
+                    onPressed: () {
+                      sub();
+                    },
+                  ),
+                  Text(
+                    "$countTicket",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add, size: 16),
+                    onPressed: () {
+                      add();
+                    },
+                  ),
+                ],
+              )
+            : ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorSuccessSecondary,
+                  elevation: 0,
+                  foregroundColor: colorSuccess,
+                  shape: const StadiumBorder(),
+                  side: BorderSide.none,
+                ),
+                child: const Text("Free no ticket"),
+              ),
+      );
+    } else {
+      return ListTile(
+        title: Row(
+          children: [
+            Text(
+              pricingTiket.ticket?.name ?? "ticket name",
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(
-              Icons.remove,
-              size: 16,
-            ),
-            onPressed: () {
-              sub();
-            },
-          ),
-          Text(
-            "$countTicket",
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          IconButton(
-            icon: const Icon(Icons.add, size: 16),
-            onPressed: () {
-              add();
-            },
-          ),
-        ],
-      ),
-    );
+            Text(
+              " (${pricingTiket.fromAge} - ${pricingTiket.toAge})",
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(fontWeight: FontWeight.w400),
+            )
+          ],
+        ),
+        subtitle: totalPrice > 0
+            ? Row(
+                children: [
+                  Text(
+                    "${NumberFormatter.format(totalPrice)}₫ ",
+                  ),
+                  const Text(
+                    "/person",
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              )
+            : (pricingTiket.pricingTypeId == 2)
+                ? Text(
+                    "${NumberFormatter.format(num.parse(pricingTiket.fromPrice!))}₫ (Free ticket required)",
+                  )
+                : Text(
+                    "From ${NumberFormatter.format(num.parse(pricingTiket.fromPrice!))}₫",
+                  ),
+        trailing: pricingTiket.pricingTypeId != 3
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.remove,
+                      size: 16,
+                    ),
+                    onPressed: () {
+                      sub();
+                    },
+                  ),
+                  Text(
+                    "$countTicket",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add, size: 16),
+                    onPressed: () {
+                      add();
+                    },
+                  ),
+                ],
+              )
+            : ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorSuccessSecondary,
+                  elevation: 0,
+                  foregroundColor: colorSuccess,
+                  shape: const StadiumBorder(),
+                  side: BorderSide.none,
+                ),
+                child: const Text("Free no ticket"),
+              ),
+      );
+    }
   }
 
   PricingTicketEntity filterTicket(List<PricingTicketEntity> allTickets,
@@ -549,8 +680,10 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
               const PricingTicketModel()) {
             childrenTicket =
                 filterTicket(widget.tour.pricingTicket!, selectedDate, 2);
+            _children = childrenTicket!.minimumBookingQuantity!;
           }
           _totalPriceAdult = calculateTotalPrice(adultTicket, _adult) * _adult;
+          _adult = adultTicket.minimumBookingQuantity!;
         });
       }
     } else {
@@ -704,7 +837,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
       children: [
         Chip(
           label: Text(
-            "Free cancellation before ${widget.tour.refundBefore} days",
+            "Cancel before ${widget.tour.refundBefore} days",
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color: primaryColor, fontSize: 12, fontWeight: FontWeight.bold),
           ),

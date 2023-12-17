@@ -87,7 +87,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
           type: DioExceptionType.badResponse,
           message: 'status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -154,7 +154,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
           type: DioExceptionType.badResponse,
           message: 'status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -176,7 +176,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
       } else {
         return DataFailed(DioException(
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
           message: response.data["message"],
           error: 'Failed with status code: ${response.statusCode}',
           type: DioExceptionType.badResponse,
@@ -217,7 +217,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
           type: DioExceptionType.badResponse,
           message: 'status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -240,7 +240,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
       } else {
         return DataFailed(DioException(
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
           message: response.data["message"],
           error: 'Failed with status code: ${response.statusCode}',
           type: DioExceptionType.badResponse,
@@ -272,7 +272,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
           type: DioExceptionType.badResponse,
           message: 'status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
@@ -295,7 +295,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
           type: DioExceptionType.badResponse,
           message: 'status code of ${response.statusCode}.',
           requestOptions: response.requestOptions,
-          response: response.data,
+          response: response,
         ));
       }
     } on DioException catch (e) {
