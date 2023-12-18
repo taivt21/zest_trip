@@ -36,7 +36,7 @@ class PaymentApiServiceImpl implements PaymentApiService {
         "children": children,
         "date": DateFormat('yyyy-MM-dd').format(date),
       };
-      // print("data check booking $data");
+      print("data check booking $data");
       final response =
           await DioHelper.dio.post('/booking/bookingCheck/$tourId', data: data);
       if (response.statusCode == 200) {

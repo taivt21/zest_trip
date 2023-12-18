@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -185,20 +184,23 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                     ),
                                   );
                                 },
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                      tourDetailState.tour!.tourImages![index],
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                          Shimmer.fromColors(
-                                    baseColor: Colors.grey,
-                                    highlightColor: const Color.fromARGB(
-                                        255, 116, 112, 112),
-                                    child: const SizedBox(
-                                      height: 300,
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) =>
+                                child: Image.network(
+                                  tourDetailState.tour!.tourImages![index],
+                                  cacheHeight: 300,
+                                  cacheWidth: 300,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Shimmer.fromColors(
+                                      baseColor: Colors.grey,
+                                      highlightColor: const Color.fromARGB(
+                                          255, 116, 112, 112),
+                                      child: const SizedBox(
+                                        height: 300,
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (context, error, stackTrace) =>
                                       const Icon(Icons.error),
                                   fit: BoxFit.cover,
                                 ),
@@ -588,16 +590,17 @@ class TourDetailScreenState extends State<TourDetailScreen> {
                                       child: Column(
                                         children: [
                                           CircleAvatar(
-                                              radius: 40,
-                                              backgroundColor: whiteColor,
-                                              backgroundImage: tourDetailState
-                                                          .tour!
-                                                          .provider
-                                                          ?.avatarImageUrl !=
-                                                      null
-                                                  ? CachedNetworkImageProvider(
-                                                      '${tourDetailState.tour?.provider?.avatarImageUrl}')
-                                                  : null),
+                                            radius: 40,
+                                            backgroundColor: whiteColor,
+                                            backgroundImage: tourDetailState
+                                                        .tour!
+                                                        .provider
+                                                        ?.avatarImageUrl !=
+                                                    null
+                                                ? NetworkImage(
+                                                    '${tourDetailState.tour?.provider?.avatarImageUrl}')
+                                                : null,
+                                          ),
                                           const SizedBox(height: 8),
                                           Text(
                                               tourDetailState.tour?.provider

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
 import 'package:zest_trip/features/home/domain/entities/tour_review_entity.dart';
@@ -28,8 +27,9 @@ class ReviewWidget extends StatelessWidget {
               children: [
                 CircleAvatar(
                   backgroundColor: whiteColor,
-                  backgroundImage: CachedNetworkImageProvider(
-                      "${tourReviews?.user?.avatarImageUrl}"),
+                  backgroundImage: tourReviews?.user?.avatarImageUrl != null
+                      ? NetworkImage("${tourReviews?.user?.avatarImageUrl}")
+                      : null,
                   radius: 16,
                 ),
                 const SizedBox(width: 8),

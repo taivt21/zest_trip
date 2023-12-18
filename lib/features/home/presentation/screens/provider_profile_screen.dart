@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zest_trip/config/utils/constants/color_constant.dart';
@@ -86,9 +85,12 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                                 color: colorBoldGrey!.withOpacity(0.9),
                                 image: DecorationImage(
                                   opacity: 0.5,
-                                  image: CachedNetworkImageProvider(
-                                    state.providerEntity!.bannerImageUrl!,
-                                  ),
+                                  image: state.providerEntity!.bannerImageUrl !=
+                                          null
+                                      ? NetworkImage(
+                                          state.providerEntity!.bannerImageUrl!)
+                                      : const NetworkImage(
+                                          'https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1'),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -111,11 +113,15 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                                               children: [
                                                 CircleAvatar(
                                                   radius: 24,
-                                                  backgroundImage:
-                                                      CachedNetworkImageProvider(
-                                                    state.providerEntity!
-                                                        .avatarImageUrl!,
-                                                  ),
+                                                  backgroundImage: state
+                                                              .providerEntity!
+                                                              .avatarImageUrl !=
+                                                          null
+                                                      ? NetworkImage(state
+                                                          .providerEntity!
+                                                          .avatarImageUrl!)
+                                                      : const NetworkImage(
+                                                          'https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1'),
                                                 ),
                                                 const SizedBox(width: 8),
                                                 Expanded(
@@ -344,7 +350,7 @@ class _ProviderProfileScreenState extends State<ProviderProfileScreen> {
                                     ),
                                     buildTextWithIcon(
                                       Icons.person,
-                                      "Participant",
+                                      "Joined",
                                       DateTimeHelper.joinedAgo(
                                           state.providerEntity!.createdAt!),
                                       textTheme,

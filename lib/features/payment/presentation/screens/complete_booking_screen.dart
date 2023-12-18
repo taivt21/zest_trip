@@ -19,15 +19,11 @@ import 'package:zest_trip/features/payment/presentation/widgets/bottomsheet_part
 class CompleteBookingScreen extends StatefulWidget {
   final BookingEntity orderEntity;
   final int refundBefore;
-  final int totalAdult;
-  final int totalChildren;
   final List<dynamic> locations;
   const CompleteBookingScreen({
     Key? key,
     required this.orderEntity,
     required this.refundBefore,
-    required this.totalAdult,
-    required this.totalChildren,
     required this.locations,
   }) : super(key: key);
 
@@ -490,7 +486,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("x${widget.totalAdult} Adult"),
+              Text("x${widget.orderEntity.adult} Adult"),
               Text(
                 state is CheckSuccess
                     ? "${NumberFormatter.format(priceAdult!)} ₫"
@@ -504,7 +500,7 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("x${widget.totalChildren} Children"),
+              Text("x${widget.orderEntity.children} Children"),
               Text(
                 state is CheckSuccess
                     ? "${NumberFormatter.format(priceChildren!)} ₫"

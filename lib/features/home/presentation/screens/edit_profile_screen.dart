@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -124,8 +123,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     child: CircleAvatar(
                                       backgroundColor: Colors.transparent,
                                       radius: 24,
-                                      backgroundImage:
-                                          CachedNetworkImageProvider(
+                                      backgroundImage: NetworkImage(
                                         state.user?.avatarImageUrl ??
                                             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBjUp5SKzh4Za73MnliUAnk7RXINX8_mUC3g&usqp=CAU",
                                       ),

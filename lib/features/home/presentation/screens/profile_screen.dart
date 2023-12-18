@@ -134,7 +134,7 @@ class ProfileScreen extends StatelessWidget {
                               builder: (context) => const PolicyWebView(
                                   title: "Policy's Zest Travel",
                                   urlWeb:
-                                      "https://zest-travel-policy.vercel.app/?fbclid=IwAR1wACg-ZXq5daqr3VTUwueqYx_cpPV_bnnU4lhE-JWv0GwEOCdVq8TWJM0"),
+                                      "https://teal-gumption-b98162.netlify.app/?fbclid=IwAR1CNL0jydUHsoDEQl1_gJrnhYwAFZQ52ti8-HfsfhJSz1UwwnShqq-ruVs"),
                             ));
                       },
                       icon: Icons.policy,

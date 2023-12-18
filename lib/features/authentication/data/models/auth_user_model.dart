@@ -41,7 +41,8 @@ class AuthUserModel extends AuthUser {
       email: json.containsKey('email') ? json['email'] : "",
       gender: json.containsKey('gender') ? json['gender'] as String? : null,
       phoneNumber: json.containsKey('phone_number') ? json['phone_number'] : "",
-      avatarImageUrl: json['avatar_image_url'],
+      avatarImageUrl: json['avatar_image_url'] ??
+          "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
       bannerImageUrl: json['banner_image_url'] ??
           "https://i2.wp.com/vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png?ssl=1",
       isRecommendRracked: json['is_recommend_tracked'],

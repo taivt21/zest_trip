@@ -31,6 +31,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
   int _children = 0;
   int _totalPriceAdult = 0;
   int _totalPriceChildren = 0;
+  int _totalPrice = 0;
   String timeSlot = '';
 
   @override
@@ -48,14 +49,17 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
     if (childrenTicket != null &&
         childrenTicket != const PricingTicketModel()) {
       _children = childrenTicket!.minimumBookingQuantity!;
+      _totalPriceChildren =
+          calculateTotalPrice(childrenTicket!, _children) * _children;
     }
     if (adultTicket != const PricingTicketModel()) {
       _adult = adultTicket.minimumBookingQuantity!;
+      _totalPriceAdult = calculateTotalPrice(adultTicket, _adult) * _adult;
     }
     // _adult = adultTicket.minimumBookingQuantity!;
     // _children = childrenTicket!.minimumBookingQuantity!;
 
-    _totalPriceAdult = calculateTotalPrice(adultTicket, _adult) * _adult;
+    _totalPrice = _totalPriceAdult + _totalPriceChildren;
     super.initState();
   }
 
@@ -76,10 +80,6 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
               context,
               MaterialPageRoute(
                   builder: (context) => CompleteBookingScreen(
-                        totalAdult: state.payment!["customerPayment"]
-                            ["adult_price"],
-                        totalChildren: state.payment!["customerPayment"]
-                            ["children_price"],
                         refundBefore: widget.tour.refundBefore!,
                         locations: widget.tour.departureLocation?["location"]!,
                         orderEntity: BookingEntity(
@@ -680,16 +680,27 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
           returnDate =
               selectedDate.add(Duration(days: widget.tour.durationDay!));
           timeSlot = getSelectedTimeSlot(picked);
-          adultTicket =
-              filterTicket(widget.tour.pricingTicket!, selectedDate, 1);
+
+          if (filterTicket(widget.tour.pricingTicket!, selectedDate, 1) !=
+              const PricingTicketModel()) {
+            adultTicket =
+                filterTicket(widget.tour.pricingTicket!, selectedDate, 1);
+
+            _adult = adultTicket.minimumBookingQuantity!;
+            _totalPriceAdult =
+                calculateTotalPrice(adultTicket, _adult) * _adult;
+          }
+
           if (filterTicket(widget.tour.pricingTicket!, selectedDate, 2) !=
               const PricingTicketModel()) {
             childrenTicket =
                 filterTicket(widget.tour.pricingTicket!, selectedDate, 2);
+
             _children = childrenTicket!.minimumBookingQuantity!;
+            _totalPriceChildren =
+                calculateTotalPrice(childrenTicket!, _children) * _children;
           }
-          _totalPriceAdult = calculateTotalPrice(adultTicket, _adult) * _adult;
-          _adult = adultTicket.minimumBookingQuantity!;
+          _totalPrice = _totalPriceAdult + _totalPriceChildren;
         });
       }
     } else {
@@ -908,7 +919,7 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
               children: [
                 const Text("Total: "),
                 Text(
-                  "${NumberFormatter.format(_totalPriceAdult + _totalPriceChildren)}₫ ",
+                  "${NumberFormatter.format(_totalPrice)}₫ ",
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!
