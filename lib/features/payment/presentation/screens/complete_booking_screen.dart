@@ -153,7 +153,9 @@ class _CompleteBookingScreenState extends State<CompleteBookingScreen> {
                                 .bodyLarge
                                 ?.copyWith(fontWeight: FontWeight.bold)),
                         Text(
-                            "Free cancellation before ${widget.refundBefore} days",
+                            widget.refundBefore > 1
+                                ? "Cancel ${widget.refundBefore} days before"
+                                : "Cancel ${widget.refundBefore} day before",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge!

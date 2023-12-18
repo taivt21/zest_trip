@@ -323,6 +323,8 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                                       _totalPriceAdult = calculateTotalPrice(
                                               adultTicket, _adult) *
                                           _adult;
+                                      _totalPrice = _totalPriceAdult +
+                                          _totalPriceChildren;
                                     });
                                   } else {
                                     Fluttertoast.showToast(
@@ -341,6 +343,8 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                                       _totalPriceAdult = calculateTotalPrice(
                                               adultTicket, _adult) *
                                           _adult;
+                                      _totalPrice = _totalPriceAdult +
+                                          _totalPriceChildren;
                                     });
                                   } else {
                                     Fluttertoast.showToast(
@@ -372,6 +376,8 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                                       _totalPriceChildren = calculateTotalPrice(
                                               childrenTicket!, _children) *
                                           _children;
+                                      _totalPrice = _totalPriceAdult +
+                                          _totalPriceChildren;
                                     } else {
                                       Fluttertoast.showToast(
                                         msg:
@@ -395,6 +401,8 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
                                                       childrenTicket!,
                                                       _children) *
                                                   _children;
+                                      _totalPrice = _totalPriceAdult +
+                                          _totalPriceChildren;
                                     } else {
                                       Fluttertoast.showToast(
                                         msg:
@@ -864,7 +872,9 @@ class BookingBottomSheetState extends State<BookingBottomSheet> {
       children: [
         Chip(
           label: Text(
-            "Cancel before ${widget.tour.refundBefore} days",
+            widget.tour.refundBefore! > 1
+                ? "Cancel ${widget.tour.refundBefore} days before"
+                : "Cancel ${widget.tour.refundBefore} day before",
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color: primaryColor, fontSize: 12, fontWeight: FontWeight.bold),
           ),
